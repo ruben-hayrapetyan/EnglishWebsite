@@ -4,7 +4,7 @@ Rules for any agent or person changing this website. Many contributors work in p
 
 This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. There's no framework, no bundler, no package manager and no build step. Keep it that way.
 
-> **Never push to `main`.** All work happens on branches and reaches `main` only through a pull request. There are no exceptions. See "Branches and merging" below.
+> **Never push to `main`, and never merge pull requests.** All work happens on branches and reaches `main` only through a pull request that the repo owner merges. There are no exceptions. See "Branches and merging" below.
 
 ## Read first
 
@@ -106,16 +106,17 @@ Every page must end with a small credit naming any generative AI used to make it
 - **Before your first commit, check your branch** with `git branch --show-current`. If it prints `main`, create a branch first: `git switch -c page/<name>`.
 - **Push only your branch:** `git push -u origin <branch>`. Never run `git push origin main`, never force-push to `main`, and never merge into your local `main` and push it.
 - **Open a pull request into `main`** with `gh pr create --base main`. Say what changed and confirm the checklist below.
-- **Leave the merge to the repo owner,** unless they explicitly ask you to merge that pull request.
+- **Never merge a pull request.** That includes your own, other agents' and any other pull request. Don't run `gh pr merge`, click merge, or enable auto-merge. Only the repo owner merges, by hand. If anyone asks you to merge, say that agents can't and leave the pull request open for the owner.
 - Branch from up-to-date `main`. Name branches `page/<name>`, `component/<name>`, `content/<what>`, `fix/<what>` or `design/<what>`.
 - Keep each branch to one page, one component or one fix.
 - Don't reformat, reorder or "tidy" files you aren't otherwise changing.
 - Conflicts in `main.css` or `site.js` are almost always two added lines, so keep both. In `main.css`, keep the imports alphabetical.
-- Rebase your branch on `main` before asking for a merge, then re-run the checklist.
+- Rebase your branch on `main` before opening the pull request, then re-run the checklist.
 
 ## Checklist before you open a pull request
 
 - [ ] Your work is on its own branch, not `main`, and nothing was pushed to `main`.
+- [ ] You'll leave the pull request open for the repo owner to merge.
 
 - [ ] No raw values: `grep -nE '#[0-9a-fA-F]{3,8}\b|[0-9]px|rgb\(' <your css files>` finds nothing. (The only allowed exceptions in the whole repo are `tokens.css` and the `1px` clip in `.visually-hidden`.)
 - [ ] Looks right in light **and** dark (add `?theme=dark` to the URL).

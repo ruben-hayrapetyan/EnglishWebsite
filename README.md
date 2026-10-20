@@ -181,7 +181,7 @@ Layout primitives in `layout.css`: `.container`, `.container--narrow`, `.page-bo
 
 ## Contributing
 
-All work happens on branches off `main`, one page or one component per branch. **Nothing is ever pushed to `main` directly.** Changes reach `main` only through pull requests. The full rules (what you may change, naming, and the pre-merge checklist) are in [`AGENTS.md`](AGENTS.md). The short version:
+All work happens on branches off `main`, one page or one component per branch. **Nothing is ever pushed to `main` directly.** Changes reach `main` only through pull requests, and only the repo owner merges them. Agents never do. The full rules (what you may change, naming, and the pre-merge checklist) are in [`AGENTS.md`](AGENTS.md). The short version:
 
 1. Build only from tokens and existing components.
 2. Start new pages from `_template.html`, and add them to the menu in `assets/js/site.js`.
