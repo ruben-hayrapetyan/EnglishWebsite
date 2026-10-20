@@ -1,0 +1,24 @@
+/* ==========================================================================
+   Tag: a short label for a category or status. Group tags with .cluster.
+   ========================================================================== */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15em 0.6em;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tag--accent {
+  border-color: transparent;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+}

@@ -1,0 +1,98 @@
+/* ==========================================================================
+   Styles used only by styleguide.html (swatches, specimens).
+   Page files may only use tokens; they never restyle shared components.
+   ========================================================================== */
+
+.sg-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  padding-top: var(--space-xl);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.sg-block__note {
+  max-width: var(--measure);
+  color: var(--color-text-muted);
+}
+
+.sg-label {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+}
+
+/* ---- Color swatches ---------------------------------------------------- */
+.swatch {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: var(--space-3xs) var(--space-s);
+  align-items: center;
+}
+
+.swatch__chip {
+  grid-row: span 3;
+  width: 3rem;
+  height: 3rem;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--swatch);
+}
+
+.swatch__name {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+}
+
+.swatch__value {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  color: var(--color-text-muted);
+}
+
+.swatch__use {
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+  line-height: var(--leading-snug);
+}
+
+/* ---- Type specimens ---------------------------------------------------- */
+.type-row {
+  display: grid;
+  gap: var(--space-3xs);
+  padding-block: var(--space-s);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+@media (min-width: 52rem) {
+  .type-row {
+    grid-template-columns: 12rem 1fr;
+    align-items: baseline;
+    gap: var(--space-m);
+  }
+}
+
+.type-row__sample {
+  overflow-wrap: anywhere;
+}
+
+/* ---- Spacing bars ------------------------------------------------------ */
+.space-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.space-row__bar {
+  width: var(--bar);
+  height: var(--space-xs);
+  border-radius: var(--radius-s);
+  background: var(--color-accent);
+}
+
+.sg-form {
+  max-width: 28rem;
+}

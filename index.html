@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>English Website</title>
+  <meta name="description" content="One sentence describing the site for search results and link previews.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+    <div class="container">
+      <header class="page-header page-header--hero">
+        <h1 class="page-header__title">Say what this site is <mark class="highlight--draw">for</mark>, in one line.</h1>
+        <p class="page-header__lede">This is the home page lede: one or two sentences that tell a first-time visitor what they'll find here and why it's worth their time.</p>
+        <div class="page-header__actions cluster">
+          <a class="button" href="about.html">Read the about page</a>
+          <a class="button button--secondary" href="styleguide.html">Browse the style guide</a>
+        </div>
+      </header>
+    </div>
+
+    <section class="section" aria-labelledby="sections-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="sections-title">Sections of the site</h2>
+          <p class="section__intro">Each card points to one main area. Swap these for real pages as they're built.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3 class="card__title"><a href="about.html">About</a></h3>
+            <p class="card__body">Who's behind the site, what it covers and how to get in touch.</p>
+            <span class="card__footer" aria-hidden="true">Read more &rarr;</span>
+          </article>
+          <article class="card">
+            <h3 class="card__title"><a href="styleguide.html">Style guide</a></h3>
+            <p class="card__body">The colors, type and components every page shares, shown live.</p>
+            <span class="card__footer" aria-hidden="true">Open the guide &rarr;</span>
+          </article>
+          <article class="card">
+            <h3 class="card__title">Your next page</h3>
+            <p class="card__body">Copy <code>_template.html</code> to start a page, then add it to the menu in <code>assets/js/site.js</code>.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tinted" aria-labelledby="consistency-title">
+      <div class="container split">
+        <div class="stack">
+          <h2 id="consistency-title">One look, many hands</h2>
+          <p>Every page on this site is built from the same small set of parts: one color palette, one type scale, one spacing scale and a short list of components. That's what keeps pages built at different times by different people looking like a single site.</p>
+          <p>The rules live in <code>README.md</code> and <code>AGENTS.md</code>. The values live in one file, <code>assets/css/tokens.css</code>.</p>
+        </div>
+        <aside class="callout callout--accent">
+          <p class="callout__title">Before you add anything</p>
+          <p>Check the style guide for a component that already does the job. If none fits, add a new one to <code>assets/css/components/</code> instead of styling inside a page.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>

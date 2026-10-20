@@ -1,0 +1,197 @@
+/* ==========================================================================
+   Base: reset and default styling for bare HTML elements.
+   Element selectors only. Class-based styling belongs in layout.css or
+   components/.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-height) + var(--space-s));
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  flex: 1;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---- Headings: h1 to h3 use the display face, h4 to h6 the body face ---- */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-regular); /* Young Serif ships one weight */
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--step-5); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-2); line-height: var(--leading-snug); }
+
+h4,
+h5,
+h6 {
+  font-family: var(--font-body);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+}
+
+h4 { font-size: var(--step-1); }
+h5 { font-size: var(--step-0); }
+h6 { font-size: var(--step--1); }
+
+p,
+li,
+figcaption {
+  text-wrap: pretty;
+}
+
+/* ---- Links: accent ink with a highlighter sweep on hover --------------- */
+a {
+  color: var(--color-accent);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--border-width);
+  text-underline-offset: 0.22em;
+  background-image: linear-gradient(var(--color-mark), var(--color-mark));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 0;
+  transition:
+    background-size var(--duration-base) var(--ease-out),
+    color var(--duration-fast) linear;
+}
+
+a:hover {
+  color: var(--color-accent-strong);
+  background-size: 100% 0.45em;
+}
+
+/* ---- Focus: always visible for keyboard users -------------------------- */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-s);
+}
+
+::selection {
+  background: var(--color-mark);
+  color: var(--color-text);
+}
+
+/* ---- Inline text ------------------------------------------------------- */
+strong,
+b {
+  font-weight: var(--weight-bold);
+}
+
+small {
+  font-size: var(--step--1);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+code {
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-s);
+  background: var(--color-surface-sunken);
+}
+
+pre {
+  overflow-x: auto;
+  padding: var(--space-s) var(--space-m);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-sunken);
+  line-height: var(--leading-snug);
+}
+
+pre code {
+  padding: 0;
+  background: none;
+}
+
+hr {
+  border: 0;
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+/* ---- Tables ------------------------------------------------------------ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  padding: var(--space-2xs) var(--space-xs);
+  border-bottom: var(--border-width) solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  font-weight: var(--weight-bold);
+  border-bottom-color: var(--color-border-strong);
+}
+
+/* ---- Motion preference ------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

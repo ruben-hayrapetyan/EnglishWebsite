@@ -1,0 +1,64 @@
+<!doctype html>
+<!--
+  PAGE TEMPLATE. Copy this file to <page-name>.html at the repo root, then:
+    1. Set <title> to "Page name · English Website" and write the description.
+    2. Add the page to SITE.nav in assets/js/site.js if it belongs in the menu.
+    3. Pick a layout below and delete the one you don't use.
+  Read AGENTS.md before building. This file is not a real page.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page name · English Website</title>
+  <meta name="description" content="One sentence describing this page.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <!-- Optional page-only styles: <link rel="stylesheet" href="assets/css/pages/page-name.css"> -->
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+
+    <!-- LAYOUT A: reading page (one column of text) ======================== -->
+    <div class="container container--narrow page-body">
+      <header class="page-header">
+        <h1 class="page-header__title">Page title with <mark class="highlight--draw">key words</mark></h1>
+        <p class="page-header__lede">One sentence that says what this page gives the reader.</p>
+      </header>
+      <article class="prose">
+        <p>Plain HTML goes here. Headings, lists, quotes and tables are styled automatically.</p>
+      </article>
+    </div>
+
+    <!-- LAYOUT B: sectioned page (landing pages, overviews) ================ -->
+    <div class="container">
+      <header class="page-header">
+        <h1 class="page-header__title">Page title with <mark class="highlight--draw">key words</mark></h1>
+        <p class="page-header__lede">One sentence that says what this page gives the reader.</p>
+      </header>
+    </div>
+
+    <section class="section" aria-labelledby="first-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="first-title">Section heading</h2>
+          <p class="section__intro">Optional one-line intro.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3 class="card__title"><a href="#">Card title</a></h3>
+            <p class="card__body">Short summary.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>

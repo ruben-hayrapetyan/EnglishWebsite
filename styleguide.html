@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Style guide · English Website</title>
+  <meta name="description" content="The shared colors, type, spacing and components for this site.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/styleguide.css">
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/styleguide.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+    <div class="container page-body">
+      <header class="page-header">
+        <p class="page-header__meta">Reference for contributors</p>
+        <h1 class="page-header__title">Style <mark class="highlight--draw">guide</mark></h1>
+        <p class="page-header__lede">Every color, size and component the site uses, rendered from the live stylesheets. If it isn't on this page, it isn't part of the system yet.</p>
+        <p class="cluster">
+          <a class="button button--small button--secondary" href="?theme=light">View light</a>
+          <a class="button button--small button--secondary" href="?theme=dark">View dark</a>
+        </p>
+      </header>
+
+      <!-- Color ------------------------------------------------------------ -->
+      <section class="sg-block" aria-labelledby="sg-color">
+        <h2 id="sg-color">Color</h2>
+        <p class="sg-block__note">Cool paper, green-black ink, one viridian accent, and highlighter yellow saved for the signature mark. Values switch automatically in dark mode.</p>
+        <div class="grid" style="--grid-min: 15rem">
+          <div class="swatch" style="--swatch: var(--color-bg)"><span class="swatch__chip"></span><span class="swatch__name">--color-bg</span><span class="swatch__value" data-token="--color-bg"></span><span class="swatch__use">Page background</span></div>
+          <div class="swatch" style="--swatch: var(--color-surface)"><span class="swatch__chip"></span><span class="swatch__name">--color-surface</span><span class="swatch__value" data-token="--color-surface"></span><span class="swatch__use">Cards, inputs, panels</span></div>
+          <div class="swatch" style="--swatch: var(--color-surface-sunken)"><span class="swatch__chip"></span><span class="swatch__name">--color-surface-sunken</span><span class="swatch__value" data-token="--color-surface-sunken"></span><span class="swatch__use">Tinted sections, code</span></div>
+          <div class="swatch" style="--swatch: var(--color-text)"><span class="swatch__chip"></span><span class="swatch__name">--color-text</span><span class="swatch__value" data-token="--color-text"></span><span class="swatch__use">Body text, headings</span></div>
+          <div class="swatch" style="--swatch: var(--color-text-muted)"><span class="swatch__chip"></span><span class="swatch__name">--color-text-muted</span><span class="swatch__value" data-token="--color-text-muted"></span><span class="swatch__use">Captions, meta, ledes</span></div>
+          <div class="swatch" style="--swatch: var(--color-border)"><span class="swatch__chip"></span><span class="swatch__name">--color-border</span><span class="swatch__value" data-token="--color-border"></span><span class="swatch__use">Hairlines and borders</span></div>
+          <div class="swatch" style="--swatch: var(--color-accent)"><span class="swatch__chip"></span><span class="swatch__name">--color-accent</span><span class="swatch__value" data-token="--color-accent"></span><span class="swatch__use">Links, primary buttons, focus</span></div>
+          <div class="swatch" style="--swatch: var(--color-accent-soft)"><span class="swatch__chip"></span><span class="swatch__name">--color-accent-soft</span><span class="swatch__value" data-token="--color-accent-soft"></span><span class="swatch__use">Accent backgrounds</span></div>
+          <div class="swatch" style="--swatch: var(--color-mark)"><span class="swatch__chip"></span><span class="swatch__name">--color-mark</span><span class="swatch__value" data-token="--color-mark"></span><span class="swatch__use">Highlighter only</span></div>
+          <div class="swatch" style="--swatch: var(--color-danger)"><span class="swatch__chip"></span><span class="swatch__name">--color-danger</span><span class="swatch__value" data-token="--color-danger"></span><span class="swatch__use">Errors, destructive actions</span></div>
+        </div>
+      </section>
+
+      <!-- Type ------------------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-type">
+        <h2 id="sg-type">Type</h2>
+        <p class="sg-block__note">Young Serif for h1 to h3 and pull quotes. Atkinson Hyperlegible Next for everything you read. Atkinson Hyperlegible Mono for small labels, tags and code.</p>
+        <div>
+          <div class="type-row"><span class="sg-label">--step-5 · h1 hero</span><span class="type-row__sample" style="font: var(--step-5)/var(--leading-tight) var(--font-display)">Display headline</span></div>
+          <div class="type-row"><span class="sg-label">--step-4 · h1 page</span><span class="type-row__sample" style="font: var(--step-4)/var(--leading-tight) var(--font-display)">Page title</span></div>
+          <div class="type-row"><span class="sg-label">--step-3 · h2</span><span class="type-row__sample" style="font: var(--step-3)/var(--leading-tight) var(--font-display)">Section heading</span></div>
+          <div class="type-row"><span class="sg-label">--step-2 · h3</span><span class="type-row__sample" style="font: var(--step-2)/var(--leading-snug) var(--font-display)">Subsection or card title</span></div>
+          <div class="type-row"><span class="sg-label">--step-1 · h4, lede</span><span class="type-row__sample" style="font: var(--step-1)/var(--leading-snug) var(--font-body)">A lede introduces the page in a sentence or two.</span></div>
+          <div class="type-row"><span class="sg-label">--step-0 · body</span><span class="type-row__sample">Body text is set at 16 to 18px with generous leading, capped at 66 characters per line so it stays comfortable to read.</span></div>
+          <div class="type-row"><span class="sg-label">--step--1 · small, UI</span><span class="type-row__sample" style="font-size: var(--step--1)">Buttons, navigation, captions and form labels.</span></div>
+          <div class="type-row"><span class="sg-label">--step--2 · label</span><span class="type-row__sample sg-label" style="text-transform: uppercase">Mono label for meta and tags</span></div>
+        </div>
+      </section>
+
+      <!-- Highlight -------------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-highlight">
+        <h2 id="sg-highlight">Highlight (signature)</h2>
+        <p class="sg-block__note">A highlighter stroke behind the key words of a page title. It also marks the current page in the menu and sweeps under links on hover. Use one per screen at most.</p>
+        <p style="font: var(--step-4)/var(--leading-tight) var(--font-display)">Find the <mark>one phrase</mark> that matters.</p>
+        <pre><code>&lt;h1 class="page-header__title"&gt;Find the &lt;mark class="highlight--draw"&gt;one phrase&lt;/mark&gt; that matters.&lt;/h1&gt;</code></pre>
+      </section>
+
+      <!-- Space ------------------------------------------------------------ -->
+      <section class="sg-block" aria-labelledby="sg-space">
+        <h2 id="sg-space">Space</h2>
+        <p class="sg-block__note">Use these steps for every gap, margin and padding. Sections are separated by <code>--space-section</code>, which grows with the viewport.</p>
+        <div class="stack" style="--stack-space: var(--space-2xs)">
+          <div class="space-row"><span class="sg-label">--space-3xs</span><span class="space-row__bar" style="--bar: var(--space-3xs)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-2xs</span><span class="space-row__bar" style="--bar: var(--space-2xs)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-xs</span><span class="space-row__bar" style="--bar: var(--space-xs)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-s</span><span class="space-row__bar" style="--bar: var(--space-s)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-m</span><span class="space-row__bar" style="--bar: var(--space-m)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-l</span><span class="space-row__bar" style="--bar: var(--space-l)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-xl</span><span class="space-row__bar" style="--bar: var(--space-xl)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-2xl</span><span class="space-row__bar" style="--bar: var(--space-2xl)"></span></div>
+          <div class="space-row"><span class="sg-label">--space-3xl</span><span class="space-row__bar" style="--bar: var(--space-3xl)"></span></div>
+        </div>
+      </section>
+
+      <!-- Buttons ---------------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-buttons">
+        <h2 id="sg-buttons">Buttons</h2>
+        <p class="sg-block__note">One primary button per view. Labels say exactly what happens: "Save changes", not "Submit".</p>
+        <div class="cluster">
+          <button class="button" type="button">Primary action</button>
+          <button class="button button--secondary" type="button">Secondary</button>
+          <button class="button button--quiet" type="button">Quiet</button>
+          <button class="button button--small" type="button">Small</button>
+          <button class="button" type="button" disabled>Disabled</button>
+        </div>
+      </section>
+
+      <!-- Cards ------------------------------------------------------------ -->
+      <section class="sg-block" aria-labelledby="sg-cards">
+        <h2 id="sg-cards">Cards</h2>
+        <p class="sg-block__note">Lay cards out with <code>.grid</code>. A link on the title makes the whole card clickable.</p>
+        <div class="grid">
+          <article class="card">
+            <p class="card__meta">Optional meta</p>
+            <h3 class="card__title"><a href="#sg-cards">Linked card</a></h3>
+            <p class="card__body">Lifts on hover. The whole card is one link target.</p>
+            <span class="card__footer" aria-hidden="true">Read more &rarr;</span>
+          </article>
+          <article class="card">
+            <h3 class="card__title">Static card</h3>
+            <p class="card__body">No link, so no hover state. Use it for summaries and facts.</p>
+            <div class="cluster"><span class="tag">Tag</span><span class="tag tag--accent">Accent tag</span></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Callouts --------------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-callouts">
+        <h2 id="sg-callouts">Callouts</h2>
+        <div class="grid" style="--grid-min: 14rem">
+          <div class="callout"><p class="callout__title">Note</p><p>Neutral aside.</p></div>
+          <div class="callout callout--accent"><p class="callout__title">Tip</p><p>Key takeaway.</p></div>
+          <div class="callout callout--mark"><p class="callout__title">Important</p><p>Don't miss this.</p></div>
+          <div class="callout callout--danger"><p class="callout__title">Error</p><p>Say what went wrong and how to fix it.</p></div>
+        </div>
+      </section>
+
+      <!-- Tags ------------------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-tags">
+        <h2 id="sg-tags">Tags</h2>
+        <div class="cluster">
+          <span class="tag">Category</span>
+          <span class="tag">Status</span>
+          <span class="tag tag--accent">Featured</span>
+        </div>
+      </section>
+
+      <!-- Forms ------------------------------------------------------------ -->
+      <section class="sg-block" aria-labelledby="sg-forms">
+        <h2 id="sg-forms">Forms</h2>
+        <form class="stack sg-form" onsubmit="return false">
+          <div class="field">
+            <label class="field__label" for="sg-name">Name</label>
+            <input class="input" id="sg-name" type="text" placeholder="Jordan Lee">
+          </div>
+          <div class="field">
+            <label class="field__label" for="sg-email">Email</label>
+            <input class="input" id="sg-email" type="email" aria-invalid="true" aria-describedby="sg-email-error" value="jordan@">
+            <p class="field__error" id="sg-email-error">Enter an email address like name@example.com.</p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="sg-topic">Topic</label>
+            <select class="input" id="sg-topic">
+              <option>General question</option>
+              <option>Feedback</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label" for="sg-message">Message</label>
+            <textarea class="input" id="sg-message" aria-describedby="sg-message-hint"></textarea>
+            <p class="field__hint" id="sg-message-hint">A few sentences is plenty.</p>
+          </div>
+          <label class="checkbox"><input type="checkbox"> Send me a copy</label>
+          <div class="cluster">
+            <button class="button" type="submit">Send message</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Prose ------------------------------------------------------------ -->
+      <section class="sg-block" aria-labelledby="sg-prose">
+        <h2 id="sg-prose">Prose</h2>
+        <p class="sg-block__note">Wrap long-form HTML in <code>.prose</code> and every element inside is styled. See <a href="about.html">the about page</a> for a full example.</p>
+        <div class="prose">
+          <h3>A subsection heading</h3>
+          <p>Running text with <a href="#sg-prose">an inline link</a>, some <strong>bold</strong>, some <em>italic</em> and a bit of <code>inline code</code>.</p>
+          <ol>
+            <li>Numbered lists are for steps in order.</li>
+            <li>Bulleted lists are for everything else.</li>
+          </ol>
+          <blockquote>
+            <p>Pull quotes use the display face.</p>
+            <cite>Source name</cite>
+          </blockquote>
+          <table>
+            <thead><tr><th>Column</th><th>Column</th><th>Number</th></tr></thead>
+            <tbody>
+              <tr><td>Row one</td><td>Text</td><td>1,204</td></tr>
+              <tr><td>Row two</td><td>Text</td><td>87</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>

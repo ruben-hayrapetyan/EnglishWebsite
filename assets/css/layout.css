@@ -1,0 +1,126 @@
+/* ==========================================================================
+   Layout primitives: content-agnostic building blocks for arranging things.
+   Compose pages from these instead of writing one-off margins.
+   ========================================================================== */
+
+/* Centered, padded page width. Add .container--narrow for reading pages. */
+.container {
+  width: 100%;
+  max-width: calc(var(--container-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: calc(var(--container-narrow) + 2 * var(--gutter));
+}
+
+/* Vertical rhythm: equal space between direct children.
+   Override the gap per instance with style="--stack-space: var(--space-l)". */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-space, var(--space-s));
+}
+
+/* Horizontal group that wraps: buttons, tags, metadata. */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cluster-space, var(--space-xs));
+}
+
+/* Responsive card grid. Columns fill as space allows, never below --grid-min. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--grid-min, 16rem), 100%), 1fr));
+  gap: var(--grid-space, var(--space-m));
+}
+
+/* Two columns on wide screens, stacked on narrow ones. */
+.split {
+  display: grid;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+@media (min-width: 52rem) {
+  .split {
+    grid-template-columns: 3fr 2fr;
+  }
+
+  .split--even {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* A page section. Sections own the vertical space between them;
+   nothing inside a section should add margin above or below it. */
+.section {
+  padding-block: var(--space-section);
+}
+
+.section + .section {
+  padding-top: 0;
+}
+
+.section--tinted {
+  background: var(--color-surface-sunken);
+}
+
+.section--tinted + .section,
+.section + .section--tinted {
+  padding-top: var(--space-section);
+}
+
+/* Reading pages without sections: a page header followed by content.
+   Spaces its children evenly and leaves the same bottom space a .section would. */
+.page-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  padding-bottom: var(--space-section);
+}
+
+/* Section heading row: title plus an optional one-line intro. */
+.section__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-l);
+  max-width: var(--measure);
+}
+
+.section__intro {
+  color: var(--color-text-muted);
+}
+
+/* ---- Accessibility helpers --------------------------------------------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2xs);
+  left: var(--space-2xs);
+  z-index: var(--z-overlay);
+  padding: var(--space-2xs) var(--space-s);
+  border-radius: var(--radius-s);
+  background: var(--color-text);
+  color: var(--color-bg);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}

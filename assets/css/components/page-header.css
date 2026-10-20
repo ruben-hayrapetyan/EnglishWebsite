@@ -1,0 +1,49 @@
+/* ==========================================================================
+   Page header: the opening block of every page.
+   .page-header          interior pages (title, optional lede and meta)
+   .page-header--hero    home page or landing pages: bigger title, actions
+   Highlight the key words of the title with <mark class="highlight--draw">.
+   ========================================================================== */
+
+/* Top padding only: the next .section (or .page-body's gap) supplies the
+   space below, so the two never stack into a double gap. */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  padding-top: var(--space-2xl);
+}
+
+.page-header__title {
+  max-width: 20ch;
+  font-size: var(--step-4);
+}
+
+.page-header__lede {
+  max-width: var(--measure-narrow);
+  font-size: var(--step-1);
+  line-height: var(--leading-snug);
+  color: var(--color-text-muted);
+}
+
+.page-header__meta {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.page-header__actions {
+  margin-top: var(--space-xs);
+}
+
+.page-header--hero {
+  gap: var(--space-m);
+  padding-top: var(--space-3xl);
+}
+
+.page-header--hero .page-header__title {
+  max-width: 16ch;
+  font-size: var(--step-5);
+}

@@ -1,0 +1,85 @@
+/* ==========================================================================
+   Prose: long-form reading text (articles, essays, policies).
+   Wrap rich HTML in <div class="prose"> and it is fully styled: headings,
+   lists, quotes, figures, tables. Do not add classes to the elements inside.
+   ========================================================================== */
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose > * + * {
+  margin-top: var(--space-s);
+}
+
+.prose > h2 {
+  margin-top: var(--space-xl);
+  font-size: var(--step-3);
+}
+
+.prose > h3 {
+  margin-top: var(--space-l);
+}
+
+.prose > h4 {
+  margin-top: var(--space-m);
+}
+
+.prose > h2 + *,
+.prose > h3 + *,
+.prose > h4 + * {
+  margin-top: var(--space-xs);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
+
+.prose li + li {
+  margin-top: var(--space-3xs);
+}
+
+.prose li::marker {
+  color: var(--color-text-muted);
+}
+
+.prose blockquote {
+  padding-left: var(--space-m);
+  border-left: var(--border-width-thick) solid var(--color-accent);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  line-height: var(--leading-snug);
+}
+
+.prose blockquote cite {
+  display: block;
+  margin-top: var(--space-2xs);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-style: normal;
+  color: var(--color-text-muted);
+}
+
+.prose figure {
+  margin-block: var(--space-l);
+}
+
+.prose figure img {
+  border-radius: var(--radius-m);
+}
+
+.prose figcaption {
+  margin-top: var(--space-2xs);
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+.prose hr {
+  margin-block: var(--space-xl);
+}
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+}

@@ -1,0 +1,73 @@
+/* ==========================================================================
+   Card: a self-contained summary that usually links somewhere.
+   Put the link on .card__title > a; the whole card becomes clickable.
+   Lay cards out with .grid (layout.css), never with custom flex rules.
+   ========================================================================== */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-m);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-s);
+  transition:
+    border-color var(--duration-fast) linear,
+    box-shadow var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.card:has(.card__title a):hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-m);
+  transform: translateY(var(--lift));
+}
+
+.card:focus-within {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.card__meta {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.card__title {
+  font-size: var(--step-2);
+}
+
+.card__title a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+/* Stretch the title link over the whole card. */
+.card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.card__title a:focus-visible {
+  outline: none;
+}
+
+.card__body {
+  color: var(--color-text-muted);
+}
+
+.card__footer {
+  margin-top: auto;
+  padding-top: var(--space-xs);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent);
+}

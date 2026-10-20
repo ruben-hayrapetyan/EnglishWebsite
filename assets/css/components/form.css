@@ -1,0 +1,92 @@
+/* ==========================================================================
+   Form fields. Wrap each control in .field with a visible <label>.
+   <div class="field">
+     <label class="field__label" for="x">Label</label>
+     <input class="input" id="x">
+     <p class="field__hint">Optional help text</p>
+   </div>
+   Mark invalid controls with aria-invalid="true" and a .field__error.
+   ========================================================================== */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.field__label {
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+}
+
+.field__hint {
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+.field__error {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+  color: var(--color-danger);
+}
+
+.input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-2xs) var(--space-xs);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+  transition: border-color var(--duration-fast) linear;
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.8;
+}
+
+.input:hover {
+  border-color: var(--color-text-muted);
+}
+
+.input:focus-visible {
+  border-color: var(--color-accent);
+  border-radius: var(--radius-s);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+textarea.input {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+select.input {
+  appearance: none;
+  padding-right: var(--space-xl);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
+    linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+  background-position:
+    right 1.1rem center,
+    right 0.8rem center;
+  background-size: 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-size: var(--step--1);
+}
+
+.checkbox input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--color-accent);
+}
