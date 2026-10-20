@@ -1,0 +1,15 @@
+/* ==========================================================================
+   AI credit: a small note at the bottom of every page, directly above the
+   site footer, naming any generative AI used to make that page. Required on
+   every page (see AGENTS.md).
+   <aside class="ai-credit" aria-label="Use of generative AI">
+     <p class="container">Generative AI: <tool and maker> <what it did>.</p>
+   </aside>
+   ========================================================================== */
+
+.ai-credit {
+  padding-block: var(--space-m);
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  line-height: var(--leading-snug);
+}

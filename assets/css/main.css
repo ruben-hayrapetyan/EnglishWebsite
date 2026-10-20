@@ -12,6 +12,7 @@
 @import url("layout.css");
 
 /* components (alphabetical) */
+@import url("components/ai-credit.css");
 @import url("components/button.css");
 @import url("components/callout.css");
 @import url("components/card.css");

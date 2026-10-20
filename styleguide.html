@@ -171,6 +171,15 @@
         </form>
       </section>
 
+      <!-- AI credit -------------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-ai-credit">
+        <h2 id="sg-ai-credit">AI credit</h2>
+        <p class="sg-block__note">Required on every page, directly above the footer. Name each generative AI tool and its maker, and say what it did on that page. This page's own credit is at the bottom.</p>
+        <pre><code>&lt;aside class="ai-credit" aria-label="Use of generative AI"&gt;
+  &lt;p class="container"&gt;Generative AI: Claude Opus 5.5 (Anthropic) wrote this page's code and drafted its text.&lt;/p&gt;
+&lt;/aside&gt;</code></pre>
+      </section>
+
       <!-- Prose ------------------------------------------------------------ -->
       <section class="sg-block" aria-labelledby="sg-prose">
         <h2 id="sg-prose">Prose</h2>
@@ -197,6 +206,10 @@
       </section>
     </div>
   </main>
+
+  <aside class="ai-credit" aria-label="Use of generative AI">
+    <p class="container">Generative AI: Claude Opus 5.5 (Anthropic) wrote this page's code, design and text.</p>
+  </aside>
 
   <footer class="site-footer" data-site-footer></footer>
 </body>

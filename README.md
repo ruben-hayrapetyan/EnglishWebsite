@@ -109,6 +109,7 @@ One t-shirt scale, in rem: `--space-3xs` (4px), `2xs` (8), `xs` (12), `s` (16), 
 - **Alignment:** left-aligned throughout. Headlines hang on the left edge with open space to the right. Nothing is centered except buttons' contents.
 - **Breakpoints:** two, and only two. `40rem` (640px) is where the menu collapses. `52rem` (832px) is where two-column `.split` layouts form. Everything else reflows on its own with `.grid` and `.cluster`.
 - **Header:** sticky, solid page background, hairline bottom border. Brand on the left in the display face, nav on the right.
+- **AI credit:** every page ends with one line of small, muted text naming any generative AI used to make it, directly above the footer. See `AGENTS.md` for what it must say.
 - **Footer:** hairline top border, site name, footer links, year.
 
 Two page layouts, both in `_template.html`:
@@ -126,6 +127,8 @@ LAYOUT A: reading page              LAYOUT B: sectioned page
 │   ## heading             │        │ [card] [card] [card]             │
 │   paragraphs, lists,     │        │──────── tinted section ──────────│
 │   quotes, tables         │        │ text column     │ callout        │
+│                          │        │                                  │
+│   Generative AI: ...     │        │ Generative AI: ...               │
 ├──────────────────────────┤        ├──────────────────────────────────┤
 │ footer                   │        │ footer                           │
 └──────────────────────────┘        └──────────────────────────────────┘
@@ -162,6 +165,7 @@ All of these are shown live in `styleguide.html`.
 | Form field | `.field`, `__label`, `__hint`, `__error`, `.input`, `.checkbox` | `components/form.css` |
 | Prose | `.prose` (styles plain HTML inside it) | `components/prose.css` |
 | Highlight | `mark`, `.highlight`, `.highlight--draw` | `components/highlight.css` |
+| AI credit | `.ai-credit` (required on every page, above the footer) | `components/ai-credit.css` |
 | Header and footer | Rendered by `site.js` | `components/site-header.css`, `site-footer.css` |
 
 Layout primitives in `layout.css`: `.container`, `.container--narrow`, `.page-body`, `.section`, `.section--tinted`, `.section__header`, `.section__intro`, `.stack`, `.cluster`, `.grid`, `.split`, `.split--even`, `.visually-hidden`, `.skip-link`.
@@ -181,5 +185,6 @@ Work happens in branches off `main`, one page or one component per branch. The f
 
 1. Build only from tokens and existing components.
 2. Start new pages from `_template.html`, and add them to the menu in `assets/js/site.js`.
-3. New components go in their own file under `assets/css/components/` and get added to the style guide.
-4. Changes to the design system itself (tokens, base, layout) go in a separate `design/*` branch and update this README in the same change.
+3. End every page with an AI credit naming any generative AI used to make it.
+4. New components go in their own file under `assets/css/components/` and get added to the style guide.
+5. Changes to the design system itself (tokens, base, layout) go in a separate `design/*` branch and update this README in the same change.

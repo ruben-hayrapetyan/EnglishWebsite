@@ -28,7 +28,7 @@ This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. Ther
 
 ### HTML
 
-- Start every page from `_template.html`. Keep the `<head>`, skip link, `data-site-header` and `data-site-footer` exactly as they are.
+- Start every page from `_template.html`. Keep the `<head>`, skip link, `data-site-header`, `.ai-credit` and `data-site-footer` exactly as they are, apart from filling in the credit text.
 - Use exactly one `h1` per page, and keep heading levels in order with no skips.
 - Use semantic elements: `main`, `section` (with `aria-labelledby` pointing at its heading), `article`, `nav`, `aside`, `header`, `footer`.
 - Every image needs `alt` text. Use `alt=""` if it's purely decorative.
@@ -42,6 +42,17 @@ This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. Ther
 - `assets/js/site.js` is shared. Only touch it to add or remove a nav or footer link (one line each).
 - Page-specific behavior goes in `assets/js/<page-name>.js`, loaded only by that page.
 - Page content must stay readable with JavaScript off. JS can enhance a page but must never be the only way to see its content. The shared header and footer are the one exception.
+
+### Generative AI attribution
+
+Every page must end with a small credit naming any generative AI used to make it. This is required, including on pages made entirely by an agent.
+
+- **Where:** directly above the site footer, outside `<main>`, using the `.ai-credit` component. Copy the markup from `_template.html` and don't restyle it.
+- **What to write:** each tool's name and version, its maker, and what it did on that page. Start the sentence with `Generative AI:`. For example: `Generative AI: Claude Opus 5.5 (Anthropic) wrote this page's code and drafted its text. Midjourney v7 made the header image.`
+- **Agents credit themselves.** Use your own exact model name and say what you did.
+- **Keep it current.** When you edit a page with a tool that isn't credited yet, add it. If your work changes what an existing tool did, update that part. Never remove another contributor's credit.
+- **Images and media count.** If an image, audio or video clip on the page was AI-generated, say so in the credit. Also say so in the image's `figcaption`, if it has one.
+- **Pages with no AI involved** say: `Generative AI: none used on this page.`
 
 ### Copy
 
@@ -75,7 +86,8 @@ This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. Ther
 2. Set the `<title>` to `Page name · English Website` and write a one-sentence meta description.
 3. Keep layout A (reading page) or layout B (sectioned page) and delete the other.
 4. If the page belongs in the menu, add `{ label: "Page name", href: "page-name.html" }` to `SITE.nav` in `assets/js/site.js`.
-5. Run the checklist below.
+5. Fill in the AI credit at the bottom of the page (see "Generative AI attribution").
+6. Run the checklist below.
 
 ### Add a component
 
@@ -102,4 +114,5 @@ This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. Ther
 - [ ] One `h1`, headings in order, every image has `alt`, every input has a label.
 - [ ] No errors in the browser console.
 - [ ] The page is in `SITE.nav` (if it should be), and the menu marks it as current.
+- [ ] The page ends with an `.ai-credit` that names every generative AI tool used on it and what each one did.
 - [ ] Any new component is in `styleguide.html` and the README table.
