@@ -16,10 +16,14 @@
 @import url("components/button.css");
 @import url("components/callout.css");
 @import url("components/card.css");
+@import url("components/deck.css");
+@import url("components/flashcards.css");
 @import url("components/form.css");
 @import url("components/highlight.css");
 @import url("components/page-header.css");
 @import url("components/prose.css");
+@import url("components/quiz.css");
+@import url("components/reveal.css");
 @import url("components/site-footer.css");
 @import url("components/site-header.css");
 @import url("components/tag.css");

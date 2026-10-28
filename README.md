@@ -165,6 +165,10 @@ All of these are shown live in `styleguide.html`.
 | Form field | `.field`, `__label`, `__hint`, `__error`, `.input`, `.checkbox` | `components/form.css` |
 | Prose | `.prose` (styles plain HTML inside it) | `components/prose.css` |
 | Highlight | `mark`, `.highlight`, `.highlight--draw` | `components/highlight.css` |
+| Reveal | `.reveal`, `__summary`, `__body` (on `<details>`) | `components/reveal.css` |
+| Deck | `.deck`, `__stage`, `__slide`, `__content`, `__kicker`, `__title`, `__points`, `__figure` (made interactive by `study.js`) | `components/deck.css` |
+| Flashcards | `.flashcards`, `__list`, `__item`, `__term`, `__definition` (made interactive by `study.js`) | `components/flashcards.css` |
+| Quiz | `.quiz`, `__item`, `__question`, `__options`, `__key`, `__explanation` (made interactive by `study.js`) | `components/quiz.css` |
 | AI credit | `.ai-credit` (required on every page, above the footer) | `components/ai-credit.css` |
 | Header and footer | Rendered by `site.js` | `components/site-header.css`, `site-footer.css` |
 

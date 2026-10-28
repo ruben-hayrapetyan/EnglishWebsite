@@ -204,6 +204,70 @@
           </table>
         </div>
       </section>
+
+      <!-- Reveal ----------------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-reveal">
+        <h2 id="sg-reveal">Reveal</h2>
+        <p class="sg-block__note">A box the reader opens on purpose: a model answer, a quiz answer key, a long list. Built on <code>&lt;details&gt;</code>, so it works without JavaScript.</p>
+        <details class="reveal">
+          <summary class="reveal__summary">Show the model answer</summary>
+          <div class="reveal__body">
+            <p>Hidden until the reader asks for it.</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Study kit: deck, flashcards, quiz -------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-deck">
+        <h2 id="sg-deck">Deck</h2>
+        <p class="sg-block__note">Slides for a study kit. Shown here as they look with JavaScript off. On a study page, <code>assets/js/study.js</code> shows one at a time with buttons, arrow keys, swipe and full screen. See <a href="study-neuronal-activity.html#slides">a working deck</a> and <code>STUDY-MATERIALS.md</code>.</p>
+        <div class="deck" aria-label="Example slides">
+          <div class="deck__stage">
+            <section class="deck__slide" aria-labelledby="sg-slide-1">
+              <div class="deck__content">
+                <p class="deck__kicker">1 · Section name</p>
+                <h3 class="deck__title" id="sg-slide-1">One idea per slide</h3>
+                <ul class="deck__points">
+                  <li>Three to five short points.</li>
+                  <li>Put the <strong>new term</strong> in bold.</li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="sg-block" aria-labelledby="sg-flashcards">
+        <h2 id="sg-flashcards">Flashcards</h2>
+        <p class="sg-block__note">A chapter's key terms. With JavaScript off it's a glossary, as here. On a study page it becomes flip cards with spaced practice. See <a href="study-neuronal-activity.html#flashcards">working flashcards</a>.</p>
+        <div class="flashcards">
+          <dl class="flashcards__list">
+            <div class="flashcards__item"><dt class="flashcards__term">Term</dt><dd class="flashcards__definition">Definition taken from the chapter's glossary.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Another term</dt><dd class="flashcards__definition">Definitions can run to two or three lines without trouble.</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="sg-block" aria-labelledby="sg-quiz">
+        <h2 id="sg-quiz">Quiz</h2>
+        <p class="sg-block__note">Practice questions. With JavaScript off, answers sit in a reveal, as here. On a study page each question is asked one at a time with a confidence rating and feedback on every option. See <a href="study-neuronal-activity.html#quiz">a working quiz</a>.</p>
+        <ol class="quiz">
+          <li class="quiz__item" data-objective="LO1">
+            <p class="quiz__question">A question that tests understanding, not wording?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Why this is right.">The right option</li>
+              <li data-why="Why this is wrong.">A plausible wrong option</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>The explanation, tied back to the chapter.</p></div>
+              </div>
+            </details>
+          </li>
+        </ol>
+      </section>
     </div>
   </main>
 

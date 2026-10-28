@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neuronal activity study kit · English Website</title>
+  <meta name="description" content="Slides, flashcards, a practice quiz and an interactive rhythm explorer for the chapter on spikes and local field potentials.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/study-neuronal-activity.css">
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/study.js" defer></script>
+  <script src="assets/js/study-neuronal-activity.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+    <div class="container">
+      <header class="page-header">
+        <p class="page-header__meta"><a href="study.html">Study materials</a> · Ultradian rhythms</p>
+        <h1 class="page-header__title">Neuronal activity: <mark class="highlight--draw">spikes and LFPs</mark></h1>
+        <p class="page-header__lede">What an electrode in the brain actually records, why those signals come in rhythms, and how breathing, signal processing and spiking networks fit in.</p>
+        <div class="page-header__actions cluster">
+          <a class="button" href="#slides">Start the slides</a>
+          <a class="button button--secondary" href="#flashcards">Practice key terms</a>
+          <a class="button button--secondary" href="#quiz">Take the quiz</a>
+        </div>
+        <p class="cluster" style="--cluster-space: var(--space-2xs)">
+          <span class="tag tag--accent">Chapter by Daniel Winter</span>
+          <span class="tag">16 slides</span>
+          <span class="tag">32 terms</span>
+          <span class="tag">17 questions</span>
+          <span class="tag">5 prompts</span>
+        </p>
+      </header>
+    </div>
+
+    <!-- Objectives -------------------------------------------------------- -->
+    <section class="section" aria-labelledby="objectives-title">
+      <div class="container split">
+        <div class="stack">
+          <h2 id="objectives-title">What you'll be able to do</h2>
+          <div class="prose">
+          <ol data-objectives>
+            <li data-objective="LO1"><strong>LO1 (Remember):</strong> Define spike and LFP</li>
+            <li data-objective="LO2"><strong>LO2 (Understand):</strong> Describe how brain activity repeats in rhythms (of different speeds)</li>
+            <li data-objective="LO3"><strong>LO3 (Apply):</strong> Use breathing as an example of how a body rhythm can affect brain rhythm</li>
+            <li data-objective="LO4"><strong>LO4 (Analyze):</strong> Compare how scientists pull spikes and rhythms out of recordings and the limitations of these methods</li>
+            <li data-objective="LO5"><strong>LO5 (Understand):</strong> Explain one way spiking neural networks use timing that artificial neural networks do not</li>
+          </ol>
+          </div>
+        </div>
+        <aside class="callout callout--accent">
+          <p class="callout__title">How to use this page</p>
+          <div class="prose"><ol>
+            <li>Skim the slides for the big picture.</li>
+            <li>Drill the key terms until most are "known".</li>
+            <li>Take the quiz without looking back, and rate how sure you are.</li>
+            <li>Write out the explain-it-back prompts before opening the model answers.</li>
+            <li>Come back in two or three days and run the quiz again.</li>
+          </ol></div>
+          <p>Testing yourself and spacing out sessions beat rereading. <a href="study.html#method">Why this works</a></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Slides ----------------------------------------------------------- -->
+    <section class="section section--tinted" id="slides" aria-labelledby="slides-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="slides-title">The chapter in 16 slides</h2>
+          <p class="section__intro">Each slide is one idea from the chapter, in order. Figures are the chapter's own.</p>
+        </div>
+
+        <div class="deck" data-deck="neuronal-activity" aria-label="Neuronal activity slides">
+          <div class="deck__stage">
+
+            <section class="deck__slide" aria-labelledby="slide-1">
+              <div class="deck__content">
+                <p class="deck__kicker">1 · What is being measured</p>
+                <h3 class="deck__title" id="slide-1">One wire, two signals</h3>
+                <ul class="deck__points">
+                  <li>A thin electrode in the brain records voltage <em>outside</em> the cells: extracellular recording.</li>
+                  <li>The result is a noisy, wave-like line that contains both <strong>spikes</strong> and <strong>local field potentials (LFPs)</strong>.</li>
+                  <li>Telling them apart, and telling both apart from voltage measured <em>inside</em> a cell, is the first step.</li>
+                </ul>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/neuronal-activity-recordings.png" width="1400" height="981" loading="lazy" alt="Three stacked traces over 130 milliseconds. Top: an intracellular action potential rising from about minus 70 millivolts past a dotted threshold near minus 55 to about plus 30, then dipping below rest. Middle: an extracellular spike-band trace in microvolts with three brief sharp spikes. Bottom: a smooth, slow local field potential wandering between about plus and minus 100 microvolts.">
+                <figcaption>Figure A1. Based on Buzsáki et al. (2012); Rey et al. (2015); OpenStax, Section 12.4. Figure by Daniel Winter; plotting code written with Claude (Anthropic).</figcaption>
+              </figure>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-2">
+              <div class="deck__content">
+                <p class="deck__kicker">1 · What is being measured</p>
+                <h3 class="deck__title" id="slide-2">Anatomy of a spike</h3>
+                <ul class="deck__points">
+                  <li>A spike is an action potential: a rapid voltage change across the membrane that neurons use to communicate.</li>
+                  <li>Rest is about −70 mV. Stimuli push it up to a threshold near −55 mV.</li>
+                  <li>Voltage-gated sodium channels open: <strong>depolarization</strong> up to about +30 mV.</li>
+                  <li>Sodium channels inactivate, potassium rushes out: <strong>repolarization</strong>.</li>
+                  <li>All or nothing: the neuron either reaches threshold and fires, or doesn't. Exact values vary across neurons.</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-3">
+              <div class="deck__content">
+                <p class="deck__kicker">1 · What is being measured</p>
+                <h3 class="deck__title" id="slide-3">A voice versus the room</h3>
+                <ul class="deck__points">
+                  <li>Each neuron connects to roughly 1,000 to 10,000 others through synapses.</li>
+                  <li>An <strong>LFP</strong> reflects the combined transmembrane currents of many neurons near the electrode, especially synaptic currents. It is smooth and changes gradually.</li>
+                  <li>Scale is the main difference: a spike is one neuron, an LFP is a group. Neither is the whole picture.</li>
+                  <li>Like a party: you can follow one conversation, or hear the volume of the room, but not both at once.</li>
+                  <li>Spikes run in the hundreds of hertz, LFPs much lower, but spike waveforms leak down and can pollute fast LFP activity.</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-4">
+              <div class="deck__content">
+                <p class="deck__kicker">2 · Neural activity is rhythmic</p>
+                <h3 class="deck__title" id="slide-4">Five common bands</h3>
+                <ul class="deck__points">
+                  <li>Groups of neurons go active and idle together, over and over. The LFP records this as an <strong>oscillation</strong>.</li>
+                  <li>Delta (δ) 1–4 Hz · theta (θ) 4–8 Hz · alpha (α) 8–12 Hz · beta (β) 15–30 Hz · gamma (γ) 30–100 Hz.</li>
+                  <li>The lines aren't universal: labs draw them differently, and species run the same rhythm at different speeds.</li>
+                  <li>Olfactory gamma is 40–100 Hz in rats and mice, and about 20 Hz in insects (Kay, 2014).</li>
+                </ul>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/neuronal-activity-frequency-bands.png" width="1400" height="1023" loading="lazy" alt="Five sine waves over one second: delta at 2 hertz shows two slow cycles, theta at 6 hertz six cycles, alpha at 10 hertz ten, beta at 20 hertz twenty, and gamma at 40 hertz forty tightly packed cycles.">
+                <figcaption>Figure A2. Based on Buzsáki &amp; Draguhn (2004); Kay (2014), Section 3. Figure by Daniel Winter; plotting code written with Claude (Anthropic).</figcaption>
+              </figure>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-5">
+              <div class="deck__content">
+                <p class="deck__kicker">2 · Neural activity is rhythmic</p>
+                <h3 class="deck__title" id="slide-5">Frequency and period</h3>
+                <ul class="deck__points">
+                  <li>Frequency and period are reciprocals: a 40 Hz rhythm completes a cycle every 25 ms; a 4 Hz rhythm takes 250 ms.</li>
+                  <li>A spike lasts about a millisecond, so dozens fit inside one slow cycle. <em>When</em> a spike lands in the cycle can carry information, not just how many spikes there are.</li>
+                  <li>Every rhythm here is <strong>ultradian</strong>: many cycles per day. Gamma completes roughly 3.5 million cycles in one circadian day.</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-6">
+              <div class="deck__content">
+                <p class="deck__kicker">2 · Neural activity is rhythmic</p>
+                <h3 class="deck__title" id="slide-6">Do oscillations do anything?</h3>
+                <ul class="deck__points">
+                  <li>A bridge vibrates under traffic, but that's not why it was built. Are brain rhythms just vibration?</li>
+                  <li>Buzsáki &amp; Draguhn (2004): oscillations span five orders of magnitude and are preserved across species, so they likely serve functions.</li>
+                  <li>Proposed roles: bias which inputs reach a population, temporarily link neurons, support synaptic changes in learning.</li>
+                  <li>Most claims are correlational. Olfactory gamma is stronger evidence: disrupting it impaired fine odor discrimination in insects; enhancing it improved discrimination in mice (Kay, 2014).</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-7">
+              <div class="deck__content">
+                <p class="deck__kicker">2 · Neural activity is rhythmic</p>
+                <h3 class="deck__title" id="slide-7">Phase: when in the cycle</h3>
+                <ul class="deck__points">
+                  <li>Some neurons fire at a preferred point in the LFP cycle rather than at random. That point is the <strong>phase</strong>.</li>
+                  <li>A neuron firing near troughs and one firing near peaks can have identical firing rates yet contribute differently to the circuit.</li>
+                  <li>The group rhythm shapes spike timing; individual neurons supply the spikes.</li>
+                </ul>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/neuronal-activity-spike-phase.png" width="1400" height="742" loading="lazy" alt="An LFP sine wave over 1.2 seconds. Neuron A's spikes, drawn above the wave, line up with every peak. Neuron B's spikes, drawn below, line up with every trough. Both fire five times.">
+                <figcaption>Figure A3. Based on Kay (2014), Figure 5; Buzsáki &amp; Draguhn (2004). Figure by Daniel Winter; plotting code written with Claude (Anthropic).</figcaption>
+              </figure>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-8">
+              <div class="deck__content">
+                <p class="deck__kicker">3 · Connection to slower body rhythms</p>
+                <h3 class="deck__title" id="slide-8">Breathing reaches the brain</h3>
+                <ul class="deck__points">
+                  <li>Neural activity synchronized to breathing appears across mammals, humans included (Tort et al., 2025).</li>
+                  <li>Expected in smell areas, since odors arrive in pulses. Surprising: it extends into regions for emotion and higher cognition.</li>
+                  <li>Airflow through the nose sends waves of sensory activity through the brain that can align neurons to the breath.</li>
+                  <li>This is <strong>phase-amplitude coupling</strong>: the phase of a slow rhythm goes with changes in the amplitude of a faster one.</li>
+                </ul>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/neuronal-activity-phase-amplitude.png" width="1400" height="994" loading="lazy" alt="Three stacked panels over two seconds. Top: a slow 2 hertz breathing-related cycle. Middle: gamma amplitude rising to a peak at each breathing peak and falling low in between. Bottom: a fast oscillation that bursts large at each breathing peak and shrinks in between.">
+                <figcaption>Figure A4. Based on Tort et al. (2025), Figure 1; Kay (2014), Figures 2 and 4. Figure by Daniel Winter; plotting code written with Claude (Anthropic).</figcaption>
+              </figure>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-9">
+              <div class="deck__content">
+                <p class="deck__kicker">3 · Connection to slower body rhythms</p>
+                <h3 class="deck__title" id="slide-9">Modulate is not generate</h3>
+                <ul class="deck__points">
+                  <li>Breathing can modulate or <strong>entrain</strong> existing brain rhythms; it doesn't generate them. Brain oscillations continue without nasal airflow.</li>
+                  <li>It supplies a shared reference signal distant regions can lock onto. Synchrony alone doesn't prove direct communication.</li>
+                  <li>Rodent sniffing (about 4–12 Hz) overlaps theta. An 8 Hz hippocampal rhythm could be theta, respiratory coupling, or both; you have to record breathing to tell.</li>
+                  <li>The general lesson: two rhythms with the same period are not necessarily the same rhythm. Slower rhythms can coordinate faster ones (see Circulation and the cardiac cycle).</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-10">
+              <div class="deck__content">
+                <p class="deck__kicker">4 · Getting a signal from a recording</p>
+                <h3 class="deck__title" id="slide-10">Spike sorting in four steps</h3>
+                <ol class="deck__points">
+                  <li><strong>Bandpass filter</strong> the recording, typically 300–3,000 Hz.</li>
+                  <li><strong>Threshold:</strong> scan for moments the voltage crosses a set limit.</li>
+                  <li><strong>Measure</strong> the shape of each detected waveform.</li>
+                  <li><strong>Cluster</strong> similar shapes, treating each cluster as possibly one neuron (Rey et al., 2015).</li>
+                </ol>
+                <p>Stop after step 2 and count every crossing, and you get <strong>multi-unit activity</strong>: how much the local population fires, not which cell did what.</p>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/neuronal-activity-spike-sorting.png" width="1400" height="492" loading="lazy" alt="Three panels. First: a noisy extracellular trace over 200 milliseconds with a dashed threshold line that seven downward spikes cross. Second: two waveform templates, A dipping first and B peaking first. Third: a scatter plot of two waveform features where events form two separate clusters labeled A and B.">
+                <figcaption>Figure A5. Based on Rey et al. (2015); Yger et al. (2018). Figure by Daniel Winter; plotting code written with Claude (Anthropic).</figcaption>
+              </figure>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-11">
+              <div class="deck__content">
+                <p class="deck__kicker">4 · Getting a signal from a recording</p>
+                <h3 class="deck__title" id="slide-11">Where sorting goes wrong</h3>
+                <ul class="deck__points">
+                  <li>It assumes each neuron makes a consistent waveform, different from its neighbors' because of distance and orientation to the tip.</li>
+                  <li>With many neurons close to the electrode, waveforms look too alike and accuracy drops.</li>
+                  <li>Two spikes at the same instant overlap into a shape that matches neither neuron.</li>
+                  <li>Rarely firing neurons get lost under busier neighbors, which matters for sparse cells in memory tasks (Rey et al., 2015).</li>
+                  <li>Net effect: datasets can be biased toward neurons with distinctive, detectable waveforms.</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-12">
+              <div class="deck__content">
+                <p class="deck__kicker">4 · Getting a signal from a recording</p>
+                <h3 class="deck__title" id="slide-12">Finding rhythms: the Fourier transform</h3>
+                <p>Any complex repeating signal can be rebuilt from sine waves of different frequencies, amplitudes and phases.</p>
+                <div class="equation">
+                  <math display="block"><mi>X</mi><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>=</mo><msubsup><mo>∫</mo><mrow><mo>−</mo><mi>∞</mi></mrow><mi>∞</mi></msubsup><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>i</mi><mn>2</mn><mi>π</mi><mi>f</mi><mi>t</mi></mrow></msup><mspace width="0.17em"></mspace><mi>d</mi><mi>t</mi></math>
+                </div>
+                <p>It asks one question: how much of the signal <em>x(t)</em> looks like a wave of frequency <em>f</em>? Ask it for every frequency and you get the power spectrum:</p>
+                <div class="equation">
+                  <math display="block"><mi>P</mi><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>∝</mo><msup><mrow><mo>|</mo><mi>X</mi><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">)</mo><mo>|</mo></mrow><mn>2</mn></msup></math>
+                </div>
+                <p>A tall peak at 8 Hz means strong theta; one at 60 Hz means gamma.</p>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-13">
+              <div class="deck__content">
+                <p class="deck__kicker">4 · Getting a signal from a recording</p>
+                <h3 class="deck__title" id="slide-13">Which frequencies, but not when</h3>
+                <ul class="deck__points">
+                  <li>One spectrum for a whole recording summarizes frequency content without showing when each rhythm happened. (It doesn't assume the rhythm is steady.)</li>
+                  <li>Gamma comes in short bursts; theta waxes and wanes. Averaged over time, a brief strong burst and a weak continuous rhythm can look alike.</li>
+                  <li>The <strong>wavelet transform</strong> swaps the endless sine wave for a short one that can be moved and stretched, giving frequency <em>at a given moment</em>:</li>
+                </ul>
+                <div class="equation">
+                  <math display="block"><mi>W</mi><mo stretchy="false">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><msqrt><mi>a</mi></msqrt></mfrac><msubsup><mo>∫</mo><mrow><mo>−</mo><mi>∞</mi></mrow><mi>∞</mi></msubsup><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><msup><mi>ψ</mi><mo>∗</mo></msup><mrow><mo>(</mo><mfrac><mrow><mi>t</mi><mo>−</mo><mi>b</mi></mrow><mi>a</mi></mfrac><mo>)</mo></mrow><mspace width="0.17em"></mspace><mi>d</mi><mi>t</mi></math>
+                </div>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/neuronal-activity-spectrum-spectrogram.png" width="1400" height="1132" loading="lazy" alt="Three panels. Top: four seconds of a slow rhythm with two brief 60 hertz bursts around 0.7 to 1.2 seconds and 2.6 to 3.1 seconds. Middle: the whole-record power spectrum, with a tall peak near 8 hertz and only a tiny bump at 60 hertz. Bottom: a time-frequency spectrogram where a steady band sits near 8 hertz and two bright 60 hertz patches appear exactly when the bursts happen.">
+                <figcaption>Figure A6. Based on Kay (2014), Figure 4; Einevoll et al. (2013). Figure by Daniel Winter; plotting code written with Claude (Anthropic).</figcaption>
+              </figure>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-14">
+              <div class="deck__content">
+                <p class="deck__kicker">4 · Getting a signal from a recording</p>
+                <h3 class="deck__title" id="slide-14">Limits of any recording</h3>
+                <ul class="deck__points">
+                  <li>Sampled <em>f<sub>s</sub></em> times a second, the highest recoverable frequency is the <strong>Nyquist frequency</strong>:</li>
+                </ul>
+                <div class="equation">
+                  <math display="block"><msub><mi>f</mi><mtext>Nyquist</mtext></msub><mo>=</mo><mfrac><msub><mi>f</mi><mi>s</mi></msub><mn>2</mn></mfrac></math>
+                </div>
+                <ul class="deck__points">
+                  <li>Without filtering first, faster frequencies fold back as false slow ones: <strong>aliasing</strong>. Spike-sorting recordings often sample above 20,000 Hz with anti-aliasing filters.</li>
+                  <li>An LFP reflects population currents but not which cells produced them. <strong>Volume conduction</strong> means some of it comes from beyond the tip.</li>
+                  <li>LFP amplitude depends on how sources are arranged: a weak, well-aligned source can beat a strong, disorganized one (Herreras, 2016; Pesaran et al., 2018). Recovering the activity needs a model of how the signal was made (Einevoll et al., 2013).</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-15">
+              <div class="deck__content">
+                <p class="deck__kicker">5 · From biological to artificial</p>
+                <h3 class="deck__title" id="slide-15">An equation with no time in it</h3>
+                <p>A basic artificial neural network unit weights its inputs, sums them and passes the total through a function:</p>
+                <div class="equation">
+                  <math display="block"><mi>y</mi><mo>=</mo><mi>φ</mi><mrow><mo>(</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mi>i</mi></msub><msub><mi>x</mi><mi>i</mi></msub><mo>+</mo><mi>b</mi><mo>)</mo></mrow></math>
+                </div>
+                <p>There is no spike time <em>t</em>. The output is a number, not a timed event, so phase and spike timing are not represented. A leaky integrate-and-fire model puts time back:</p>
+                <div class="equation">
+                  <math display="block"><msub><mi>τ</mi><mi>m</mi></msub><mfrac><mrow><mi>d</mi><mi>V</mi></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mo stretchy="false">(</mo><mi>V</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>V</mi><mtext>rest</mtext></msub><mo stretchy="false">)</mo><mo>+</mo><msub><mi>R</mi><mi>m</mi></msub><mi>I</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></math>
+                </div>
+                <p>Voltage builds with input current and leaks back toward rest; at threshold it spikes and resets.</p>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/neuronal-activity-ann-snn.png" width="1400" height="619" loading="lazy" alt="Two panels. Left: a basic feed-forward unit outputs the same value, 0.7, at each of eight input steps, with no time axis. Right: a spiking unit outputs discrete pulses at specific times, around 20, 28, 75, 106 and 110 milliseconds.">
+                <figcaption>Figure A7. Based on Imam &amp; Cleland (2020). Figure by Daniel Winter; plotting code written with Claude (Anthropic).</figcaption>
+              </figure>
+            </section>
+
+            <section class="deck__slide" aria-labelledby="slide-16">
+              <div class="deck__content">
+                <p class="deck__kicker">5 · From biological to artificial</p>
+                <h3 class="deck__title" id="slide-16">Learning from spike timing</h3>
+                <ul class="deck__points">
+                  <li><strong>Spiking neural networks</strong> pass timed pulses instead of continuous values.</li>
+                  <li>In one form of <strong>STDP</strong>, the weight change depends on the interval <math><mi>Δ</mi><mi>t</mi><mo>=</mo><msub><mi>t</mi><mtext>post</mtext></msub><mo>−</mo><msub><mi>t</mi><mtext>pre</mtext></msub></math> and its sign.</li>
+                  <li>Neuron A fires just before B: the connection strengthens. Just after: it weakens. Longer intervals mean smaller changes. Real plasticity depends on circuit and conditions.</li>
+                  <li>Imam &amp; Cleland (2020) built an olfactory-bulb-style network on Intel's Loihi neuromorphic chip, applying STDP over sequential gamma-frequency packets.</li>
+                  <li>The tested model learned to tell odors apart after limited exposure, even with interference from other odors.</li>
+                </ul>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rhythm explorer -------------------------------------------------- -->
+    <section class="section" id="explorer" aria-labelledby="explorer-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="explorer-title">Try it: the rhythm explorer</h2>
+          <p class="section__intro">Change the frequency to see its band, period and cycles per day. Lower the sampling rate to watch aliasing happen.</p>
+        </div>
+
+        <div class="explorer" data-explorer>
+          <div class="explorer__panel" data-explorer-panel hidden>
+            <div class="explorer__controls">
+              <div class="field">
+                <label class="field__label" for="explorer-frequency">Rhythm frequency: <span class="explorer__value" data-explorer-out="frequency">8 Hz</span></label>
+                <input class="explorer__range" id="explorer-frequency" type="range" min="1" max="100" step="1" value="8" data-explorer-frequency>
+              </div>
+              <div class="field">
+                <label class="field__label" for="explorer-rate">Sampling rate: <span class="explorer__value" data-explorer-out="rate">200 Hz</span></label>
+                <input class="explorer__range" id="explorer-rate" type="range" min="10" max="400" step="5" value="200" data-explorer-rate>
+                <p class="field__hint">Real spike recordings sample above 20,000 Hz.</p>
+              </div>
+              <div class="explorer__readouts">
+                <div class="explorer__readout"><span class="explorer__readout-label">Band</span><span class="explorer__readout-value" data-explorer-out="band"></span></div>
+                <div class="explorer__readout"><span class="explorer__readout-label">Period</span><span class="explorer__readout-value" data-explorer-out="period"></span></div>
+                <div class="explorer__readout"><span class="explorer__readout-label">Cycles per day</span><span class="explorer__readout-value" data-explorer-out="per-day"></span></div>
+                <div class="explorer__readout"><span class="explorer__readout-label">Nyquist limit</span><span class="explorer__readout-value" data-explorer-out="nyquist"></span></div>
+              </div>
+              <div class="cluster">
+                <button class="button button--secondary button--small" type="button" data-explorer-preset="6,200">Theta at 6 Hz</button>
+                <button class="button button--secondary button--small" type="button" data-explorer-preset="40,400">Gamma at 40 Hz</button>
+                <button class="button button--secondary button--small" type="button" data-explorer-preset="40,50">Sample gamma too slowly</button>
+              </div>
+            </div>
+            <div class="explorer__plot">
+              <svg class="explorer__svg" role="img" aria-label="Sine wave plot"></svg>
+              <ul class="explorer__legend">
+                <li><span class="explorer__key"></span>The real rhythm</li>
+                <li><span class="explorer__key explorer__key--sample"></span>Samples</li>
+                <li><span class="explorer__key explorer__key--alias"></span>What the samples look like</li>
+              </ul>
+              <p class="explorer__status" data-explorer-status aria-live="polite"></p>
+              <p class="field__hint">The plot shows a quarter of a second.</p>
+            </div>
+          </div>
+
+          <table>
+            <caption class="visually-hidden">Common frequency bands and their periods</caption>
+            <thead>
+              <tr><th scope="col">Band</th><th scope="col">Frequency</th><th scope="col">Period of one cycle</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Delta (δ)</td><td>1–4 Hz</td><td>1,000–250 ms</td></tr>
+              <tr><td>Theta (θ)</td><td>4–8 Hz</td><td>250–125 ms</td></tr>
+              <tr><td>Alpha (α)</td><td>8–12 Hz</td><td>125–83 ms</td></tr>
+              <tr><td>Beta (β)</td><td>15–30 Hz</td><td>67–33 ms</td></tr>
+              <tr><td>Gamma (γ)</td><td>30–100 Hz</td><td>33–10 ms</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flashcards ------------------------------------------------------- -->
+    <section class="section section--tinted" id="flashcards" aria-labelledby="flashcards-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="flashcards-title">Key terms</h2>
+          <p class="section__intro">Try to recall each answer before you flip. Terms you mark "Still learning" come back sooner, and your progress stays in this browser.</p>
+        </div>
+
+        <div class="flashcards" data-flashcards="neuronal-activity">
+          <dl class="flashcards__list">
+            <div class="flashcards__item"><dt class="flashcards__term">Action potential (spike)</dt><dd class="flashcards__definition">A rapid reversal of the membrane potential that propagates along an axon to transmit information between neurons.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Membrane potential</dt><dd class="flashcards__definition">The difference in voltage between the inside and outside of a cell membrane.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Axon (and hillock)</dt><dd class="flashcards__definition">The axon is the long tail of the neuron that conducts electrical impulses away from itself. The axon hillock is the specialized region of the cell body that connects to the axon where the action potentials are created.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Refractory period</dt><dd class="flashcards__definition">The short time after a neuron fires (action potential) where it cannot fire again in succession, unless a much stronger stimulus is provided.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Extracellular recording</dt><dd class="flashcards__definition">A method of measuring electrical activity from outside the cell membrane (using electrodes).</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Intracellular recording</dt><dd class="flashcards__definition">A method of measuring electrical activity in just a single cell (with a microelectrode).</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Local field potential (LFP)</dt><dd class="flashcards__definition">The recorded extracellular electrical signal that reflects the synaptic activity of a local population of cells.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Oscillation</dt><dd class="flashcards__definition">Repeating and rhythmic fluctuations in electrical activity across a group of neurons.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Frequency</dt><dd class="flashcards__definition">The number of cycles (waves) an oscillation completes in a second (measured in hertz).</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Phase</dt><dd class="flashcards__definition">The position of a wave at a specific point with respect to a complete cycle.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Power spectral density</dt><dd class="flashcards__definition">A mathematical measure that shows how the energy of a signal is distributed across different frequencies.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Bandpass filter</dt><dd class="flashcards__definition">A signal processing tool that blocks frequencies outside a certain range, allowing to single out certain wavelengths.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Phase-amplitude coupling</dt><dd class="flashcards__definition">A special type of cross-frequency coupling of a brain signal interaction where the strength (amplitude) of a fast brain wave is controlled by the cycle (phase) of a slow brain wave.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Cross-frequency coupling</dt><dd class="flashcards__definition">An interaction between different frequency bands where neural oscillations interact with each other to process information.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Entrainment</dt><dd class="flashcards__definition">The interaction where an internal brain rhythm is affected by external periodic rhythms (such as sensory stimulus or behavioral cycles).</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Spike sorting</dt><dd class="flashcards__definition">A data processing step used to group extracellular signals to individual neurons.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Thresholding</dt><dd class="flashcards__definition">A processing technique used to separate real neural signals from noise using a specific voltage limit.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Multi-unit activity (MUA)</dt><dd class="flashcards__definition">The combined activity of several neurons that are recorded by a single electrode.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Signal-to-noise ratio</dt><dd class="flashcards__definition">A measure that compares the meaningful neural parts of a signal to background noise.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Fourier transform</dt><dd class="flashcards__definition">A mathematical tool that is used to break down complex signals into its individual sine wave frequency components, revealing which rhythms are present and how strong they are.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Wavelet transform</dt><dd class="flashcards__definition">A similar tool to the Fourier transform that breaks down a signal into localized wavelets, allowing analysis of how frequency components change over time.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Nyquist frequency</dt><dd class="flashcards__definition">The highest frequency that can be captured without distortions (half the sampling rate).</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Aliasing</dt><dd class="flashcards__definition">Distortions and "ghost frequencies" that occur when not abiding by the Nyquist frequency threshold.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Volume conduction</dt><dd class="flashcards__definition">The spread of electrical current through brain tissue, allowing an electrode to record signals generated away from its tip.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Artificial neural network (ANN)</dt><dd class="flashcards__definition">A computer program modeled after biological brains, where continuous values are created by summing weighted inputs rather than discrete spikes.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Synaptic weights</dt><dd class="flashcards__definition">In an artificial neural network, these are the values that determine how strong the connection between two nodes are (how much they influence one another).</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Integrate-and-fire model</dt><dd class="flashcards__definition">A model of a neuron that adds up incoming electrical inputs over time until a threshold is reached and then "fires."</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Spiking neural network (SNN)</dt><dd class="flashcards__definition">An artificial neural network that uses timed pulses (spikes) instead of continuous values to communicate.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Spike-timing-dependent plasticity (STDP)</dt><dd class="flashcards__definition">An algorithm used to update the connection model weights of an ANN where the change in a synaptic connection depends on the interval between a presynaptic and postsynaptic spike (and which came first).</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Neuromorphic computing</dt><dd class="flashcards__definition">An approach to computer engineering where systems are designed to mimic natural biological processes and structures of the nervous system.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Neuromorphic hardware</dt><dd class="flashcards__definition">Specially designed circuits designed to use brain-like structures to execute neural networks.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Memristor</dt><dd class="flashcards__definition">An electronic component that mimics biological synapses by "remembering" the amount of charge that previously flowed through it.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz ------------------------------------------------------------- -->
+    <section class="section" id="quiz" aria-labelledby="quiz-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="quiz-title">Check yourself</h2>
+          <p class="section__intro">Seventeen questions covering all five objectives. Answer without looking back, say how sure you are, and read every explanation, including the ones you get right.</p>
+        </div>
+
+        <ol class="quiz" data-quiz="neuronal-activity">
+
+          <li class="quiz__item" data-objective="LO1">
+            <p class="quiz__question">Which description fits a local field potential (LFP)?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Right: the LFP is a population signal, dominated by synaptic currents near the electrode.">The combined transmembrane currents of many neurons near the electrode, especially synaptic currents</li>
+              <li data-why="That describes a spike (and an intracellular recording of one). An LFP is recorded outside cells and reflects many neurons.">The voltage change across one neuron's membrane when it fires</li>
+              <li data-why="The LFP isn't noise to be thrown away; it's a meaningful signal about what a group of neurons is doing together.">Electrical noise from the electrode that must be filtered out before analysis</li>
+              <li data-why="The axon hillock is where action potentials start in a single cell. The LFP is a population measure.">The voltage at the axon hillock just before threshold</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>An LFP reflects the combined transmembrane currents of many neurons, especially synaptic currents, recorded near an electrode (Buzsáki et al., 2012). Unlike a spike, it is smooth and changes gradually, and its amplitude also depends on the geometry of those currents.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO1">
+            <p class="quiz__question">A neuron at rest sits near −70 mV. What happens once stimuli push it to about −55 mV?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Right: threshold opens voltage-gated sodium channels and the cell depolarizes sharply.">Voltage-gated sodium channels open and the cell depolarizes sharply, to about +30 mV</li>
+              <li data-why="Potassium rushes out during repolarization, after the peak, not at threshold.">Potassium channels open and the voltage drops below rest</li>
+              <li data-why="Spikes are all or nothing: past threshold the neuron fires a full action potential, not a proportional one.">The neuron fires a spike whose size depends on how far past threshold it went</li>
+              <li data-why="Reaching threshold is exactly what triggers firing; the neuron doesn't wait for more input.">Nothing yet; it needs to reach 0 mV before it fires</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>At threshold (around −55 mV) voltage-gated sodium channels open, causing depolarization up to about +30 mV. Then sodium channels inactivate and potassium channels open, bringing the voltage back down (repolarization). The neuron either reaches threshold and fires or stays below and doesn't; exact values vary across neurons.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO1">
+            <p class="quiz__question">Which statement best captures the main difference between spikes and LFPs?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Right: the chapter calls scale the main difference, and says neither alone is the whole picture.">Scale: a spike tells you what one neuron is doing; an LFP tells you what a group is doing together</li>
+              <li data-why="Both come from the same extracellular electrode. That's why separating them takes filtering.">They need different electrodes, so they're never recorded together</li>
+              <li data-why="Spikes run in the hundreds of hertz and LFPs much lower, so it's the other way round.">LFPs are faster than spikes</li>
+              <li data-why="The chapter says neither is the whole picture; they answer different questions.">LFPs are more accurate than spikes, so spikes are rarely used</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>Like a party: you can follow one person's conversation (a spike) or hear the volume of the room (an LFP), but tuning into one means losing the other. Both are picked up by the same electrode.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO2">
+            <p class="quiz__question">A rhythm cycles 6 times per second. Which band is it in?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="Delta is 1 to 4 Hz, slower than this.">Delta</li>
+              <li data-correct data-why="Right: theta is 4 to 8 Hz.">Theta</li>
+              <li data-why="Alpha is 8 to 12 Hz, a bit faster.">Alpha</li>
+              <li data-why="Gamma is 30 to 100 Hz, far faster.">Gamma</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: B</p>
+                <div class="quiz__explanation"><p>Delta 1–4 Hz, theta 4–8 Hz, alpha 8–12 Hz, beta 15–30 Hz, gamma 30–100 Hz. Labs draw these lines in slightly different places, and different animals run the same functional rhythm at different speeds.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO2" data-answer="25" data-tolerance="0.5" data-unit="ms">
+            <p class="quiz__question">A gamma rhythm runs at 40 Hz. How many milliseconds does one cycle take?</p>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: 25 ms</p>
+                <div class="quiz__explanation"><p>Frequency and period are reciprocals: 1 ÷ 40 Hz = 0.025 s = 25 ms. By the same rule a 4 Hz rhythm takes 250 ms per cycle. A spike lasts about 1 ms, so dozens can fit in one slow cycle.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO2">
+            <p class="quiz__question">Neuron A tends to fire near the peaks of an LFP cycle; neuron B near the troughs. Both fire at the same average rate. What follows?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="Equal rates hide the difference. The chapter's point is that phase can matter even when rates match.">They are doing the same thing, since only firing rate carries information</li>
+              <li data-correct data-why="Right: same rate, different phase, potentially different contribution.">They may contribute differently to circuit activity, because they fire at different phases</li>
+              <li data-why="Firing near the trough is still firing; the figure shows both neurons spiking five times.">Neuron B is effectively silent, because troughs are when neurons rest</li>
+              <li data-why="Phase applies to any LFP rhythm, not only gamma.">Phase only matters if the rhythm is in the gamma band</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: B</p>
+                <div class="quiz__explanation"><p>Phase is the position of a wave relative to one complete cycle. Some neurons prefer a particular phase. Two neurons with identical rates can still contribute differently depending on when in the cycle they fire: the group rhythm shapes spike timing, while individual neurons supply the spikes.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO2">
+            <p class="quiz__question">Why did Buzsáki and Draguhn (2004) argue that brain oscillations are more than a byproduct, like a bridge vibrating under traffic?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Right: breadth across frequencies and conservation across species suggest function.">They span five orders of magnitude in frequency and are preserved across species</li>
+              <li data-why="Breathing can modulate brain rhythms, but it doesn't generate them, and that wasn't their argument.">They are all generated by breathing</li>
+              <li data-why="The chapter stresses the opposite: most claims about what rhythms do are correlational.">Every function of every rhythm has been proven by causal experiments</li>
+              <li data-why="Rhythms appear across many species; that's part of the argument.">They only appear in the human brain</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>They also proposed that oscillations can bias which inputs reach a population, temporarily link neurons, and support synaptic changes in learning. Support varies by circuit; olfactory gamma gives some of the strongest evidence (Kay, 2014).</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO3">
+            <p class="quiz__question">In breathing-related phase-amplitude coupling, what is linked to what?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Right: slow phase, fast amplitude.">The phase of the slow breathing cycle goes with changes in the amplitude of a faster brain rhythm</li>
+              <li data-why="It's the other way round: the slow rhythm's phase, the fast rhythm's amplitude.">The amplitude of the breathing cycle sets the phase of gamma</li>
+              <li data-why="They don't have to share a frequency; that's what makes it cross-frequency coupling.">Breathing and gamma run at the same frequency</li>
+              <li data-why="Breathing modulates rhythms that already exist; brain oscillations continue without nasal airflow.">Breathing generates the fast rhythm from scratch</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>Airflow through the nose sends waves of sensory activity through the brain, which can align neurons with the breathing cycle and modulate faster oscillations (Tort et al., 2025). In Figure A4, gamma bursts are largest at one point in each breath.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO3">
+            <p class="quiz__question">A rat is sniffing, and you record an 8 Hz rhythm in its hippocampus. What is the safest conclusion?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="Possible, but 8 Hz also falls in the sniffing range, so you can't assume it.">It is hippocampal theta</li>
+              <li data-why="Possible, but matching frequency isn't proof; the two can run at similar speeds without being synchronized.">It is respiratory coupling, because sniffing runs at 4–12 Hz</li>
+              <li data-correct data-why="Right: same period doesn't mean same rhythm, so record breathing.">It could be theta, respiratory coupling or both; you'd need to record breathing to separate them</li>
+              <li data-why="Synchronized activity alone doesn't prove direct communication.">It proves the hippocampus and the nose are communicating directly</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: C</p>
+                <div class="quiz__explanation"><p>Rodent sniffing (about 4–12 Hz) overlaps theta. The two can occur at similar frequencies without being continuously synchronized (Kay, 2014). This is a recurring problem across chronobiology: two rhythms with the same period are not necessarily the same rhythm.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO3">
+            <p class="quiz__question">If nasal airflow stops, what happens to brain oscillations, according to the chapter?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="Breathing modulates rhythms; it isn't their only source.">They stop, because breathing drives them</li>
+              <li data-correct data-why="Right: breathing entrains existing rhythms rather than generating every one.">They continue; breathing modulates or entrains existing rhythms but doesn't generate them all</li>
+              <li data-why="Nothing in the chapter says they switch bands.">They all shift into the delta band</li>
+              <li data-why="Coupling extends well beyond smell areas, but that doesn't make breathing the source.">Only the olfactory rhythms continue</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: B</p>
+                <div class="quiz__explanation"><p>Breathing supplies a shared reference signal that distant regions can lock onto, which can help coordinate activity. The broader principle: slower rhythms can coordinate faster ones, across many timescales.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO4">
+            <p class="quiz__question">What is the order of the four spike sorting steps?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="Clustering needs measured shapes, and shapes need detected spikes, so clustering can't come first.">Cluster, threshold, filter, measure shape</li>
+              <li data-correct data-why="Right: filter, detect, describe, group.">Bandpass filter, threshold, measure waveform shape, cluster</li>
+              <li data-why="You threshold the filtered trace, so filtering comes before detection.">Threshold, bandpass filter, cluster, measure waveform shape</li>
+              <li data-why="Shapes are measured on detected events, after thresholding.">Measure waveform shape, bandpass filter, threshold, cluster</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: B</p>
+                <div class="quiz__explanation"><p>Bandpass filter (typically 300–3,000 Hz), find threshold crossings, measure each waveform's shape, then cluster similar shapes as possibly coming from one neuron (Rey et al., 2015).</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO4">
+            <p class="quiz__question">A researcher stops after thresholding and simply counts every crossing, without assigning any to a cell. What do they have?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="Single units need the clustering step to assign spikes to cells.">Sorted single-unit activity</li>
+              <li data-correct data-why="Right: a record of how much the population fires, not who fired.">Multi-unit activity</li>
+              <li data-why="The LFP is the slow, low-frequency part; thresholding works on the spike band.">A local field potential</li>
+              <li data-why="A power spectrum comes from a Fourier transform, not from counting crossings.">A power spectrum</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: B</p>
+                <div class="quiz__explanation"><p>Multi-unit activity records how much the local population is firing, without knowing which specific cells are responsible.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO4">
+            <p class="quiz__question">Which neurons is spike sorting most likely to miss?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="Distinctive waveforms are the easiest to sort; datasets get biased toward them.">Neurons with distinctive waveforms</li>
+              <li data-correct data-why="Right: sparse firers get buried under busier neighbors.">Neurons that fire rarely, next to neighbors that fire often</li>
+              <li data-why="Frequent firers dominate the recording; they're the ones that bury others.">Neurons that fire very often</li>
+              <li data-why="Spike sorting doesn't use LFP phase at all.">Neurons that fire at the peak of the LFP</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: B</p>
+                <div class="quiz__explanation"><p>Rarely firing neurons are easily lost under neighbors that fire more often, which matters for sparse cells such as some involved in memory tasks (Rey et al., 2015). Accuracy also drops when many neurons sit close to the electrode, and overlapping spikes can match neither neuron.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO4">
+            <p class="quiz__question">A whole-recording power spectrum shows a big theta peak and only a tiny bump at 60 Hz. Why might a wavelet (time-frequency) analysis tell you more?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="The chapter is explicit that the Fourier transform doesn't assume the rhythm is steady. The problem is that one spectrum doesn't show when.">The Fourier transform assumes rhythms never change, so it's wrong</li>
+              <li data-correct data-why="Right: a short strong burst and a weak steady rhythm can average to similar spectra.">It shows when each frequency occurred, so brief 60 Hz bursts stand out instead of being averaged away</li>
+              <li data-why="The Nyquist limit depends on the sampling rate, not on which transform you use.">Wavelets can recover frequencies above the Nyquist limit</li>
+              <li data-why="Removing spikes is spike-band filtering, not what a wavelet transform is for.">Wavelets remove spike contamination from the LFP</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: B</p>
+                <div class="quiz__explanation"><p>The wavelet transform swaps the infinite sine wave for a short wave that can be moved and stretched, giving information about a given frequency at a given moment. Figure A6 shows the 60 Hz bursts nearly vanishing in the whole-record spectrum but standing out clearly in the spectrogram.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO4" data-answer="500" data-tolerance="0" data-unit="Hz">
+            <p class="quiz__question">A signal is sampled 1,000 times per second. What is the highest frequency that can be recovered?</p>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: 500 Hz</p>
+                <div class="quiz__explanation"><p>The Nyquist frequency is half the sampling rate: 1,000 ÷ 2 = 500 Hz. Without filtering first, anything faster folds back and shows up as a misleading lower frequency (aliasing). That's why spike-sorting recordings often sample above 20,000 Hz with anti-aliasing filters.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO5">
+            <p class="quiz__question">In the basic artificial neuron <math><mi>y</mi><mo>=</mo><mi>φ</mi><mo stretchy="false">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><msub><mi>x</mi><mi>i</mi></msub><mo>+</mo><mi>b</mi><mo stretchy="false">)</mo></math>, what is missing that a spiking model has?</p>
+            <ol class="quiz__options" type="A">
+              <li data-why="The weights are the w terms; they're right there.">Synaptic weights</li>
+              <li data-why="The offset is b.">An offset</li>
+              <li data-correct data-why="Right: the output is a number, not a timed spike event.">An explicit spike time</li>
+              <li data-why="The inputs are the x terms.">Inputs</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: C</p>
+                <div class="quiz__explanation"><p>Nothing in the feed-forward equation says when a spike happened, so spike timing and phase aren't represented. A leaky integrate-and-fire model outputs a discrete spike at a specific time. (Other artificial networks can process time-dependent inputs.)</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO5">
+            <p class="quiz__question">Under a common STDP rule, neuron A fires a few milliseconds before neuron B, which it connects to. What happens to the A-to-B connection?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Right: presynaptic just before postsynaptic strengthens.">It strengthens</li>
+              <li data-why="Weakening is for the reverse order: A firing just after B.">It weakens</li>
+              <li data-why="STDP is about timing, not rate; the order and interval are what count.">It stays the same, because only firing rate matters</li>
+              <li data-why="The change gets smaller as the interval gets longer, not bigger.">It strengthens more the longer A waits before B fires</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>The weight change depends on Δt = t<sub>post</sub> − t<sub>pre</sub> and its sign. Pre just before post strengthens; pre just after post weakens; longer intervals mean smaller changes. Actual plasticity depends on the circuit and conditions.</p></div>
+              </div>
+            </details>
+          </li>
+
+        </ol>
+      </div>
+    </section>
+
+    <!-- Explain it back -------------------------------------------------- -->
+    <section class="section section--tinted" id="explain" aria-labelledby="explain-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="explain-title">Explain it back</h2>
+          <p class="section__intro">Answer each prompt in your own words, out loud or on paper, before you open the model answer. Explaining is harder than recognizing, which is why it sticks.</p>
+        </div>
+        <div class="grid" style="--grid-min: 20rem">
+          <details class="reveal">
+            <summary class="reveal__summary">LO1 · A friend asks what the "wiggly line" from a brain electrode is. What do you tell them?</summary>
+            <div class="reveal__body">
+              <p>It's an extracellular recording: voltage measured outside cells. It mixes two things. Spikes are brief, sharp action potentials from individual nearby neurons. The LFP is a slower, smoother wave from the combined currents of many neurons, mostly synaptic. One is a single voice; the other is the volume of the room.</p>
+            </div>
+          </details>
+          <details class="reveal">
+            <summary class="reveal__summary">LO2 · Why could the timing of a spike matter, not just how many spikes there are?</summary>
+            <div class="reveal__body">
+              <p>A spike lasts about 1 ms, while slow cycles last tens to hundreds of ms, so many spikes fit in one cycle. Neurons can prefer a phase of the cycle. Two neurons with equal rates but different phases can contribute differently to the circuit, so in some circuits where a spike lands carries information.</p>
+            </div>
+          </details>
+          <details class="reveal">
+            <summary class="reveal__summary">LO3 · Explain, using breathing, how a slow body rhythm can shape a fast brain rhythm.</summary>
+            <div class="reveal__body">
+              <p>Airflow through the nose sends waves of sensory activity into the brain, which can align neurons with the breath. The strength of faster oscillations, like gamma, then rises and falls with the breathing phase: phase-amplitude coupling. Breathing modulates rhythms that already exist rather than creating them, and gives distant regions a shared reference to lock onto.</p>
+            </div>
+          </details>
+          <details class="reveal">
+            <summary class="reveal__summary">LO4 · Name one limitation of spike sorting and one of LFP analysis.</summary>
+            <div class="reveal__body">
+              <p>Spike sorting: rarely firing neurons get lost under busy neighbors, similar waveforms near the electrode get confused, and overlapping spikes match neither neuron, so datasets skew toward distinctive cells. LFP: it doesn't say which cells produced it, volume conduction brings in signal from beyond the tip, and amplitude depends on how sources are arranged, not just how active they are. A single spectrum also hides when rhythms happened, and slow sampling causes aliasing.</p>
+            </div>
+          </details>
+          <details class="reveal">
+            <summary class="reveal__summary">LO5 · How does a spiking network use time in a way a basic artificial network doesn't?</summary>
+            <div class="reveal__body">
+              <p>A basic artificial unit outputs a number with no time in it. A spiking network sends timed pulses, and rules like STDP change connection strength based on the precise order and interval of spikes: pre just before post strengthens, just after weakens. Imam and Cleland's olfactory circuit on Intel's Loihi chip used this over gamma-frequency packets to learn odors quickly, despite interference.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sources ---------------------------------------------------------- -->
+    <section class="section" id="sources" aria-labelledby="sources-title">
+      <div class="container container--narrow">
+        <div class="prose">
+          <h2 id="sources-title">Sources</h2>
+          <p>Every slide, card and question on this page comes from the chapter "Neuronal activity: spikes and local field potentials" by Daniel Winter (subject matter expert), peer reviewed by Jacob Li and Ada Langford. The glossary definitions are the chapter's own. The chapter draws on:</p>
+          <ul>
+            <li>Buzsáki, G., Anastassiou, C. A., &amp; Koch, C. (2012). The origin of extracellular fields and currents: EEG, ECoG, LFP and spikes. <em>Nature Reviews Neuroscience, 13</em>(6), 407–420. <a href="https://doi.org/10.1038/nrn3241">doi.org/10.1038/nrn3241</a></li>
+            <li>Buzsáki, G., &amp; Draguhn, A. (2004). Neuronal oscillations in cortical networks. <em>Science, 304</em>(5679), 1926–1929. <a href="https://doi.org/10.1126/science.1099745">doi.org/10.1126/science.1099745</a></li>
+            <li>Einevoll, G. T., Kayser, C., Logothetis, N. K., &amp; Panzeri, S. (2013). Modelling and analysis of local field potentials for studying the function of cortical circuits. <em>Nature Reviews Neuroscience, 14</em>(11), 770–785. <a href="https://doi.org/10.1038/nrn3599">doi.org/10.1038/nrn3599</a></li>
+            <li>Herreras, O. (2016). Local field potentials: Myths and misunderstandings. <em>Frontiers in Neural Circuits, 10</em>, 101. <a href="https://doi.org/10.3389/fncir.2016.00101">doi.org/10.3389/fncir.2016.00101</a></li>
+            <li>Imam, N., &amp; Cleland, T. A. (2020). Rapid online learning and robust recall in a neuromorphic olfactory circuit. <em>Nature Machine Intelligence, 2</em>(3), 181–191. <a href="https://doi.org/10.1038/s42256-020-0159-4">doi.org/10.1038/s42256-020-0159-4</a></li>
+            <li>Kay, L. M. (2014). Circuit oscillations in odor perception and memory. In E. Barkai &amp; D. A. Wilson (Eds.), <em>Progress in brain research: Odor memory and perception</em> (Vol. 208, pp. 223–251). Elsevier. <a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7">doi.org/10.1016/B978-0-444-63350-7.00009-7</a></li>
+            <li>Pesaran, B., Vinck, M., Einevoll, G. T., Sirota, A., Fries, P., Siegel, M., Truccolo, W., Schroeder, C. E., &amp; Srinivasan, R. (2018). Investigating large-scale brain dynamics using field potential recordings: Analysis and interpretation. <em>Nature Neuroscience, 21</em>(7), 903–919. <a href="https://doi.org/10.1038/s41593-018-0171-8">doi.org/10.1038/s41593-018-0171-8</a></li>
+            <li>Rey, H. G., Pedreira, C., &amp; Quian Quiroga, R. (2015). Past, present and future of spike sorting techniques. <em>Brain Research Bulletin, 119</em>, 106–117. <a href="https://doi.org/10.1016/j.brainresbull.2015.04.007">doi.org/10.1016/j.brainresbull.2015.04.007</a></li>
+            <li>Tort, A. B. L., Laplagne, D. A., Draguhn, A., &amp; González, J. (2025). Global coordination of brain activity by the breathing cycle. <em>Nature Reviews Neuroscience, 26</em>(6), 333–353. <a href="https://doi.org/10.1038/s41583-025-00920-7">doi.org/10.1038/s41583-025-00920-7</a></li>
+          </ul>
+          <p>Want to see a Fourier transform build a shape from circles? The chapter recommends <a href="https://www.jezzamon.com/fourier/">Jez Swanson's interactive introduction</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="ai-credit" aria-label="Use of generative AI">
+    <p class="container">Generative AI: Claude Opus 5.5 (Anthropic) built this page's code and the rhythm explorer, and drafted the slides, quiz questions, feedback and model answers from Daniel Winter's chapter. Claude (Anthropic) wrote the matplotlib plotting code for Figures A1 to A7; Daniel Winter designed the figures. The glossary definitions are the chapter's own.</p>
+  </aside>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>

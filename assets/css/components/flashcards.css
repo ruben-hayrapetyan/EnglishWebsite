@@ -1,0 +1,188 @@
+/* ==========================================================================
+   Flashcards: key terms and definitions. Without JavaScript this is a plain
+   glossary. assets/js/study.js adds a card you flip, two self-rating buttons
+   and spaced practice: terms you miss come back sooner, and progress is
+   remembered in this browser.
+   <div class="flashcards" data-flashcards="chapter-id">
+     <dl class="flashcards__list">
+       <div class="flashcards__item">
+         <dt class="flashcards__term">Term</dt>
+         <dd class="flashcards__definition">Definition.</dd>
+       </div>
+     </dl>
+   </div>
+   ========================================================================== */
+
+.flashcards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+/* ---- The glossary (always present) -------------------------------------- */
+.flashcards__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: var(--space-s) var(--space-l);
+}
+
+.flashcards__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding-top: var(--space-s);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.flashcards__term {
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+}
+
+.flashcards__definition {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+/* ---- The practice app (added by JavaScript) ------------------------------ */
+.flashcards__app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  max-width: 44rem;
+}
+
+.flashcards__status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2xs) var(--space-m);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Three-part meter: known, getting there, new. */
+.flashcards__meter {
+  display: flex;
+  height: var(--space-2xs);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.flashcards__meter-known {
+  width: calc(var(--known, 0) * 100%);
+  background: var(--color-accent);
+  transition: width var(--duration-base) var(--ease-out);
+}
+
+.flashcards__meter-learning {
+  width: calc(var(--learning, 0) * 100%);
+  background: var(--color-border-strong);
+  transition: width var(--duration-base) var(--ease-out);
+}
+
+.flashcards__card {
+  display: grid;
+  min-height: 17rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  perspective: 80rem;
+}
+
+.flashcards__card:focus-visible {
+  border-radius: var(--radius-m);
+}
+
+.flashcards__face {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-m);
+  padding: var(--space-l) var(--space-m);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-m);
+  backface-visibility: hidden;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+@media (min-width: 40rem) {
+  .flashcards__face {
+    padding: var(--space-xl);
+  }
+}
+
+.flashcards__face--back {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  transform: rotateY(180deg);
+}
+
+.flashcards__card[data-flipped] .flashcards__face--front {
+  transform: rotateY(-180deg);
+}
+
+.flashcards__card[data-flipped] .flashcards__face--back {
+  transform: rotateY(0);
+}
+
+.flashcards__label {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.flashcards__prompt {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+/* Definitions are longer, so they use the reading face. */
+.flashcards__prompt--text {
+  font-family: var(--font-body);
+  font-size: var(--step-1);
+  line-height: var(--leading-snug);
+  text-wrap: pretty;
+}
+
+.flashcards__hint {
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+.flashcards__done {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-s);
+  min-height: 17rem;
+  padding: var(--space-xl) var(--space-m);
+  border: var(--border-width) dashed var(--color-border-strong);
+  border-radius: var(--radius-m);
+}
+
+.flashcards__done-title {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: var(--leading-snug);
+}
+
+/* Class display rules would otherwise override the hidden attribute. */
+.flashcards__app [hidden] {
+  display: none;
+}
