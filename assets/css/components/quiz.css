@@ -1,0 +1,387 @@
+/* ==========================================================================
+   Quiz: practice questions with explained answers. Without JavaScript it is
+   a numbered list with each answer in a .reveal. assets/js/study.js turns it
+   into one question at a time with a confidence rating, feedback on the
+   option you picked, and a score by learning objective at the end.
+
+   Multiple choice (mark the right option with data-correct; data-why says
+   why an option is right or wrong):
+   <ol class="quiz" data-quiz="chapter-id">
+     <li class="quiz__item" data-objective="LO1">
+       <p class="quiz__question">Question?</p>
+       <ol class="quiz__options" type="A">
+         <li data-correct data-why="Why this is right.">Option</li>
+         <li data-why="Why this is wrong.">Option</li>
+       </ol>
+       <details class="reveal">
+         <summary class="reveal__summary">Show the answer</summary>
+         <div class="reveal__body">
+           <p class="quiz__key">Answer: A</p>
+           <div class="quiz__explanation"><p>Explanation.</p></div>
+         </div>
+       </details>
+     </li>
+   </ol>
+
+   Number answer: leave out .quiz__options and add
+   data-answer="25" data-tolerance="0.5" data-unit="ms" to the .quiz__item.
+   ========================================================================== */
+
+/* ---- Plain list (always present until JavaScript takes over) ------------ */
+.quiz {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  padding-left: 1.4em;
+}
+
+.quiz__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-width: var(--measure);
+}
+
+.quiz__item::marker {
+  font-weight: var(--weight-bold);
+  color: var(--color-text-muted);
+}
+
+.quiz__question {
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+
+.quiz__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding-left: 1.6em;
+}
+
+.quiz__key {
+  font-weight: var(--weight-bold);
+}
+
+.quiz__explanation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+/* ---- The practice app (added by JavaScript) ------------------------------ */
+.quiz__app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  max-width: 46rem;
+  padding: var(--space-l) var(--space-m);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-s);
+}
+
+@media (min-width: 40rem) {
+  .quiz__app {
+    padding: var(--space-xl);
+  }
+}
+
+.quiz__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2xs);
+}
+
+.quiz__count {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.quiz__progress {
+  height: var(--space-3xs);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.quiz__progress-fill {
+  height: 100%;
+  width: calc(var(--progress, 0) * 100%);
+  border-radius: inherit;
+  background: var(--color-accent);
+  transition: width var(--duration-base) var(--ease-out);
+}
+
+.quiz__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.quiz__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.quiz__prompt {
+  margin-bottom: var(--space-xs);
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: var(--leading-snug);
+  text-wrap: balance;
+}
+
+/* An answer row: the whole row is the click target. */
+.quiz__option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-s);
+  padding: var(--space-xs) var(--space-s);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  line-height: var(--leading-snug);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) linear,
+    background-color var(--duration-fast) linear;
+}
+
+.quiz__option:hover {
+  border-color: var(--color-border-strong);
+}
+
+.quiz__option:not([data-result]):has(input:checked) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.quiz__option:has(input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.quiz__option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.quiz__letter {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.quiz__option:not([data-result]):has(input:checked) .quiz__letter {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.quiz__option-text {
+  padding-top: var(--space-3xs);
+}
+
+/* After checking: the right answer and a wrong pick are marked. */
+.quiz__option[data-result] {
+  cursor: default;
+}
+
+.quiz__option[data-result="correct"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.quiz__option[data-result="correct"] .quiz__letter {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.quiz__option[data-result="incorrect"] {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.quiz__option[data-result="incorrect"] .quiz__letter {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: var(--color-on-accent);
+}
+
+.quiz__option[data-result="dimmed"] {
+  opacity: 0.6;
+}
+
+/* Confidence: a three-way segmented control. */
+.quiz__confidence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-s);
+  padding: 0;
+  border: 0;
+}
+
+.quiz__confidence-label {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+}
+
+.quiz__segments {
+  display: inline-flex;
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.quiz__segment {
+  position: relative;
+  padding: var(--space-3xs) var(--space-s);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) linear,
+    color var(--duration-fast) linear;
+}
+
+.quiz__segment + .quiz__segment {
+  border-left: var(--border-width) solid var(--color-border-strong);
+}
+
+.quiz__segment:has(input:checked) {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.quiz__segment:has(input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: calc(-1 * var(--focus-offset));
+}
+
+.quiz__segment input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.quiz__number {
+  max-width: 14rem;
+}
+
+/* Feedback after checking an answer. */
+.quiz__feedback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-m);
+  border-left: var(--border-width-thick) solid var(--color-accent);
+  border-radius: var(--radius-s) var(--radius-m) var(--radius-m) var(--radius-s);
+  background: var(--color-accent-soft);
+}
+
+.quiz__feedback--incorrect {
+  border-left-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.quiz__feedback:focus {
+  outline: none;
+}
+
+.quiz__feedback-title {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: var(--leading-snug);
+}
+
+.quiz__nudge {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+}
+
+/* ---- Results --------------------------------------------------------- */
+.quiz__score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  font-family: var(--font-display);
+  font-size: var(--step-5);
+  line-height: var(--leading-tight);
+}
+
+.quiz__score-total {
+  font-size: var(--step-2);
+  color: var(--color-text-muted);
+}
+
+.quiz__breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  padding: 0;
+  list-style: none;
+}
+
+.quiz__objective {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-3xs) var(--space-s);
+  font-size: var(--step--1);
+  line-height: var(--leading-snug);
+}
+
+.quiz__objective-score {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.quiz__bar {
+  grid-column: 1 / -1;
+  height: var(--space-2xs);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.quiz__bar-fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--value, 0) * 100%);
+  border-radius: inherit;
+  background: var(--color-accent);
+}
+
+.quiz__bar-fill[data-low] {
+  background: var(--color-danger);
+}
+
+/* Class display rules would otherwise override the hidden attribute. */
+.quiz[hidden],
+.quiz__app [hidden] {
+  display: none;
+}

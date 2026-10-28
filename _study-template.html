@@ -1,0 +1,223 @@
+<!doctype html>
+<!--
+  STUDY KIT TEMPLATE. One kit per textbook chapter. Not a real page.
+  Read STUDY-MATERIALS.md first; study-neuronal-activity.html is the finished example.
+
+    1. Copy this file to study-<chapter-id>.html (lowercase, hyphenated, e.g. study-chronotypes.html).
+    2. Replace every CHAPTER-ID below with the same <chapter-id>. It keys each reader's saved progress.
+    3. Fill in the five parts: objectives, slides, key terms, quiz, explain-it-back. Delete any
+       example you don't need, and copy the examples to add more.
+    4. Put figures in assets/img/<chapter-id>-<name>.png and give every one alt text and a caption.
+    5. On study.html, link your chapter's card and swap its tag to "Ready".
+    6. Fill in the AI credit at the bottom.
+
+  Write plain HTML only. assets/js/study.js makes the slides, flashcards and quiz interactive;
+  you never edit it. Everything must still read well with JavaScript off.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chapter name study kit · English Website</title>
+  <meta name="description" content="Slides, flashcards and a practice quiz for the chapter on TOPIC.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <!-- Optional page-only styles: <link rel="stylesheet" href="assets/css/pages/study-CHAPTER-ID.css"> -->
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/study.js" defer></script>
+  <!-- Optional page-only script, e.g. an interactive demo: <script src="assets/js/study-CHAPTER-ID.js" defer></script> -->
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+    <div class="container">
+      <header class="page-header">
+        <p class="page-header__meta"><a href="study.html">Study materials</a> · UNIT NAME</p>
+        <h1 class="page-header__title">Chapter title with <mark class="highlight--draw">key words</mark></h1>
+        <p class="page-header__lede">One or two sentences on what the chapter covers.</p>
+        <div class="page-header__actions cluster">
+          <a class="button" href="#slides">Start the slides</a>
+          <a class="button button--secondary" href="#flashcards">Practice key terms</a>
+          <a class="button button--secondary" href="#quiz">Take the quiz</a>
+        </div>
+        <p class="cluster" style="--cluster-space: var(--space-2xs)">
+          <span class="tag tag--accent">Chapter by AUTHOR NAME</span>
+          <span class="tag">N slides</span>
+          <span class="tag">N terms</span>
+          <span class="tag">N questions</span>
+        </p>
+      </header>
+    </div>
+
+    <!-- 1. Objectives. Copy your chapter's learning objectives exactly.
+         data-objective codes must match the data-objective on quiz questions. -->
+    <section class="section" aria-labelledby="objectives-title">
+      <div class="container split">
+        <div class="stack">
+          <h2 id="objectives-title">What you'll be able to do</h2>
+          <div class="prose">
+            <ol data-objectives>
+              <li data-objective="LO1"><strong>LO1 (Remember):</strong> Objective text.</li>
+              <li data-objective="LO2"><strong>LO2 (Understand):</strong> Objective text.</li>
+            </ol>
+          </div>
+        </div>
+        <aside class="callout callout--accent">
+          <p class="callout__title">How to use this page</p>
+          <div class="prose"><ol>
+            <li>Skim the slides for the big picture.</li>
+            <li>Drill the key terms until most are "known".</li>
+            <li>Take the quiz without looking back, and rate how sure you are.</li>
+            <li>Write out the explain-it-back prompts before opening the model answers.</li>
+            <li>Come back in two or three days and run the quiz again.</li>
+          </ol></div>
+          <p>Testing yourself and spacing out sessions beat rereading. <a href="study.html#method">Why this works</a></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 2. Slides. One idea per slide, 10 to 20 slides, in chapter order.
+         Each slide needs a unique id on its h3 (slide-1, slide-2...). -->
+    <section class="section section--tinted" id="slides" aria-labelledby="slides-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="slides-title">The chapter in N slides</h2>
+          <p class="section__intro">Each slide is one idea from the chapter, in order.</p>
+        </div>
+        <div class="deck" data-deck="CHAPTER-ID" aria-label="CHAPTER NAME slides">
+          <div class="deck__stage">
+
+            <!-- Text-only slide -->
+            <section class="deck__slide" aria-labelledby="slide-1">
+              <div class="deck__content">
+                <p class="deck__kicker">1 · Chapter section name</p>
+                <h3 class="deck__title" id="slide-1">Slide title</h3>
+                <ul class="deck__points">
+                  <li>Three to five short points.</li>
+                  <li>Use <strong>bold</strong> for the term being introduced.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Slide with a figure: it sits beside the text on wide screens -->
+            <section class="deck__slide" aria-labelledby="slide-2">
+              <div class="deck__content">
+                <p class="deck__kicker">1 · Chapter section name</p>
+                <h3 class="deck__title" id="slide-2">Slide title</h3>
+                <ul class="deck__points">
+                  <li>Point that the figure illustrates.</li>
+                </ul>
+              </div>
+              <figure class="deck__figure">
+                <img src="assets/img/CHAPTER-ID-figure-name.png" width="1400" height="900" loading="lazy" alt="Describe what the figure shows and what it means, not just its title.">
+                <figcaption>Figure 1. Source or credit. Say here if any generative AI helped make it.</figcaption>
+              </figure>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Key terms. Use your chapter's glossary, one item per term. -->
+    <section class="section" id="flashcards" aria-labelledby="flashcards-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="flashcards-title">Key terms</h2>
+          <p class="section__intro">Try to recall each answer before you flip. Terms you mark "Still learning" come back sooner, and your progress stays in this browser.</p>
+        </div>
+        <div class="flashcards" data-flashcards="CHAPTER-ID">
+          <dl class="flashcards__list">
+            <div class="flashcards__item"><dt class="flashcards__term">Term</dt><dd class="flashcards__definition">Definition from the glossary.</dd></div>
+            <div class="flashcards__item"><dt class="flashcards__term">Term</dt><dd class="flashcards__definition">Definition from the glossary.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Quiz. 10 to 20 questions; every objective gets at least two.
+         Multiple choice: mark the right option with data-correct. Give every option a data-why
+         that says why it is right or wrong (this is the feedback readers see).
+         Number answer: no options list; add data-answer, data-tolerance and data-unit. -->
+    <section class="section section--tinted" id="quiz" aria-labelledby="quiz-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="quiz-title">Check yourself</h2>
+          <p class="section__intro">Answer without looking back, say how sure you are, and read every explanation, including the ones you get right.</p>
+        </div>
+        <ol class="quiz" data-quiz="CHAPTER-ID">
+
+          <li class="quiz__item" data-objective="LO1">
+            <p class="quiz__question">Multiple-choice question?</p>
+            <ol class="quiz__options" type="A">
+              <li data-correct data-why="Why this is right.">Correct option</li>
+              <li data-why="Why this is wrong, naming the misconception.">Plausible wrong option</li>
+              <li data-why="Why this is wrong.">Plausible wrong option</li>
+              <li data-why="Why this is wrong.">Plausible wrong option</li>
+            </ol>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: A</p>
+                <div class="quiz__explanation"><p>The explanation, tied back to the chapter.</p></div>
+              </div>
+            </details>
+          </li>
+
+          <li class="quiz__item" data-objective="LO2" data-answer="25" data-tolerance="0.5" data-unit="ms">
+            <p class="quiz__question">A question with a number answer?</p>
+            <details class="reveal">
+              <summary class="reveal__summary">Show the answer</summary>
+              <div class="reveal__body">
+                <p class="quiz__key">Answer: 25 ms</p>
+                <div class="quiz__explanation"><p>Show the working.</p></div>
+              </div>
+            </details>
+          </li>
+
+        </ol>
+      </div>
+    </section>
+
+    <!-- 5. Explain it back. One prompt per objective; the model answer stays closed until opened. -->
+    <section class="section" id="explain" aria-labelledby="explain-title">
+      <div class="container">
+        <div class="section__header">
+          <h2 id="explain-title">Explain it back</h2>
+          <p class="section__intro">Answer each prompt in your own words, out loud or on paper, before you open the model answer.</p>
+        </div>
+        <div class="grid" style="--grid-min: 20rem">
+          <details class="reveal">
+            <summary class="reveal__summary">LO1 · An open question that needs a few sentences to answer.</summary>
+            <div class="reveal__body">
+              <p>A model answer, written the way a strong student would say it.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Sources: the chapter's own reference list. -->
+    <section class="section section--tinted" id="sources" aria-labelledby="sources-title">
+      <div class="container container--narrow">
+        <div class="prose">
+          <h2 id="sources-title">Sources</h2>
+          <p>Every slide, card and question on this page comes from the chapter "CHAPTER NAME" by AUTHOR NAME. The chapter draws on:</p>
+          <ul>
+            <li>Author, A. (Year). Title. <em>Journal</em>. <a href="https://doi.org/">doi.org/...</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Required: credit every generative AI tool used on this page (see AGENTS.md). -->
+  <aside class="ai-credit" aria-label="Use of generative AI">
+    <p class="container">Generative AI: Tool name and version (Maker) did what, for example "drafted the quiz questions from the chapter".</p>
+  </aside>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>

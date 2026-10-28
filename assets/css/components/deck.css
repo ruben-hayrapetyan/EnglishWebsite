@@ -1,0 +1,206 @@
+/* ==========================================================================
+   Deck: a slideshow. Without JavaScript the slides are a readable stack.
+   assets/js/study.js turns it into one slide at a time with buttons, arrow
+   keys, swipe, a progress bar and full screen.
+   <div class="deck" data-deck="chapter-id" aria-label="Chapter slides">
+     <div class="deck__stage">
+       <section class="deck__slide" aria-labelledby="s1">
+         <div class="deck__content">
+           <p class="deck__kicker">Part 1 · What is being measured</p>
+           <h3 class="deck__title" id="s1">Slide title</h3>
+           <ul class="deck__points"><li>One idea per line.</li></ul>
+         </div>
+         <figure class="deck__figure">            (optional)
+           <img src="..." alt="...">
+           <figcaption>Source</figcaption>
+         </figure>
+       </section>
+     </div>
+   </div>
+   ========================================================================== */
+
+.deck {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.deck__stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.deck__slide {
+  display: grid;
+  gap: var(--space-l);
+  align-content: start;
+  padding: var(--space-l) var(--space-m);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-s);
+}
+
+@media (min-width: 40rem) {
+  .deck__slide {
+    padding: var(--space-xl);
+  }
+}
+
+/* Slides with a figure put it beside the text on wide screens. */
+@media (min-width: 52rem) {
+  .deck__slide:has(.deck__figure) {
+    grid-template-columns: 5fr 6fr;
+    align-items: center;
+  }
+}
+
+.deck__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  min-width: 0;
+}
+
+.deck__kicker {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.deck__title {
+  font-size: var(--step-3);
+  line-height: var(--leading-tight);
+}
+
+.deck__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  max-width: var(--measure);
+  padding-left: 1.2em;
+}
+
+.deck__points li::marker {
+  color: var(--color-accent);
+}
+
+.deck__figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+/* Figures are drawn on white, so they sit on a white plate in both themes. */
+.deck__figure img {
+  width: 100%;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.deck__figure figcaption {
+  font-size: var(--step--1);
+  line-height: var(--leading-snug);
+  color: var(--color-text-muted);
+}
+
+/* ---- Enhanced: one slide at a time --------------------------------------
+   Narrow screens: only the current slide is shown, so the stage fits it and
+   the controls stay close. Wide screens: all slides share one grid cell, so
+   the stage is as tall as the tallest slide and the controls never jump. */
+.deck[data-enhanced] .deck__stage:focus-visible {
+  border-radius: var(--radius-m);
+}
+
+.deck[data-enhanced] .deck__slide:not([data-current]) {
+  display: none;
+}
+
+@media (min-width: 52rem) {
+  .deck[data-enhanced] .deck__stage {
+    display: grid;
+  }
+
+  .deck[data-enhanced] .deck__slide,
+  .deck[data-enhanced] .deck__slide:not([data-current]) {
+    display: grid;
+    grid-area: 1 / 1;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(var(--space-s));
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-out),
+      visibility 0s linear var(--duration-base);
+  }
+
+  .deck[data-enhanced] .deck__slide[data-current] {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-out);
+  }
+
+  .deck[data-enhanced] .deck__slide[data-before] {
+    transform: translateX(calc(-1 * var(--space-s)));
+  }
+}
+
+.deck__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.deck__counter {
+  min-width: 4.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.deck__progress {
+  flex: 1 1 8rem;
+  height: var(--space-3xs);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.deck__progress-fill {
+  height: 100%;
+  width: calc(var(--progress, 0) * 100%);
+  border-radius: inherit;
+  background: var(--color-accent);
+  transition: width var(--duration-base) var(--ease-out);
+}
+
+.deck__hint {
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+/* ---- Full screen ------------------------------------------------------- */
+.deck:fullscreen {
+  justify-content: center;
+  padding: var(--space-xl) var(--gutter);
+  background: var(--color-bg);
+  overflow-y: auto;
+}
+
+.deck:fullscreen .deck__stage,
+.deck:fullscreen .deck__controls {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
