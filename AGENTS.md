@@ -11,6 +11,7 @@ This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. Ther
 1. `README.md`, the design system: colors, type, spacing, layout, components and voice.
 2. `assets/css/tokens.css`, the actual values. **If the docs and `tokens.css` disagree, `tokens.css` wins.** Fix the docs in the same change.
 3. `styleguide.html` in a browser, to see every component you can use.
+4. `ACCESSIBILITY.md`, which explains how to keep your page working with the reader settings on `settings.html` (text size, fonts, themes, read-aloud). **Every page must follow it.**
 
 ## The rules
 
@@ -24,24 +25,27 @@ This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. Ther
 - **Never style IDs or bare elements** outside `base.css`. Never use `!important` (the only exception is `.visually-hidden` and reduced-motion in `base.css`).
 - **No inline `style` attributes,** except to set a layout custom property such as `style="--grid-min: 14rem"` or `style="--stack-space: var(--space-l)"`.
 - **Breakpoints are `40rem` and `52rem` only,** written as `min-width` media queries where possible.
-- **Both themes, always.** Tokens handle dark mode, so if you only use tokens you get it for free. Never write `prefers-color-scheme` or `[data-theme]` rules outside `tokens.css`.
+- **Every theme, always.** Tokens handle dark, sepia, high-contrast and custom themes, so if you only use tokens you get them for free. Never write `prefers-color-scheme`, `[data-theme]` or other reader-preference rules outside `tokens.css` (and `base.css` for motion).
+- **Let text grow.** Readers can set text to 200% with extra-wide spacing. Never put a fixed `height` on a box that holds text, never truncate text, and size things around text in tokens or `rem`. See `ACCESSIBILITY.md`.
 - **The highlighter (`<mark>`) is the signature.** Use it on at most one phrase per screen, usually the key words of the `h1`. Don't use `--color-mark` for anything else.
 - **No CSS frameworks or utility libraries** (Tailwind, Bootstrap and so on), and no icon fonts. If icons become necessary, they're a design change.
 
 ### HTML
 
-- Start every page from `_template.html`. Keep the `<head>`, skip link, `data-site-header`, `.ai-credit` and `data-site-footer` exactly as they are, apart from filling in the credit text.
+- Start every page from `_template.html`. Keep the `<head>` (including the `a11y.js` script, which must stay before the stylesheet and without `defer`), skip link, `data-site-header`, `.ai-credit` and `data-site-footer` exactly as they are, apart from filling in the credit text.
 - Use exactly one `h1` per page, and keep heading levels in order with no skips.
 - Use semantic elements: `main`, `section` (with `aria-labelledby` pointing at its heading), `article`, `nav`, `aside`, `header`, `footer`.
 - Every image needs `alt` text. Use `alt=""` if it's purely decorative.
 - Every form control needs a visible `<label>`. Use the `.field` pattern from `form.css`.
 - Links go to places and buttons do things. Don't make a `<div>` clickable.
 - Use relative paths (`about.html`, `assets/...`). All pages live flat at the repo root.
+- Mark the text that read-aloud should read with `data-read-aloud`, and wrap answers or anything that shouldn't be read in `data-read-aloud-skip`. See `ACCESSIBILITY.md`.
 
 ### JavaScript
 
-- Vanilla JS only, loaded with `<script defer>`. No frameworks and no CDN libraries without a design change.
+- Vanilla JS only, loaded with `<script defer>`. No frameworks and no CDN libraries without a design change. The one exception is `assets/js/a11y.js`, which loads without `defer` in `<head>`.
 - `assets/js/site.js` is shared. Only touch it to add or remove a nav or footer link (one line each).
+- `assets/js/a11y.js` and `assets/js/notes.js` are shared and apply the reader's settings and notes. Never edit them outside a `design/*` branch, and never load `notes.js` yourself (`a11y.js` does). Page scripts may read it through `window.A11y`, and must check `A11y.reducedMotion()` before animating anything from JavaScript.
 - Page-specific behavior goes in `assets/js/<page-name>.js`, loaded only by that page.
 - Page content must stay readable with JavaScript off. JS can enhance a page but must never be the only way to see its content. The shared header and footer are the one exception.
 
@@ -76,9 +80,10 @@ Every page must end with a small credit naming any generative AI used to make it
 | `styleguide.html` | ➕ Add a demo for a new component | Don't change existing demos |
 | `assets/img/` | ✅ Yes | Optimize images, use lowercase-hyphenated names |
 | `tokens.css`, `base.css`, `layout.css`, existing components | ❌ No | Only in a `design/*` branch |
-| `_template.html`, `README.md`, `AGENTS.md` | ❌ No | Only in a `design/*` branch |
+| `assets/js/a11y.js`, `assets/js/notes.js`, `settings.html` and its files, `assets/fonts/` | ❌ No | Only in a `design/*` branch |
+| `_template.html`, `README.md`, `AGENTS.md`, `ACCESSIBILITY.md` | ❌ No | Only in a `design/*` branch |
 
-**Shared files** (the ❌ row) define the look of every page. Change them only in a dedicated `design/<what>` branch that does nothing else. That branch must update `README.md`, `AGENTS.md` (if the rules change) and `styleguide.html` in the same change.
+**Shared files** (the ❌ rows) define the look of every page. Change them only in a dedicated `design/<what>` branch that does nothing else. That branch must update `README.md`, `AGENTS.md` (if the rules change), `ACCESSIBILITY.md` (if reader settings change) and `styleguide.html` in the same change.
 
 ## How to
 
@@ -119,7 +124,8 @@ Every page must end with a small credit naming any generative AI used to make it
 - [ ] You'll leave the pull request open for the repo owner to merge.
 
 - [ ] No raw values: `grep -nE '#[0-9a-fA-F]{3,8}\b|[0-9]px|rgb\(' <your css files>` finds nothing. (The only allowed exceptions in the whole repo are `tokens.css` and the `1px` clip in `.visually-hidden`.)
-- [ ] Looks right in light **and** dark (add `?theme=dark` to the URL).
+- [ ] Looks right in light **and** dark (add `?theme=dark` to the URL), and in high contrast dark and sepia (pick them on `settings.html`).
+- [ ] Passes the reader-settings test in `ACCESSIBILITY.md`: 200% text with OpenDyslexic and extra-wide spacing at 390px wide, reduced motion, and read-aloud reading your content in order.
 - [ ] Looks right at 390px wide and at 1440px wide, with no horizontal scroll.
 - [ ] Every interactive element can be reached with Tab and shows a focus ring.
 - [ ] One `h1`, headings in order, every image has `alt`, every input has a label.

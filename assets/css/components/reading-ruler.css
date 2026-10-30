@@ -1,0 +1,19 @@
+/* ==========================================================================
+   Reading ruler: a tinted band across the screen that follows the pointer
+   (or keyboard focus) to help readers keep their place in a line.
+   assets/js/a11y.js adds it when a reader turns on "Reading ruler" in
+   settings.html, and moves it by setting --ruler-y. Never write it by hand.
+   <div class="reading-ruler" aria-hidden="true"></div>
+   ========================================================================== */
+
+.reading-ruler {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: var(--z-overlay);
+  height: calc(var(--step-0) * var(--leading-body) * 1.6);
+  border-block: var(--border-width-thick) solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent-soft) 45%, transparent);
+  pointer-events: none;
+  transform: translateY(calc(var(--ruler-y, -100vh) - 50%));
+}

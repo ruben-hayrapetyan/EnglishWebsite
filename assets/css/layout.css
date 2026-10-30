@@ -38,20 +38,22 @@
   gap: var(--grid-space, var(--space-m));
 }
 
-/* Two columns on wide screens, stacked on narrow ones. */
+/* Two columns on wide screens, stacked on narrow ones.
+   minmax(0, ...) lets columns shrink below their longest word. */
 .split {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-xl);
   align-items: start;
 }
 
 @media (min-width: 52rem) {
   .split {
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   }
 
   .split--even {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
