@@ -1,0 +1,204 @@
+/* ==========================================================================
+   Styles used only by settings.html: the preview column, choice tiles,
+   theme swatches and sliders. Tokens only.
+   Samples use the fixed --family-* and --weight-* tokens, so each choice
+   keeps showing its own font or weight whatever the reader has picked.
+   ========================================================================== */
+
+/* .button and .callout set display, which would beat the hidden attribute. */
+.settings [hidden] {
+  display: none;
+}
+
+/* ---- Layout: controls on the left, sticky preview on the right ---------- */
+@media (min-width: 52rem) {
+  .settings__form {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .settings__preview {
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-s));
+    max-height: calc(100vh - var(--header-height) - var(--space-l));
+    overflow-y: auto;
+    padding: var(--focus-offset);
+  }
+}
+
+.settings__note {
+  font-size: var(--step--1);
+  line-height: var(--leading-snug);
+  color: var(--color-text-muted);
+}
+
+.settings__controls,
+.settings__group {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.settings__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.settings__group > legend {
+  padding: 0 0 var(--space-xs);
+}
+
+.settings__section {
+  padding-top: var(--space-l);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+/* ---- Choice tile: a radio button with a sample and a label ------------- */
+.settings-choice {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-s);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) linear;
+}
+
+.settings-choice:hover {
+  border-color: var(--color-text-muted);
+}
+
+.settings-choice:has(:checked) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  box-shadow: inset 0 0 0 var(--border-width) var(--color-accent);
+}
+
+.settings-choice:has(:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.settings-choice__input {
+  width: var(--space-s);
+  height: var(--space-s);
+  margin-top: var(--space-3xs);
+  accent-color: var(--color-accent);
+}
+
+.settings-choice__input:focus-visible {
+  outline: none;
+}
+
+.settings-choice__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+}
+
+.settings-choice__sample {
+  font-size: var(--step-2);
+  line-height: var(--leading-snug);
+  overflow-wrap: anywhere;
+}
+
+.settings-choice__label {
+  font-size: var(--step--1);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+}
+
+.settings-choice__hint {
+  font-size: var(--step--1);
+  line-height: var(--leading-snug);
+  color: var(--color-text-muted);
+}
+
+.settings-font--young-serif { font-family: var(--family-young-serif); }
+.settings-font--atkinson { font-family: var(--family-atkinson); }
+.settings-font--opendyslexic { font-family: var(--family-opendyslexic); }
+.settings-font--lexend { font-family: var(--family-lexend); }
+.settings-font--georgia { font-family: var(--family-georgia); }
+.settings-font--system { font-family: var(--family-system); }
+.settings-font--mono { font-family: var(--family-atkinson-mono); }
+
+.settings-weight--regular { font-weight: var(--weight-regular); }
+.settings-weight--semibold { font-weight: var(--weight-semibold); }
+.settings-weight--bold { font-weight: var(--weight-heavy); }
+
+/* ---- Theme swatch: a tiny page drawn in another theme's tokens ---------- */
+.settings-swatch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2xs);
+  min-height: var(--space-2xl);
+  padding: var(--space-2xs) var(--space-xs);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-s);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--family-young-serif);
+  font-size: var(--step-1);
+  line-height: 1;
+}
+
+.settings-swatch__accent {
+  width: var(--space-l);
+  height: var(--space-2xs);
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+}
+
+.settings-swatch--split {
+  padding: 0;
+  overflow: hidden;
+}
+
+.settings-swatch__half {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ---- Sliders and color pickers ----------------------------------------- */
+.settings-range {
+  width: 100%;
+  min-height: var(--space-xl);
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.settings-range__label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.settings-range__value {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+.settings-color {
+  width: var(--space-3xl);
+  height: var(--space-xl);
+  padding: var(--space-3xs);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+  cursor: pointer;
+}

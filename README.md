@@ -22,6 +22,7 @@ EnglishWebsite/
 ├── index.html              Home page
 ├── about.html              Example reading page (prose layout)
 ├── styleguide.html         Live reference of every token and component
+├── settings.html           Reader settings: text size, fonts, themes, read-aloud
 ├── _template.html          Copy this to start a new page (not a real page)
 ├── assets/
 │   ├── css/
@@ -32,11 +33,16 @@ EnglishWebsite/
 │   │   ├── components/     One file per component
 │   │   └── pages/          Optional page-only styles, one file per page
 │   ├── js/
+│   │   ├── a11y.js         Applies reader settings on every page; read-aloud and ruler
+│   │   ├── notes.js        Highlights and notes (loaded by a11y.js)
 │   │   ├── site.js         Renders the shared header and footer; holds the nav list
+│   │   ├── settings.js     Binds the settings form to a11y.js
 │   │   └── styleguide.js   Prints live token values on the style guide
+│   ├── fonts/              Self-hosted OpenDyslexic (SIL Open Font License)
 │   └── img/                Images and the favicon
 ├── README.md               This file: the design system
-└── AGENTS.md               Rules for anyone (human or agent) changing the site
+├── AGENTS.md               Rules for anyone (human or agent) changing the site
+└── ACCESSIBILITY.md        How to keep a page working with the reader settings
 ```
 
 ---
@@ -73,6 +79,8 @@ All colors are CSS custom properties in `assets/css/tokens.css`. Dark mode swaps
 
 Each text color meets WCAG AA contrast on every background it's used on.
 
+**Reader themes.** Readers can also choose Sepia, High contrast light, High contrast dark or their own three colors on `settings.html`. Each theme redefines the full set of color tokens in `tokens.css` (under "Reader preferences"), so components never need theme rules. Custom themes mix the other tokens from the reader's background, text and accent colors with `color-mix()`.
+
 ### Typography
 
 | Role | Typeface | Where |
@@ -82,6 +90,8 @@ Each text color meets WCAG AA contrast on every background it's used on.
 | Utility | **Atkinson Hyperlegible Mono** (400, 600) | Small uppercase labels, tags, code |
 
 All three load from Google Fonts in `main.css`. The display face has a lot of personality, so it's used only for headings. Never set body text or buttons in it.
+
+**Reader fonts.** On `settings.html` readers can swap the role tokens (`--font-body`, `--font-display`) for OpenDyslexic (self-hosted in `assets/fonts/`), Lexend (Google Fonts), Georgia, their device's font or Atkinson Hyperlegible Mono. These download only when chosen. Raw families live in `--family-*` tokens; pages always use the `--font-*` role tokens. Readers can also change text size (`--text-scale`, 75–200%, which scales every `rem`), weight (`--weight-body`, `--weight-strong`), line spacing, letter and word spacing (`--tracking-body`, `--word-spacing`) and line length. See `ACCESSIBILITY.md`.
 
 **Type scale** (fluid: each step grows smoothly between phone and desktop widths):
 
@@ -166,6 +176,9 @@ All of these are shown live in `styleguide.html`.
 | Prose | `.prose` (styles plain HTML inside it) | `components/prose.css` |
 | Highlight | `mark`, `.highlight`, `.highlight--draw` | `components/highlight.css` |
 | AI credit | `.ai-credit` (required on every page, above the footer) | `components/ai-credit.css` |
+| Reader bar | `.reader-bar`, `__group`, `[data-read-aloud-current]` (added by `a11y.js`) | `components/reader-bar.css` |
+| Notes | `.notes-highlight`, `--active`, `.notes-menu`, `.notes-panel` and its elements (added by `notes.js`) | `components/notes.css` |
+| Reading ruler | `.reading-ruler` (added by `a11y.js`) | `components/reading-ruler.css` |
 | Header and footer | Rendered by `site.js` | `components/site-header.css`, `site-footer.css` |
 
 Layout primitives in `layout.css`: `.container`, `.container--narrow`, `.page-body`, `.section`, `.section--tinted`, `.section__header`, `.section__intro`, `.stack`, `.cluster`, `.grid`, `.split`, `.split--even`, `.visually-hidden`, `.skip-link`.

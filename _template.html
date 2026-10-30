@@ -5,7 +5,8 @@
     2. Add the page to SITE.nav in assets/js/site.js if it belongs in the menu.
     3. Pick a layout below and delete the one you don't use.
     4. Fill in the AI credit at the bottom of the page.
-  Read AGENTS.md before building. This file is not a real page.
+    5. Mark the text read-aloud should read with data-read-aloud (see ACCESSIBILITY.md).
+  Read AGENTS.md and ACCESSIBILITY.md before building. This file is not a real page.
 -->
 <html lang="en">
 <head>
@@ -14,6 +15,8 @@
   <title>Page name · English Website</title>
   <meta name="description" content="One sentence describing this page.">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <!-- Required, before the stylesheet and without defer: applies the reader's settings (see ACCESSIBILITY.md). -->
+  <script src="assets/js/a11y.js"></script>
   <link rel="stylesheet" href="assets/css/main.css">
   <!-- Optional page-only styles: <link rel="stylesheet" href="assets/css/pages/page-name.css"> -->
   <script src="assets/js/site.js" defer></script>
@@ -30,7 +33,7 @@
         <h1 class="page-header__title">Page title with <mark class="highlight--draw">key words</mark></h1>
         <p class="page-header__lede">One sentence that says what this page gives the reader.</p>
       </header>
-      <article class="prose">
+      <article class="prose" data-read-aloud>
         <p>Plain HTML goes here. Headings, lists, quotes and tables are styled automatically.</p>
       </article>
     </div>

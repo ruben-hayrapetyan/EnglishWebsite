@@ -4,6 +4,41 @@
    components/.
    ========================================================================== */
 
+/* ---- OpenDyslexic: a reader-selectable font (settings.html), self-hosted.
+   SIL Open Font License, see assets/fonts/opendyslexic-ofl.txt. Browsers
+   only download it when a reader picks it. */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("../fonts/opendyslexic-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("../fonts/opendyslexic-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("../fonts/opendyslexic-bold.woff2") format("woff2");
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("../fonts/opendyslexic-bold-italic.woff2") format("woff2");
+  font-weight: 600 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -15,6 +50,7 @@
 }
 
 html {
+  font-size: calc(var(--text-scale) * 100%);  /* "Text size" on settings.html */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: calc(var(--header-height) + var(--space-s));
@@ -29,7 +65,11 @@ body {
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--step-0);
+  font-weight: var(--weight-body);
   line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  word-spacing: var(--word-spacing);
+  overflow-wrap: break-word;  /* long words wrap instead of overflowing at large text sizes */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -61,7 +101,7 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: var(--weight-regular); /* Young Serif ships one weight */
+  font-weight: var(--weight-display);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
   text-wrap: balance;
@@ -93,7 +133,7 @@ figcaption {
 a {
   color: var(--color-accent);
   text-decoration-line: underline;
-  text-decoration-thickness: var(--border-width);
+  text-decoration-thickness: var(--underline-width);
   text-underline-offset: 0.22em;
   background-image: linear-gradient(var(--color-mark), var(--color-mark));
   background-repeat: no-repeat;
@@ -124,7 +164,7 @@ a:hover {
 /* ---- Inline text ------------------------------------------------------- */
 strong,
 b {
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-strong);
 }
 
 small {
@@ -184,7 +224,9 @@ th {
   border-bottom-color: var(--color-border-strong);
 }
 
-/* ---- Motion preference ------------------------------------------------- */
+/* ---- Motion preference -------------------------------------------------
+   From the OS setting, or from "Turn off animations" on settings.html.
+   Keep the two blocks identical. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -194,4 +236,13 @@ th {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+:root[data-motion="reduce"] *,
+:root[data-motion="reduce"] *::before,
+:root[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
