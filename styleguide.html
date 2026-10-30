@@ -6,6 +6,7 @@
   <title>Style guide · English Website</title>
   <meta name="description" content="The shared colors, type, spacing and components for this site.">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <script src="assets/js/a11y.js"></script>
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/pages/styleguide.css">
   <script src="assets/js/site.js" defer></script>
@@ -178,6 +179,23 @@
         <pre><code>&lt;aside class="ai-credit" aria-label="Use of generative AI"&gt;
   &lt;p class="container"&gt;Generative AI: Claude Opus 5.5 (Anthropic) wrote this page's code and drafted its text.&lt;/p&gt;
 &lt;/aside&gt;</code></pre>
+      </section>
+
+      <!-- Reader settings ------------------------------------------------- -->
+      <section class="sg-block" aria-labelledby="sg-reader">
+        <h2 id="sg-reader">Reader settings</h2>
+        <p class="sg-block__note">Readers change text size, font, spacing and theme on <a href="settings.html">the settings page</a>. Those choices only change tokens, so every component here follows them. The reader bar, reading ruler and notes appear only when a reader uses them, and scripts add them, so never write them by hand. See <code>ACCESSIBILITY.md</code>.</p>
+        <div class="grid" style="--grid-min: 14rem">
+          <div class="swatch"><span class="swatch__chip" data-theme-preview="sepia" style="--swatch: var(--color-bg)"></span><span class="swatch__name">sepia</span><span class="swatch__value">data-theme="sepia"</span><span class="swatch__use">Warm, low glare</span></div>
+          <div class="swatch"><span class="swatch__chip" data-theme-preview="contrast-light" style="--swatch: var(--color-accent)"></span><span class="swatch__name">contrast-light</span><span class="swatch__value">data-theme="contrast-light"</span><span class="swatch__use">Black on white, blue accent</span></div>
+          <div class="swatch"><span class="swatch__chip" data-theme-preview="contrast-dark" style="--swatch: var(--color-accent)"></span><span class="swatch__name">contrast-dark</span><span class="swatch__value">data-theme="contrast-dark"</span><span class="swatch__use">White on black, cyan accent</span></div>
+        </div>
+        <p class="sg-label">Read aloud: the part being read is highlighted</p>
+        <p><span data-read-aloud-current>This sentence is being read aloud right now.</span> The next one is waiting.</p>
+        <p class="sg-label">Notes: words a reader has highlighted and noted</p>
+        <p>The reader added <span class="notes-highlight">a note about these words</span>, and it opens in the side panel.</p>
+        <pre><code>&lt;article class="prose" data-read-aloud&gt; …read this… &lt;/article&gt;
+&lt;div data-read-aloud-skip&gt; …never read this, e.g. answers… &lt;/div&gt;</code></pre>
       </section>
 
       <!-- Prose ------------------------------------------------------------ -->

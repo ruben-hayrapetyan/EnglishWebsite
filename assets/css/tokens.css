@@ -2,10 +2,19 @@
    Design tokens: the single source of truth for color, type, space and motion.
    Every other stylesheet reads these variables. Never hardcode a raw value
    (hex, px font size, font name) anywhere else. See AGENTS.md before editing.
+
+   Readers can change many of these on settings.html. assets/js/a11y.js saves
+   their choices and writes them as data-* attributes on <html>; the
+   "Reader preferences" blocks at the bottom of this file turn those
+   attributes into token values. Because components only ever read tokens,
+   every page follows the reader's settings without doing anything.
    ========================================================================== */
 
-:root {
-  /* ---- Color: light theme (default) ---------------------------------- */
+/* ---- Color: light theme (default) --------------------------------------
+   [data-theme-preview] lets a small swatch show a theme other than the
+   page's own (used by the theme picker on settings.html). */
+:root,
+[data-theme-preview="light"] {
   --color-bg: #f4f6f5;              /* page background: cool paper */
   --color-surface: #ffffff;         /* cards, inputs, raised panels */
   --color-surface-sunken: #e9edeb;  /* wells, code blocks, table stripes */
@@ -21,11 +30,29 @@
   --color-mark-soft: #fff3c4;       /* pale highlighter for large areas */
   --color-danger: #b3261e;          /* errors and destructive actions */
   --color-danger-soft: #f9e3e1;
+  --shadow-s: 0 1px 2px rgb(16 32 26 / 0.06);
+  --shadow-m: 0 10px 28px -14px rgb(16 32 26 / 0.28);
+  color-scheme: light;
+}
 
+:root {
   /* ---- Type ----------------------------------------------------------- */
-  --font-display: "Young Serif", Georgia, "Times New Roman", serif;
-  --font-body: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* Families. Pages use the role tokens below (--font-*), never these. */
+  --family-young-serif: "Young Serif", Georgia, "Times New Roman", serif;
+  --family-atkinson: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --family-atkinson-mono: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* Reader-selectable families (settings.html). They download only when chosen. */
+  --family-lexend: "Lexend", system-ui, sans-serif;
+  --family-opendyslexic: "OpenDyslexic", "Comic Sans MS", sans-serif;
+  --family-georgia: Georgia, "Noto Serif", "Times New Roman", serif;
+  --family-system: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --font-display: var(--family-young-serif);
+  --font-body: var(--family-atkinson);
+  --font-mono: var(--family-atkinson-mono);
+
+  /* Multiplies every rem-based size. Readers set it with "Text size". */
+  --text-scale: 1;
 
   /* Fluid type scale (about 1.25 at mobile, about 1.33 at desktop). */
   --step--2: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);
@@ -40,6 +67,10 @@
   --weight-regular: 400;
   --weight-semibold: 600;
   --weight-bold: 700;
+  --weight-heavy: 800;                      /* only for the reader's "Bold" setting */
+  --weight-body: var(--weight-regular);     /* running text */
+  --weight-strong: var(--weight-bold);      /* <strong> and <b> */
+  --weight-display: var(--weight-regular);  /* h1 to h3: Young Serif ships one weight */
 
   --leading-tight: 1.08;   /* display headlines */
   --leading-snug: 1.3;     /* subheads, UI text */
@@ -47,6 +78,8 @@
 
   --tracking-tight: -0.015em;  /* large display type */
   --tracking-wide: 0.06em;     /* small mono labels */
+  --tracking-body: normal;     /* running text; readers can widen it */
+  --word-spacing: normal;
 
   --measure: 66ch;         /* max line length for running text */
   --measure-narrow: 48ch;  /* ledes and short intros */
@@ -75,8 +108,7 @@
   --radius-full: 999px;
   --border-width: 1px;
   --border-width-thick: 3px;  /* accent rules: callouts, pull quotes */
-  --shadow-s: 0 1px 2px rgb(16 32 26 / 0.06);
-  --shadow-m: 0 10px 28px -14px rgb(16 32 26 / 0.28);
+  --underline-width: var(--border-width);  /* link underlines */
 
   /* ---- Motion ----------------------------------------------------------- */
   --duration-fast: 120ms;
@@ -91,16 +123,14 @@
   --focus-offset: 3px;
   --z-header: 100;
   --z-overlay: 200;
-
-  color-scheme: light;
 }
 
 /* ---- Color: dark theme --------------------------------------------------
-   Applied automatically from the OS setting. Force either theme with
-   <html data-theme="light|dark">, or add ?theme=dark to a page URL to test.
-   Keep the two dark blocks below identical. */
+   Applied automatically from the OS setting unless a theme is chosen.
+   Force one with <html data-theme="...">, or add ?theme=dark to a page URL
+   to test. Keep the two dark blocks below identical. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme]) {
     --color-bg: #111614;
     --color-surface: #19201d;
     --color-surface-sunken: #0c100e;
@@ -122,7 +152,8 @@
   }
 }
 
-:root[data-theme="dark"] {
+:root[data-theme="dark"],
+[data-theme-preview="dark"] {
   --color-bg: #111614;
   --color-surface: #19201d;
   --color-surface-sunken: #0c100e;
@@ -141,4 +172,220 @@
   --shadow-s: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-m: 0 12px 30px -14px rgb(0 0 0 / 0.7);
   color-scheme: dark;
+}
+
+/* ==========================================================================
+   Reader preferences. Set only by assets/js/a11y.js from settings.html.
+   Every theme defines the full set of color tokens, and every text color
+   meets WCAG AA (most meet AAA) on every background in its theme.
+   ========================================================================== */
+
+/* ---- Theme: sepia (warm, low glare) ------------------------------------ */
+:root[data-theme="sepia"],
+[data-theme-preview="sepia"] {
+  --color-bg: #f4ecd8;
+  --color-surface: #fbf6ea;
+  --color-surface-sunken: #ebdfc4;
+  --color-text: #33281c;
+  --color-text-muted: #5c4b37;
+  --color-border: #d9c9a8;
+  --color-border-strong: #a8916c;
+  --color-accent: #1f5c4b;
+  --color-accent-strong: #143f33;
+  --color-accent-soft: #e3e4c8;
+  --color-on-accent: #fbf6ea;
+  --color-mark: #ffd84a;
+  --color-mark-soft: #fbecb0;
+  --color-danger: #9e2a1c;
+  --color-danger-soft: #f3dccb;
+  --shadow-s: 0 1px 2px rgb(51 40 28 / 0.08);
+  --shadow-m: 0 10px 28px -14px rgb(51 40 28 / 0.3);
+  color-scheme: light;
+}
+
+/* ---- Theme: high contrast light ---------------------------------------- */
+:root[data-theme="contrast-light"],
+[data-theme-preview="contrast-light"] {
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #ececec;
+  --color-text: #000000;
+  --color-text-muted: #2b2b2b;
+  --color-border: #5c5c5c;
+  --color-border-strong: #000000;
+  --color-accent: #0037b3;
+  --color-accent-strong: #001f66;
+  --color-accent-soft: #e1e9ff;
+  --color-on-accent: #ffffff;
+  --color-mark: #ffe500;
+  --color-mark-soft: #fff7a8;
+  --color-danger: #a30000;
+  --color-danger-soft: #ffe3e3;
+  --shadow-s: none;
+  --shadow-m: 0 0 0 2px #000000;
+  color-scheme: light;
+}
+
+/* ---- Theme: high contrast dark ----------------------------------------- */
+:root[data-theme="contrast-dark"],
+[data-theme-preview="contrast-dark"] {
+  --color-bg: #000000;
+  --color-surface: #0f0f0f;
+  --color-surface-sunken: #1a1a1a;
+  --color-text: #ffffff;
+  --color-text-muted: #e3e3e3;
+  --color-border: #a3a3a3;
+  --color-border-strong: #ffffff;
+  --color-accent: #5ce1ff;
+  --color-accent-strong: #adf0ff;
+  --color-accent-soft: #00303b;
+  --color-on-accent: #000000;
+  --color-mark: rgb(255 229 0 / 0.45);
+  --color-mark-soft: rgb(255 229 0 / 0.16);
+  --color-danger: #ff8f85;
+  --color-danger-soft: #3d0f0c;
+  --shadow-s: none;
+  --shadow-m: 0 0 0 2px #ffffff;
+  color-scheme: dark;
+}
+
+/* ---- Theme: custom ------------------------------------------------------
+   The reader picks three colors; a11y.js sets them as --custom-bg,
+   --custom-text and --custom-accent and sets data-custom-scheme="dark" when
+   the background is dark. The rest is mixed from those three. */
+:root[data-theme="custom"],
+[data-theme-preview="custom"] {
+  --color-bg: var(--custom-bg, #f4f6f5);
+  --color-text: var(--custom-text, #17201d);
+  --color-accent: var(--custom-accent, #1d6b57);
+  --color-surface: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+  --color-surface-sunken: color-mix(in srgb, var(--color-text) 9%, var(--color-bg));
+  --color-text-muted: color-mix(in srgb, var(--color-text) 80%, var(--color-bg));
+  --color-border: color-mix(in srgb, var(--color-text) 22%, var(--color-bg));
+  --color-border-strong: color-mix(in srgb, var(--color-text) 45%, var(--color-bg));
+  --color-accent-strong: color-mix(in srgb, var(--color-accent) 70%, var(--color-text));
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg));
+  --color-on-accent: var(--color-bg);  /* contrast is symmetric, so accent-on-bg passing means this passes */
+  --color-mark: rgb(255 214 64 / 0.55);
+  --color-mark-soft: rgb(255 214 64 / 0.2);
+  --color-danger: #b3261e;
+  --color-danger-soft: color-mix(in srgb, var(--color-danger) 12%, var(--color-bg));
+  --shadow-s: 0 1px 2px rgb(0 0 0 / 0.08);
+  --shadow-m: 0 10px 28px -14px rgb(0 0 0 / 0.3);
+  color-scheme: light;
+}
+
+:root[data-theme="custom"][data-custom-scheme="dark"],
+[data-theme-preview="custom"][data-custom-scheme="dark"] {
+  --color-mark: rgb(255 214 64 / 0.42);
+  --color-danger: #ff8a80;
+  --shadow-s: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-m: 0 12px 30px -14px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
+}
+
+/* ---- Font ---------------------------------------------------------------
+   Any choice other than the default also sets headings in the same family,
+   in bold, so the page reads as one face. */
+:root[data-font="hyperlegible"] {
+  --font-display: var(--family-atkinson);
+  --weight-display: var(--weight-bold);
+}
+
+:root[data-font="lexend"] {
+  --font-body: var(--family-lexend);
+  --font-display: var(--family-lexend);
+  --weight-display: var(--weight-bold);
+}
+
+:root[data-font="opendyslexic"] {
+  --font-body: var(--family-opendyslexic);
+  --font-display: var(--family-opendyslexic);
+  --weight-display: var(--weight-bold);
+}
+
+:root[data-font="serif"] {
+  --font-body: var(--family-georgia);
+  --font-display: var(--family-georgia);
+  --weight-display: var(--weight-bold);
+}
+
+:root[data-font="system"] {
+  --font-body: var(--family-system);
+  --font-display: var(--family-system);
+  --weight-display: var(--weight-bold);
+}
+
+:root[data-font="mono"] {
+  --font-body: var(--family-atkinson-mono);
+  --font-display: var(--family-atkinson-mono);
+  --weight-display: var(--weight-semibold);
+}
+
+/* ---- Font weight -------------------------------------------------------- */
+:root[data-weight="semibold"] {
+  --weight-body: var(--weight-semibold);
+}
+
+:root[data-weight="bold"] {
+  --weight-body: var(--weight-bold);
+  --weight-strong: var(--weight-heavy);
+}
+
+/* ---- Text size (percent of the browser's own default size) ------------ */
+:root[data-text-size="75"] { --text-scale: 0.75; }
+:root[data-text-size="80"] { --text-scale: 0.8; }
+:root[data-text-size="90"] { --text-scale: 0.9; }
+:root[data-text-size="112"] { --text-scale: 1.125; }
+:root[data-text-size="125"] { --text-scale: 1.25; }
+:root[data-text-size="150"] { --text-scale: 1.5; }
+:root[data-text-size="175"] { --text-scale: 1.75; }
+:root[data-text-size="200"] { --text-scale: 2; }
+
+/* ---- Line spacing ------------------------------------------------------- */
+:root[data-line-spacing="wide"] {
+  --leading-tight: 1.2;
+  --leading-snug: 1.45;
+  --leading-body: 1.9;
+}
+
+:root[data-line-spacing="wider"] {
+  --leading-tight: 1.3;
+  --leading-snug: 1.6;
+  --leading-body: 2.2;
+}
+
+/* ---- Letter and word spacing (the wider step exceeds WCAG 1.4.12) ------ */
+:root[data-text-spacing="wide"] {
+  --tracking-body: 0.05em;
+  --tracking-tight: 0.02em;
+  --word-spacing: 0.1em;
+}
+
+:root[data-text-spacing="wider"] {
+  --tracking-body: 0.12em;
+  --tracking-tight: 0.06em;
+  --word-spacing: 0.2em;
+}
+
+/* ---- Line length -------------------------------------------------------- */
+:root[data-line-length="narrow"] {
+  --measure: 50ch;
+  --measure-narrow: 40ch;
+}
+
+/* ---- Motion (the OS "reduce motion" setting is handled in base.css) ---- */
+:root[data-motion="reduce"] {
+  --duration-fast: 0ms;
+  --duration-base: 0ms;
+  --duration-slow: 0ms;
+  --lift: 0px;
+  --press: 0px;
+}
+
+/* ---- Stronger links and focus rings ------------------------------------ */
+:root[data-emphasis="strong"] {
+  --underline-width: 2px;
+  --focus-ring: 5px solid var(--color-accent);
+  --focus-offset: 4px;
 }
