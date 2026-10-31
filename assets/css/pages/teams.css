@@ -1,0 +1,117 @@
+/* Team directory and its linked profiles: styles scoped to the team feature.
+   Portrait wells are temporary monograms; replace their contents with an
+   image using team-profile__photo and descriptive alt text when supplied.
+   Remove aria-hidden from the portrait wrapper when adding a real image. */
+
+.team-hero {
+  align-items: end;
+}
+
+.team-facts {
+  padding-block: var(--space-m);
+  border-block: var(--border-width) solid var(--color-border);
+}
+
+.team-facts__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-m);
+}
+
+.team-facts__number {
+  min-width: var(--space-2xl);
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  color: var(--color-accent);
+}
+
+.team-facts__label,
+.team-note,
+.team-profile__pending {
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+}
+
+.team-instructor {
+  align-items: center;
+}
+
+.team-portrait {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+  border: var(--border-width) solid var(--color-border);
+}
+
+.team-portrait--instructor {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.team-portrait__initial {
+  font-family: var(--font-display);
+  font-size: calc(var(--step-5) * 2);
+  line-height: var(--leading-tight);
+}
+
+.team-portrait__caption {
+  position: absolute;
+  bottom: var(--space-s);
+  left: var(--space-s);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+}
+
+.team-directory {
+  --grid-min: calc(var(--space-3xl) * 3);
+  --grid-space: var(--space-l);
+}
+
+.team-tools {
+  --grid-min: calc(var(--space-3xl) * 3);
+  align-items: end;
+}
+
+.team-profile[hidden] {
+  display: none;
+}
+
+.team-profile__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-profile__role {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent);
+}
+
+.team-closing {
+  /* Keep text links at their natural width so hover highlights hug the text. */
+  align-items: flex-start;
+  padding-top: var(--space-l);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.team-portrait-link {
+  display: block;
+  border-radius: var(--radius-m);
+  background-image: none;
+}
+
+.author-portrait {
+  aspect-ratio: 1;
+}
+
+@media (min-width: 52rem) {
+  .author-layout {
+    grid-template-columns: 2fr 3fr;
+  }
+}

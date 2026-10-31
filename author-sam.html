@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sam · English Website</title>
+  <meta name="description" content="Meet Sam, a student author and multimedia producer for our class textbook.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/teams.css">
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+    <div class="container page-body">
+      <header class="page-header">
+        <nav class="cluster" aria-label="Breadcrumb">
+          <a href="teams.html">Our team</a>
+          <span aria-hidden="true">/</span>
+          <span class="team-note" aria-current="page">Sam</span>
+        </nav>
+        <p class="page-header__meta">Student author</p>
+        <h1 class="page-header__title"><mark class="highlight--draw">Sam</mark></h1>
+        <p class="page-header__lede">Textbook author · Multimedia producer</p>
+      </header>
+
+      <div class="split author-layout">
+        <!-- Replace the placeholder with a supplied portrait using
+             team-profile__photo and meaningful alt text; remove aria-hidden
+             from the wrapper. Do not substitute an invented likeness. -->
+        <div class="team-portrait author-portrait" aria-hidden="true">
+          <span class="team-portrait__initial">S</span>
+          <span class="team-portrait__caption">Portrait to come</span>
+        </div>
+        <div class="stack" style="--stack-space: var(--space-xl)">
+          <section class="stack" aria-labelledby="biography-title">
+            <h2 id="biography-title">Biography</h2>
+            <!-- Replace with the biography supplied for this project. -->
+            <p class="team-profile__pending">Biography to come.</p>
+          </section>
+
+              <section class="stack" aria-labelledby="chapters-title">
+                <h2 id="chapters-title">In the textbook</h2>
+                <p class="team-note">Two chapters by Sam. Titles and links will be added when confirmed.</p>
+                <div class="grid">
+                  <article class="card">
+                    <p class="card__meta">First contribution</p>
+                    <h3 class="card__title">Chapter title to come</h3>
+                    <p class="card__body">Chapter details will appear here.</p>
+                  </article>
+                  <article class="card">
+                    <p class="card__meta">Second contribution</p>
+                    <h3 class="card__title">Chapter title to come</h3>
+                    <p class="card__body">Chapter details will appear here.</p>
+                  </article>
+                </div>
+              </section>
+
+              <section class="stack" aria-labelledby="role-title">
+                <h2 id="role-title">Beyond the chapters</h2>
+                <p class="team-profile__role">Multimedia producer</p>
+                <p class="team-note">Details of Sam's additional contributions will be added as they are shared.</p>
+              </section>
+        </div>
+      </div>
+
+      <nav class="stack team-closing" aria-label="Explore the team">
+        <a href="teams.html#author-sam">Back to our team</a>
+        <div class="cluster" style="--cluster-space: var(--space-l)">
+            <a href="author-ryan.html">Previous: Ryan</a>
+            <a href="author-sarah.html">Next: Sarah</a>
+        </div>
+      </nav>
+    </div>
+  </main>
+
+  <aside class="ai-credit" aria-label="Use of generative AI">
+    <p class="container">Generative AI: GPT-6 (OpenAI), accessed through Codex, wrote this page's code and drafted its interface text and placeholder copy using the supplied class roster. Claude Opus 5.5 (Anthropic) created the shared page template and design system.</p>
+  </aside>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>
