@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Clara · English Website</title>
-  <meta name="description" content="Meet Clara, a student author and assessment/solutions author for our class textbook.">
+  <title>Clara Davis · English Website</title>
+  <meta name="description" content="Meet Clara Davis, a student author and assessment/solutions author for our class textbook.">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/pages/teams.css">
@@ -20,10 +20,10 @@
         <nav class="cluster" aria-label="Breadcrumb">
           <a href="teams.html">Our team</a>
           <span aria-hidden="true">/</span>
-          <span class="team-note" aria-current="page">Clara</span>
+          <span class="team-note author-name" aria-current="page">Clara Davis</span>
         </nav>
         <p class="page-header__meta">Student author</p>
-        <h1 class="page-header__title"><mark class="highlight--draw">Clara</mark></h1>
+        <h1 class="page-header__title author-name"><mark class="highlight--draw">Clara</mark> Davis</h1>
         <p class="page-header__lede">Textbook author · Assessment/solutions author</p>
       </header>
 
@@ -32,53 +32,80 @@
              team-profile__photo and meaningful alt text; remove aria-hidden
              from the wrapper. Do not substitute an invented likeness. -->
         <div class="team-portrait author-portrait" aria-hidden="true">
-          <span class="team-portrait__initial">C</span>
+          <span class="team-portrait__initial">CD</span>
           <span class="team-portrait__caption">Portrait to come</span>
         </div>
-        <div class="stack" style="--stack-space: var(--space-xl)">
+        <div class="stack author-content" style="--stack-space: var(--space-xl)">
           <section class="stack" aria-labelledby="biography-title">
             <h2 id="biography-title">Biography</h2>
             <!-- Replace with the biography supplied for this project. -->
             <p class="team-profile__pending">Biography to come.</p>
           </section>
 
-              <section class="stack" aria-labelledby="chapters-title">
-                <h2 id="chapters-title">In the textbook</h2>
-                <p class="team-note">Two chapters by Clara. Titles and links will be added when confirmed.</p>
-                <div class="grid">
-                  <article class="card">
-                    <p class="card__meta">First contribution</p>
-                    <h3 class="card__title">Chapter title to come</h3>
-                    <p class="card__body">Chapter details will appear here.</p>
-                  </article>
-                  <article class="card">
-                    <p class="card__meta">Second contribution</p>
-                    <h3 class="card__title">Chapter title to come</h3>
-                    <p class="card__body">Chapter details will appear here.</p>
-                  </article>
-                </div>
-              </section>
+          <section class="stack" aria-labelledby="chapters-title">
+            <h2 id="chapters-title">In the textbook</h2>
+            <p class="team-note">Chapter credits from the current class outline. Coauthored chapters are credited jointly.</p>
+            <div class="grid" style="--grid-min: 100%">
+                <article class="card author-chapter">
+                  <p class="card__meta">Circadian rhythms</p>
+                  <h3 class="card__title">Hunger, digestion, and metabolism</h3>
+                  <p class="team-note">Coauthors: <a href="author-will.html">Will Protasowicki</a>, <a href="author-zoe.html">Zoe Kessler</a></p>
+                  <p class="team-note">Textbook link to come.</p>
+                  <details class="author-outline">
+                    <summary class="author-outline__summary">View chapter sections</summary>
+                    <div class="prose author-outline__body">
+                      <ul>
+                        <li>Hunger and digestion
+                          <ul>
+                            <li>How are hunger and digestion related?</li>
+                            <li>Hunger signalling and the nervous system</li>
+                            <li>Eating cycles in non-humans</li>
+                            <li>Processes involved with digestion</li>
+                            <li>Rhythm disruption and health complications</li>
+                            <li>Hunger/metabolism-related diseases</li>
+                          </ul>
+                        </li>
+                        <li>Metabolism
+                          <ul>
+                            <li>Circadian rhythm of metabolism</li>
+                            <li>Health effects of unstable metabolism</li>
+                            <li>Metabolism’s effect on other systems</li>
+                            <li>How alcohol affects the metabolism cycle</li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </details>
+                </article>
+            </div>
+          </section>
 
-              <section class="stack" aria-labelledby="role-title">
-                <h2 id="role-title">Beyond the chapters</h2>
-                <p class="team-profile__role">Assessment/solutions author</p>
-                <p class="team-note">Details of Clara's additional contributions will be added as they are shared.</p>
-              </section>
+          <section class="stack" aria-labelledby="role-title">
+            <h2 id="role-title">Beyond the chapters</h2>
+            <p class="team-profile__role">Assessment/solutions author</p>
+            <div class="prose">
+                      <ul>
+                        <li>Review chapter learning goals and discuss activity formats that can address them.</li>
+                        <li>Agree on common end-of-chapter sections, such as a glossary or knowledge checks.</li>
+                        <li>Provide an accompanying answer key for any activities created.</li>
+                      </ul>
+            </div>
+          </section>
         </div>
       </div>
 
       <nav class="stack team-closing" aria-label="Explore the team">
         <a href="teams.html#author-clara">Back to our team</a>
         <div class="cluster" style="--cluster-space: var(--space-l)">
-            <a href="author-binqi.html">Previous: Binqi</a>
-            <a href="author-daniel.html">Next: Daniel</a>
+            <a href="author-binqi.html">Previous: Binqi Zhan</a>
+            <a href="author-daniel.html">Next: Daniel Winter</a>
         </div>
       </nav>
     </div>
   </main>
 
   <aside class="ai-credit" aria-label="Use of generative AI">
-    <p class="container">Generative AI: GPT-6 (OpenAI), accessed through Codex, wrote this page's code and drafted its interface text and placeholder copy using the supplied class roster. Claude Opus 5.5 (Anthropic) created the shared page template and design system.</p>
+    <p class="container">Generative AI: GPT-6 (OpenAI), accessed through Codex, wrote this page's code and drafted its interface text and placeholder copy using the supplied class roster and chapter outline. Claude Opus 5.5 (Anthropic) created the shared page template and design system.</p>
   </aside>
 
   <footer class="site-footer" data-site-footer></footer>
