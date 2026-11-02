@@ -161,6 +161,7 @@ All of these are shown live in `styleguide.html`.
 | Button | `.button`, `--secondary`, `--quiet`, `--small` | `components/button.css` |
 | Card | `.card`, `__title`, `__body`, `__meta`, `__footer` | `components/card.css` |
 | Callout | `.callout`, `--accent`, `--mark`, `--danger`, `__title` | `components/callout.css` |
+| Chapter nav | `.chapter-nav`, `--pager`, `__title`, `__list`, `__link`, `__step`, `__step--next`, `__label`, `__name` | `components/chapter-nav.css` |
 | Tag | `.tag`, `--accent` | `components/tag.css` |
 | Form field | `.field`, `__label`, `__hint`, `__error`, `.input`, `.checkbox` | `components/form.css` |
 | Prose | `.prose` (styles plain HTML inside it) | `components/prose.css` |
