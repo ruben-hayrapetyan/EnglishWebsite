@@ -1,0 +1,827 @@
+"""PDF reader.
+
+A PDF has no structure, only positioned text, images and vector drawings.
+This reader rebuilds the structure from layout, in passes:
+
+1. extract    lines (with font size, weight, style, links), images and tables
+2. clean      drop running heads, page numbers, repeated logos, footnotes
+3. order      put each page's items in reading order (handles two columns)
+4. classify   decide what each line is: heading, caption, list item, body
+5. assemble   join lines into paragraphs and lists, attach captions
+
+Each pass is a plain function over plain data, so the heuristics can be
+tested one at a time without a PDF (see tests/textbook/test_pdf_layout.py).
+Works for PDFs exported from Word, Google Docs, LaTeX and similar. Scanned
+pages (pictures of text) are detected and rejected: they need OCR.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import re
+import statistics
+from collections import Counter, defaultdict
+from dataclasses import dataclass, field
+from pathlib import Path
+
+from ..model import (
+    Document,
+    Figure,
+    Heading,
+    Image,
+    Inlines,
+    ListBlock,
+    ListItem,
+    Paragraph,
+    Run,
+    Table,
+)
+from ..normalize import (
+    caption_label,
+    clean_runs,
+    clean_text,
+    ends_sentence,
+    hyphenated_vocabulary,
+    line_joint,
+    list_marker,
+)
+from . import ReaderError
+
+# ---- 1. Extracted items ------------------------------------------------------
+
+BOLD_FONT = re.compile(r"bold|black|heavy|semibold|demi", re.I)
+ITALIC_FONT = re.compile(r"italic|oblique", re.I)
+MONO_FONT = re.compile(r"mono|courier|code|consol", re.I)
+MATH_FONT = re.compile(r"^(cmmi|cmsy|cmex|msam|msbm|stix.*math|cambria ?math|symbol|mt ?extra)", re.I)
+
+
+@dataclass
+class Span:
+    text: str
+    size: float
+    bold: bool = False
+    italic: bool = False
+    mono: bool = False
+    sup: bool = False
+    href: str | None = None
+    math: bool = False
+
+
+@dataclass
+class Line:
+    spans: list[Span]
+    x0: float
+    y0: float
+    x1: float
+    y1: float
+    page: int  # 0-based index into the document
+    block: int  # PyMuPDF block number on its page
+    block_lines: int = 1  # how many lines that block has
+
+    @property
+    def text(self) -> str:
+        return "".join(s.text for s in self.spans)
+
+    @property
+    def size(self) -> float:
+        """Character-weighted most common font size, rounded to 0.5pt."""
+        weights: Counter[float] = Counter()
+        for span in self.spans:
+            weights[round(span.size * 2) / 2] += len(span.text.strip()) or 0
+        if not weights or not sum(weights.values()):
+            return round(self.spans[0].size * 2) / 2 if self.spans else 0.0
+        return max(weights.items(), key=lambda kv: (kv[1], kv[0]))[0]
+
+    @property
+    def bold(self) -> bool:
+        visible = [s for s in self.spans if s.text.strip()]
+        return bool(visible) and all(s.bold for s in visible)
+
+
+@dataclass
+class ImageItem:
+    data: bytes
+    ext: str
+    x0: float
+    y0: float
+    x1: float
+    y1: float
+    page: int
+    digest: str = ""
+
+
+@dataclass
+class TableItem:
+    rows: list[list[str]]
+    x0: float
+    y0: float
+    x1: float
+    y1: float
+    page: int
+
+
+@dataclass
+class PageInfo:
+    width: float
+    height: float
+    lines: list[Line] = field(default_factory=list)
+    images: list[ImageItem] = field(default_factory=list)
+    tables: list[TableItem] = field(default_factory=list)
+    drawings: list[tuple[float, float, float, float]] = field(default_factory=list)
+    doc: object = None  # the open PyMuPDF document, for rasterizing figures
+
+
+def parse_page_spec(spec: str | None, page_count: int) -> list[int]:
+    """'3-7,10' (1-based, inclusive) -> [2, 3, 4, 5, 6, 9]."""
+    if not spec:
+        return list(range(page_count))
+    pages: list[int] = []
+    for part in str(spec).split(","):
+        part = part.strip()
+        m = re.fullmatch(r"(\d+)(?:\s*-\s*(\d+))?", part)
+        if not m:
+            raise ReaderError(f'Page range "{spec}" is not valid. Write it like "12-30" or "3-7,10".')
+        start = int(m.group(1))
+        end = int(m.group(2) or start)
+        if start < 1 or end < start or end > page_count:
+            raise ReaderError(
+                f'Page range "{part}" is outside this PDF, which has {page_count} pages.'
+            )
+        pages.extend(range(start - 1, end))
+    return pages
+
+
+def _inside(x: float, y: float, box) -> bool:
+    return box[0] - 1 <= x <= box[2] + 1 and box[1] - 1 <= y <= box[3] + 1
+
+
+def extract(path: Path, pages: str | None = None) -> tuple[list[PageInfo], list[int]]:
+    import pymupdf  # imported here so the rest of the package loads without it
+
+    pymupdf.no_recommend_layout()
+    try:
+        doc = pymupdf.open(path)
+    except Exception as exc:  # corrupt file, wrong type, encrypted
+        raise ReaderError(f"{path.name} could not be opened as a PDF ({exc}).") from exc
+    if doc.needs_pass:
+        raise ReaderError(f"{path.name} is password-protected. Export an unprotected copy.")
+    indices = parse_page_spec(pages, doc.page_count)
+    out: list[PageInfo] = []
+    for index in indices:
+        page = doc[index]
+        info = PageInfo(page.rect.width, page.rect.height)
+        links = [
+            (link["from"], link["uri"])
+            for link in page.get_links()
+            if link.get("uri")
+        ]
+        try:
+            tables = page.find_tables().tables
+        except Exception:  # table finder is best-effort
+            tables = []
+        table_boxes = []
+        for table in tables:
+            rows = [[clean_text(cell or "").strip() for cell in row] for row in table.extract()]
+            rows = [row for row in rows if any(row)]
+            if len(rows) >= 2 and max(len(r) for r in rows) >= 2:
+                x0, y0, x1, y1 = table.bbox
+                info.tables.append(TableItem(rows, x0, y0, x1, y1, index))
+                table_boxes.append(table.bbox)
+
+        raw = page.get_text("rawdict")
+        for bno, block in enumerate(raw["blocks"]):
+            if block["type"] == 1:
+                x0, y0, x1, y1 = block["bbox"]
+                if (x1 - x0) < 36 or (y1 - y0) < 36:
+                    continue  # bullets, rules, tiny icons
+                data, ext = _normalize_image(block["image"], block.get("ext", "png"))
+                if data:
+                    info.images.append(
+                        ImageItem(data, ext, x0, y0, x1, y1, index, hashlib.sha1(data).hexdigest())
+                    )
+                continue
+            lines = [l for l in block["lines"] if abs(l["dir"][1]) < 0.01 and l["dir"][0] > 0]
+            for line in lines:
+                spans = []
+                for s in line["spans"]:
+                    font = s.get("font", "")
+                    flags = s.get("flags", 0)
+                    style = dict(
+                        size=s["size"],
+                        bold=bool(flags & 16) or bool(BOLD_FONT.search(font)),
+                        italic=bool(flags & 2) or bool(ITALIC_FONT.search(font)),
+                        mono=bool(flags & 8) or bool(MONO_FONT.search(font)),
+                        sup=bool(flags & 1),
+                        math=bool(MATH_FONT.match(font.split("+")[-1])),
+                    )
+                    # Split the span where a link starts or ends: a link often
+                    # covers only some words of a span.
+                    for text, href in _split_by_links(s["chars"], links):
+                        spans.append(Span(text=text, href=href, **style))
+                if not "".join(s.text for s in spans).strip():
+                    continue
+                x0, y0, x1, y1 = line["bbox"]
+                cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+                if any(_inside(cx, cy, box) for box in table_boxes):
+                    continue
+                info.lines.append(Line(spans, x0, y0, x1, y1, index, bno, len(lines)))
+        info.doc = doc
+        info.drawings = [tuple(d["rect"]) for d in page.get_drawings() if d.get("rect")]
+        out.append(info)
+    return out, indices
+
+
+def _split_by_links(chars, links) -> list[tuple[str, str | None]]:
+    pieces: list[tuple[str, str | None]] = []
+    for ch in chars:
+        x0, y0, x1, y1 = ch["bbox"]
+        href = next((uri for rect, uri in links if _inside((x0 + x1) / 2, (y0 + y1) / 2, rect)), None)
+        if pieces and pieces[-1][1] == href:
+            pieces[-1] = (pieces[-1][0] + ch["c"], href)
+        else:
+            pieces.append((ch["c"], href))
+    return [(t, h) for t, h in pieces if t]
+
+
+def _normalize_image(data: bytes, ext: str) -> tuple[bytes, str]:
+    """Keep PNG and JPEG as they are; convert anything else to PNG."""
+    ext = ext.lower()
+    if ext in ("png",):
+        return data, "png"
+    if ext in ("jpg", "jpeg"):
+        return data, "jpg"
+    import pymupdf
+
+    try:
+        pix = pymupdf.Pixmap(data)
+        if pix.colorspace and pix.colorspace.n > 3:
+            pix = pymupdf.Pixmap(pymupdf.csRGB, pix)
+        return pix.tobytes("png"), "png"
+    except Exception:
+        return b"", ""
+
+
+def rasterize(info: PageInfo, page_index: int, box: tuple[float, float, float, float]) -> bytes:
+    import pymupdf
+
+    pix = info.doc[page_index].get_pixmap(clip=pymupdf.Rect(*box), dpi=150, alpha=False)
+    return pix.tobytes("png")
+
+
+# ---- 2. Clean-up -------------------------------------------------------------
+
+PAGE_NUMBER = re.compile(r"^\s*(page\s*)?(\d{1,4}|[ivxlc]{1,7})(\s*(of|/)\s*\d{1,4})?\s*$", re.I)
+MARGIN = 0.08  # top and bottom share of the page that may hold running heads
+
+
+def margin_key(text: str) -> str:
+    return re.sub(r"\d+", "#", clean_text(text).strip().casefold())
+
+
+def in_margin(line: Line, info: PageInfo) -> bool:
+    return line.y1 <= info.height * MARGIN or line.y0 >= info.height * (1 - MARGIN)
+
+
+def remove_running_heads(pages: list[PageInfo]) -> None:
+    """Drop page numbers and headers/footers repeated across pages."""
+    counts: Counter[str] = Counter()
+    for info in pages:
+        counts.update({margin_key(l.text) for l in info.lines if in_margin(l, info)})
+    threshold = max(2, round(len(pages) * 0.5))
+    for info in pages:
+        info.lines = [
+            l
+            for l in info.lines
+            if not (
+                in_margin(l, info)
+                and (PAGE_NUMBER.match(l.text) or (len(pages) >= 2 and counts[margin_key(l.text)] >= threshold))
+            )
+        ]
+
+
+def remove_repeated_images(pages: list[PageInfo]) -> None:
+    """Logos and decorations repeat on many pages; figures don't."""
+    seen: Counter[str] = Counter()
+    for info in pages:
+        seen.update({img.digest for img in info.images})
+    for info in pages:
+        info.images = [img for img in info.images if seen[img.digest] < 3]
+
+
+def check_scanned(pages: list[PageInfo], indices: list[int], name: str) -> list[str]:
+    scanned = []
+    for info, index in zip(pages, indices):
+        if info.lines:
+            continue
+        covered = sum((i.x1 - i.x0) * (i.y1 - i.y0) for i in info.images)
+        if covered > 0.5 * info.width * info.height:
+            scanned.append(index + 1)
+    if scanned and len(scanned) >= max(1, len(pages) / 2):
+        raise ReaderError(
+            f"{name} looks like a scan: pages {_ranges(scanned)} are pictures of text, "
+            "with no text the converter can read. Export the chapter from the program it "
+            "was written in (Word, Google Docs, LaTeX), or run OCR on the PDF first."
+        )
+    return [
+        f"page {p}: looks scanned (a picture of text) and was skipped; run OCR or re-export it"
+        for p in scanned
+    ]
+
+
+def _ranges(numbers: list[int]) -> str:
+    out, start, prev = [], None, None
+    for n in numbers + [None]:
+        if start is None:
+            start = prev = n
+        elif n is not None and n == prev + 1:
+            prev = n
+        else:
+            out.append(f"{start}" if start == prev else f"{start}-{prev}")
+            start = prev = n
+    return ", ".join(out)
+
+
+def body_size(pages: list[PageInfo]) -> float:
+    weights: Counter[float] = Counter()
+    for info in pages:
+        for line in info.lines:
+            weights[line.size] += len(line.text.strip())
+    if not weights:
+        return 10.0
+    return max(weights.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+
+
+FOOTNOTE_START = re.compile(r"^\s*(\d{1,3}|[*†‡§])\s?\S")
+
+
+def split_footnotes(pages: list[PageInfo], body: float) -> list[list[Line]]:
+    """Small text at the foot of a page that starts with a marker is a footnote."""
+    notes: list[list[Line]] = []
+    for info in pages:
+        cut = None
+        ordered = sorted(info.lines, key=lambda l: (l.y0, l.x0))
+        for i, line in enumerate(ordered):
+            if line.y0 < info.height * 0.6 or line.size > body * 0.88:
+                continue
+            if FOOTNOTE_START.match(line.text) and all(l.size <= body * 0.88 for l in ordered[i:]):
+                cut = i
+                break
+        if cut is None:
+            continue
+        foot = ordered[cut:]
+        info.lines = ordered[:cut]
+        current: list[Line] = []
+        for line in foot:
+            if FOOTNOTE_START.match(line.text) and current:
+                notes.append(current)
+                current = []
+            current.append(line)
+        if current:
+            notes.append(current)
+    return notes
+
+
+# ---- 3. Reading order --------------------------------------------------------
+
+Item = Line | ImageItem | TableItem
+
+
+def is_two_column(lines: list[Line], width: float) -> bool:
+    if len(lines) < 8:
+        return False
+    mid, tol = width / 2, width * 0.02
+    left = sum(1 for l in lines if l.x1 < mid + tol)
+    right = sum(1 for l in lines if l.x0 > mid - tol)
+    spanning = len(lines) - left - right
+    return spanning / len(lines) < 0.2 and right >= 0.2 * len(lines) and left >= 0.2 * len(lines)
+
+
+def reading_order(info: PageInfo) -> list[Item]:
+    """Order a page's items top to bottom, and left column before right."""
+    items: list[Item] = [*info.lines, *info.images, *info.tables]
+    if not is_two_column(info.lines, info.width):
+        return sorted(items, key=lambda it: (round(it.y0, 1), it.x0))
+    mid, tol = info.width / 2, info.width * 0.02
+
+    def column(it) -> int:
+        if it.x1 < mid + tol:
+            return 0
+        if it.x0 > mid - tol:
+            return 1
+        return -1  # spans both columns: a title, a wide figure
+
+    ordered: list[Item] = []
+    band: list[Item] = []
+    for it in sorted(items, key=lambda it: (it.y0, it.x0)):
+        if column(it) == -1:
+            ordered.extend(sorted(band, key=lambda b: (column(b), b.y0, b.x0)))
+            band = []
+            ordered.append(it)
+        else:
+            band.append(it)
+    ordered.extend(sorted(band, key=lambda b: (column(b), b.y0, b.x0)))
+    return ordered
+
+
+# ---- 4. Classification -------------------------------------------------------
+
+HEADING_RATIO = 1.12
+
+
+def heading_tiers(lines: list[Line], body: float) -> dict[float, int]:
+    """Map each heading font size to a level: biggest size is level 1."""
+    sizes = sorted({l.size for l in lines if l.size >= body * HEADING_RATIO and len(l.text) < 200}, reverse=True)
+    return {size: i + 1 for i, size in enumerate(sizes[:5])}
+
+
+def is_bold_heading(line: Line, body: float) -> bool:
+    """A short, all-bold line at body size, on its own: a minor heading."""
+    text = line.text.strip()
+    return (
+        line.bold
+        and line.block_lines == 1
+        and abs(line.size - body) < 1
+        and len(text.split()) <= 14
+        and not ends_sentence(text)
+        and not text.endswith(",")
+        and list_marker(text) is None
+    )
+
+
+def classify(line: Line, body: float, tiers: dict[float, int]) -> tuple[str, int]:
+    """('heading', level) | ('caption', 0) | ('item', 0) | ('body', 0)."""
+    text = line.text.strip()
+    if caption_label(text):
+        return "caption", 0
+    if line.size in tiers:
+        return "heading", tiers[line.size]
+    if is_bold_heading(line, body):
+        return "heading", len(tiers) + 1
+    if list_marker(text):
+        return "item", 0
+    return "body", 0
+
+
+# ---- 5. Assembly -------------------------------------------------------------
+
+
+def spans_to_runs(spans: list[Span]) -> Inlines:
+    runs = []
+    for s in spans:
+        marks = set()
+        if s.bold:
+            marks.add("strong")
+        if s.italic:
+            marks.add("em")
+        if s.mono:
+            marks.add("code")
+        if s.sup:
+            marks.add("sup")
+        runs.append(Run(s.text, frozenset(marks), s.href))
+    return runs
+
+
+def join_runs(lines: list[Inlines], vocab: frozenset[str]) -> Inlines:
+    """Join the runs of several visual lines into one paragraph."""
+    out: Inlines = []
+    for runs in lines:
+        runs = [r for r in runs if r.text]
+        if not runs:
+            continue
+        if out:
+            prev_text = "".join(r.text for r in out)
+            drop, sep = line_joint(prev_text, runs[0].text, vocab)
+            last = out[-1]
+            trimmed = last.text.rstrip()
+            if drop:
+                trimmed = trimmed[:-drop]
+            out[-1] = Run(trimmed, last.marks, last.href)
+            if sep:
+                out.append(Run(sep, last.marks if sep == "-" else frozenset(), None))
+            first = runs[0]
+            runs = [Run(first.text.lstrip(), first.marks, first.href), *runs[1:]]
+        out.extend(runs)
+    return clean_runs(out)
+
+
+def strip_marker(runs: Inlines, length: int) -> Inlines:
+    out, remaining = [], length
+    for run in runs:
+        if remaining <= 0:
+            out.append(run)
+            continue
+        if len(run.text) <= remaining:
+            remaining -= len(run.text)
+            continue
+        out.append(Run(run.text[remaining:], run.marks, run.href))
+        remaining = 0
+    return out
+
+
+def starts_paragraph(prev: Line, line: Line, pitch: float, body: float, frame: dict) -> bool:
+    """Is `line` the first line of a new paragraph, given the line before it?"""
+    prev_text = prev.text.rstrip()
+    if prev.page != line.page or abs(prev.x0 - line.x0) > frame["width"] * 0.3:
+        # Page or column break: continue unless the previous line ended a sentence
+        # and this one is indented or starts with a capital letter.
+        if not ends_sentence(prev_text):
+            return False
+        return not line.text.lstrip()[:1].islower()
+    gap = line.y0 - prev.y0
+    if gap > pitch * 1.35 or gap < -1:
+        return True
+    indent = line.x0 - frame["left"]
+    if indent > body * 0.8 and prev.x0 - frame["left"] < body * 0.5:
+        return True
+    short = prev.x1 < frame["right"] - frame["width"] * 0.12
+    return short and ends_sentence(prev_text)
+
+
+def typical_pitch(lines: list[Line], body: float) -> float:
+    gaps = [
+        b.y0 - a.y0
+        for a, b in zip(lines, lines[1:])
+        if a.page == b.page and a.block == b.block and 0 < b.y0 - a.y0 < body * 3
+    ]
+    return statistics.median(gaps) if gaps else body * 1.25
+
+
+def frames(pages: list[PageInfo]) -> dict[tuple[int, int], dict]:
+    """Left edge, right edge and width of the text in each page column."""
+    out = {}
+    for info in pages:
+        two = is_two_column(info.lines, info.width)
+        groups: dict[int, list[Line]] = defaultdict(list)
+        for line in info.lines:
+            col = 1 if two and line.x0 > info.width / 2 - info.width * 0.02 else 0
+            groups[col].append(line)
+        for col, lines in groups.items():
+            left = statistics.median_low(sorted(l.x0 for l in lines))
+            right = max(l.x1 for l in lines)
+            out[(lines[0].page, col)] = {"left": left, "right": right, "width": max(right - left, 1)}
+    return out
+
+
+def frame_for(line: Line, info: PageInfo, table: dict) -> dict:
+    two = is_two_column(info.lines, info.width)
+    col = 1 if two and line.x0 > info.width / 2 - info.width * 0.02 else 0
+    return table.get((line.page, col)) or {"left": line.x0, "right": line.x1, "width": info.width}
+
+
+def read_pdf(path: Path, pages: str | None = None) -> Document:
+    infos, indices = extract(path, pages)
+    warnings = check_scanned(infos, indices, path.name)
+    remove_running_heads(infos)
+    remove_repeated_images(infos)
+    body = body_size(infos)
+    note_lines = split_footnotes(infos, body)
+    all_lines = [l for info in infos for l in info.lines]
+    tiers = heading_tiers(all_lines, body)
+    vocab = hyphenated_vocabulary([l.text for l in all_lines])
+    pitch = typical_pitch(sorted(all_lines, key=lambda l: (l.page, l.block, l.y0)), body)
+    frame_table = frames(infos)
+    page_of = dict(zip(indices, infos))
+
+    math_pages = sorted({l.page + 1 for l in all_lines if any(s.math for s in l.spans)})
+    if math_pages:
+        warnings.append(
+            f"pages {_ranges(math_pages)}: math fonts found; equations are kept as plain text, so check them"
+        )
+    if any("�" in l.text for l in all_lines):
+        warnings.append("some characters could not be decoded (shown as �); re-export the PDF with fonts embedded")
+
+    blocks: list = []
+    para: list[Line] = []
+    list_stack: list[tuple[float, ListBlock]] = []  # (marker x0, list)
+    item_lines: list[Line] = []
+    pending_caption: tuple[str, str, Inlines, Line] | None = None  # table captions sit above
+
+    def flush_para():
+        nonlocal para
+        if para:
+            content = join_runs([spans_to_runs(l.spans) for l in para], vocab)
+            if content:
+                blocks.append(Paragraph(content))
+            para = []
+
+    def flush_item():
+        nonlocal item_lines
+        if item_lines and list_stack:
+            marker = list_marker(item_lines[0].text)
+            first = strip_marker(spans_to_runs(item_lines[0].spans), marker[2] if marker else 0)
+            content = join_runs([first] + [spans_to_runs(l.spans) for l in item_lines[1:]], vocab)
+            list_stack[-1][1].items.append(ListItem(content))
+        item_lines = []
+
+    def close_lists():
+        flush_item()
+        list_stack.clear()
+
+    def last_block_on(page: int, kind):
+        if blocks and isinstance(blocks[-1], kind) and getattr(blocks[-1], "_page", None) == page:
+            return blocks[-1]
+        return None
+
+    ordered: list[Item] = []
+    for info in infos:
+        ordered.extend(reading_order(info))
+
+    i = 0
+    prev_body: Line | None = None
+    while i < len(ordered):
+        item = ordered[i]
+        if isinstance(item, ImageItem):
+            flush_para()
+            close_lists()
+            figure = Figure(Image(item.data, item.ext), alt="")
+            figure._page = item.page  # type: ignore[attr-defined]
+            figure._box = (item.x0, item.y0, item.x1, item.y1)  # type: ignore[attr-defined]
+            blocks.append(figure)
+            prev_body = None
+            i += 1
+            continue
+        if isinstance(item, TableItem):
+            flush_para()
+            close_lists()
+            table = Table([[[Run(cell)] if cell else [] for cell in row] for row in item.rows])
+            table._page = item.page  # type: ignore[attr-defined]
+            if pending_caption and pending_caption[0] == "table" and pending_caption[3].page == item.page:
+                table.label, table.caption = pending_caption[1], pending_caption[2]
+                pending_caption = None
+            blocks.append(table)
+            prev_body = None
+            i += 1
+            continue
+
+        line = item
+        kind, level = classify(line, body, tiers)
+
+        if kind == "heading":
+            flush_para()
+            close_lists()
+            group = [line]
+            while (
+                i + 1 < len(ordered)
+                and isinstance(ordered[i + 1], Line)
+                and ordered[i + 1].page == line.page
+                and ordered[i + 1].block == line.block
+                and classify(ordered[i + 1], body, tiers) == (kind, level)
+            ):
+                i += 1
+                group.append(ordered[i])
+            content = join_runs([spans_to_runs(l.spans) for l in group], vocab)
+            # Heading weight is implied; don't wrap the whole heading in <strong>.
+            content = [Run(r.text, r.marks - {"strong"}, r.href) for r in content]
+            blocks.append(Heading(level, clean_runs(content)))
+            prev_body = None
+            i += 1
+            continue
+
+        if kind == "caption":
+            flush_para()
+            close_lists()
+            group = [line]
+            while (
+                i + 1 < len(ordered)
+                and isinstance(ordered[i + 1], Line)
+                and ordered[i + 1].page == line.page
+                and ordered[i + 1].block == line.block
+            ):
+                i += 1
+                group.append(ordered[i])
+            content = join_runs([spans_to_runs(l.spans) for l in group], vocab)
+            cap_kind, label, _rest = caption_label("".join(r.text for r in content))
+            caption = _strip_label(content)
+            info = page_of[line.page]
+            if cap_kind == "figure":
+                figure = last_block_on(line.page, Figure)
+                if figure is not None and not figure.caption:
+                    figure.caption, figure.label = caption, label
+                else:
+                    region = _figure_region(line, info, blocks)
+                    if region:
+                        data = rasterize(info, line.page, region)
+                        fig = Figure(Image(data, "png"), alt="", caption=caption, label=label)
+                        fig._page = line.page  # type: ignore[attr-defined]
+                        blocks.append(fig)
+                    else:
+                        warnings.append(
+                            f"page {line.page + 1}: found the caption \"{label}\" but no figure near it; kept as text"
+                        )
+                        blocks.append(Paragraph(content))
+            else:
+                table = last_block_on(line.page, Table)
+                if table is not None and not table.caption:
+                    table.caption, table.label = caption, label
+                else:
+                    pending_caption = ("table", label, caption, line)
+            prev_body = None
+            i += 1
+            continue
+
+        if kind == "item":
+            flush_para()
+            marker = list_marker(line.text)
+            ordered_list, number, _ = marker
+            flush_item()
+            while list_stack and line.x0 < list_stack[-1][0] - 4:
+                done = list_stack.pop()[1]
+                if list_stack:
+                    list_stack[-1][1].items[-1].children.append(done)
+            if list_stack and line.x0 > list_stack[-1][0] + 8 and list_stack[-1][1].items:
+                child = ListBlock(ordered_list, [], number)
+                list_stack.append((line.x0, child))
+            elif not list_stack or list_stack[-1][1].ordered != ordered_list:
+                if list_stack:
+                    close_lists()
+                new = ListBlock(ordered_list, [], number)
+                blocks.append(new)
+                list_stack.append((line.x0, new))
+            item_lines = [line]
+            prev_body = line
+            i += 1
+            continue
+
+        # Body line: continues a list item, continues a paragraph, or starts one.
+        info = page_of[line.page]
+        frame = frame_for(line, info, frame_table)
+        if item_lines:
+            prev = item_lines[-1]
+            hanging = line.x0 >= list_stack[-1][0] + 2 if list_stack else False
+            if hanging and not starts_paragraph(prev, line, pitch, body, frame | {"left": prev.x0}):
+                item_lines.append(line)
+                prev_body = line
+                i += 1
+                continue
+            # Nested children collapse back into the top list before it closes.
+            flush_item()
+            while len(list_stack) > 1:
+                done = list_stack.pop()[1]
+                list_stack[-1][1].items[-1].children.append(done)
+            list_stack.clear()
+        if para and prev_body is not None and starts_paragraph(prev_body, line, pitch, body, frame):
+            flush_para()
+        para.append(line)
+        prev_body = line
+        i += 1
+
+    flush_para()
+    flush_item()
+    while len(list_stack) > 1:
+        done = list_stack.pop()[1]
+        list_stack[-1][1].items[-1].children.append(done)
+    if pending_caption:
+        blocks.append(Paragraph(pending_caption[2]))
+        warnings.append(f"page {pending_caption[3].page + 1}: \"{pending_caption[1]}\" has no table; kept as text")
+
+    notes = [join_runs([spans_to_runs(l.spans) for l in group], vocab) for group in note_lines]
+    notes = [_strip_footnote_marker(n) for n in notes if n]
+
+    for block in blocks:
+        for attr in ("_page", "_box"):
+            if hasattr(block, attr):
+                delattr(block, attr)
+    return Document(blocks, str(path), warnings, notes)
+
+
+def _strip_label(content: Inlines) -> Inlines:
+    text = "".join(r.text for r in content)
+    found = caption_label(text)
+    if not found:
+        return content
+    cut = len(text) - len(found[2])
+    return clean_runs(strip_marker(content, cut))
+
+
+def _strip_footnote_marker(content: Inlines) -> Inlines:
+    text = "".join(r.text for r in content)
+    m = FOOTNOTE_START.match(text)
+    if not m:
+        return content
+    return clean_runs(strip_marker(content, m.end(1)))
+
+
+def _figure_region(caption: Line, info: PageInfo, blocks: list) -> tuple[float, float, float, float] | None:
+    """Box above a caption that holds vector drawings: a figure drawn as paths."""
+    above = [
+        l.y1
+        for l in info.lines
+        if l.y1 <= caption.y0 - 1 and not (l.x1 < caption.x0 - 5 or l.x0 > caption.x1 + 5)
+    ]
+    top = max(above) if above else info.height * MARGIN
+    bottom = caption.y0 - 1
+    if bottom - top < 30:
+        return None
+    drawn = [
+        d
+        for d in info.drawings
+        if d[1] >= top - 1 and d[3] <= bottom + 1 and (d[2] - d[0]) + (d[3] - d[1]) > 0
+    ]
+    if not drawn:
+        return None
+    x0 = min(d[0] for d in drawn)
+    x1 = max(d[2] for d in drawn)
+    y0 = min(d[1] for d in drawn)
+    y1 = max(d[3] for d in drawn)
+    pad = 4
+    return (max(0, x0 - pad), max(0, y0 - pad), min(info.width, x1 + pad), min(info.height, y1 + pad))
