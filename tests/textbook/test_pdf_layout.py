@@ -361,3 +361,15 @@ def test_code_lines_are_all_monospace():
     assert is_code(line("$ ls -l", mono=True))
     assert not is_code(line("Run ls to list files"))
     assert classify(line("$ ls -l", mono=True), 10, {}) == ("code", 0)
+
+
+from tools.textbook.readers.pdf import is_real_table  # noqa: E402
+
+
+def test_real_tables_are_mostly_filled():
+    assert is_real_table([["Rhythm", "Period"], ["Circadian", "24 h"], ["Ultradian", ""]])
+    grid = [[""] * 30 for _ in range(40)]
+    grid[3][2] = "a stray word"
+    assert not is_real_table(grid)                      # graph paper
+    assert not is_real_table([["only one row", "x"]])   # one row is not a table
+    assert not is_real_table([["a"], ["b"]])            # one column is not a table

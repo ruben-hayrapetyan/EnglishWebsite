@@ -283,3 +283,30 @@ def test_pdf_with_real_book_quirks(tmp_path):
             got.extend(outline(type("Doc", (), {"blocks": [block]})))
     assert got == samples.REAL_WORLD_OUTLINE
     assert doc.warnings == []
+
+
+def test_mostly_empty_ruled_grid_is_not_a_table(tmp_path):
+    from fpdf import FPDF
+
+    pdf = FPDF(format="A4", unit="mm")
+    pdf.add_page()
+    for x in range(20, 191, 10):  # a 17 x 10 ruled box, one cell filled
+        pdf.line(x, 40, x, 140)
+    for y in range(40, 141, 10):
+        pdf.line(20, y, 190, y)
+    pdf.set_font("helvetica", "", 11)
+    pdf.text(22, 47, "Name")
+    pdf.text(20, 160, "Text below the box.")
+    path = tmp_path / "box.pdf"
+    pdf.output(str(path))
+    doc = read(path)
+    assert not [b for b in doc.blocks if isinstance(b, Table)]
+    assert "Text below the box." in " ".join(texts(doc, Paragraph))
+
+
+def test_pdf_on_graph_paper_is_text_not_a_table(tmp_path):
+    doc = read(samples.grid_paper_pdf(tmp_path / "grid.pdf"))
+    assert not [b for b in doc.blocks if isinstance(b, Table)]
+    assert texts(doc, Heading) == ["Lecture notes"]
+    assert texts(doc, Paragraph) == ["Check the syllabus and the grading policy.", "Homework is due every Friday."]
+    assert any("graph or lined paper" in w for w in doc.warnings)

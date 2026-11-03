@@ -131,6 +131,21 @@ class PageInfo:
     tables: list[TableItem] = field(default_factory=list)
     drawings: list[tuple[float, float, float, float]] = field(default_factory=list)
     doc: object = None  # the open PyMuPDF document, for rasterizing figures
+    grid_paper: bool = False  # drawn as dense ruling (graph or lined paper)
+
+
+GRID_DRAWINGS = 400  # more ruling lines than any real table on one page
+
+
+def is_real_table(rows: list[list[str]]) -> bool:
+    """A grid with text in most of its cells. Ruled backgrounds, form boxes
+    and page borders also look like grids to the table finder, but they are
+    mostly empty."""
+    filled_rows = [row for row in rows if any(row)]
+    if len(filled_rows) < 2 or max(len(r) for r in filled_rows) < 2:
+        return False
+    cells = [cell for row in rows for cell in row]
+    return sum(1 for cell in cells if cell) >= 0.5 * len(cells)
 
 
 def parse_page_spec(spec: str | None, page_count: int) -> list[int]:
@@ -177,18 +192,25 @@ def extract(path: Path, pages: str | None = None) -> tuple[list[PageInfo], list[
             for link in page.get_links()
             if link.get("uri")
         ]
-        try:
-            tables = page.find_tables().tables
-        except Exception:  # table finder is best-effort
-            tables = []
+        drawings = page.get_cdrawings()  # C speed; same rectangles as get_drawings()
+        tables = []
+        if len(drawings) > GRID_DRAWINGS:
+            # Graph or lined paper (handwritten notes): the ruling is not a table.
+            info.grid_paper = True
+        else:
+            try:
+                tables = page.find_tables().tables
+            except Exception:  # table finder is best-effort
+                tables = []
         table_boxes = []
         for table in tables:
             rows = [[clean_text(cell or "").strip() for cell in row] for row in table.extract()]
+            if not is_real_table(rows):
+                continue
             rows = [row for row in rows if any(row)]
-            if len(rows) >= 2 and max(len(r) for r in rows) >= 2:
-                x0, y0, x1, y1 = table.bbox
-                info.tables.append(TableItem(rows, x0, y0, x1, y1, index))
-                table_boxes.append(table.bbox)
+            x0, y0, x1, y1 = table.bbox
+            info.tables.append(TableItem(rows, x0, y0, x1, y1, index))
+            table_boxes.append(table.bbox)
 
         raw = page.get_text("rawdict")
         for bno, block in enumerate(raw["blocks"]):
@@ -228,7 +250,7 @@ def extract(path: Path, pages: str | None = None) -> tuple[list[PageInfo], list[
                     continue
                 info.lines.append(Line(spans, x0, y0, x1, y1, index, bno, len(lines)))
         info.doc = doc
-        info.drawings = [tuple(d["rect"]) for d in page.get_drawings() if d.get("rect")]
+        info.drawings = [tuple(d["rect"]) for d in drawings if d.get("rect")]
         out.append(info)
     return out, indices
 
@@ -801,6 +823,10 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
     frame_table = frames(infos)
     page_of = dict(zip(indices, infos))
 
+    grid_pages = [index + 1 for info, index in zip(infos, indices) if info.grid_paper]
+    if grid_pages:
+        warnings.append(f"pages {_ranges(grid_pages)}: drawn on graph or lined paper, so tables there "
+                        "were not looked for; check the text came through as written")
     math_pages = sorted({l.page + 1 for l in all_lines if any(s.math for s in l.spans)})
     if math_pages:
         warnings.append(
