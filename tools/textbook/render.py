@@ -41,7 +41,7 @@ GENERATOR_NOTE = (
     "Do not edit by hand: change the source or the tool, then run "
     "`python -m tools.textbook build`. -->"
 )
-CONTENTS_FILE = "textbook.html"
+CONTENTS_FILE = "index.html"  # the textbook is the front page
 CREDIT_TOOL = "Claude Opus 5.5 (Anthropic)"
 RESERVED_IDS = {"main", "site-nav", "chapter-contents", "notes"}
 

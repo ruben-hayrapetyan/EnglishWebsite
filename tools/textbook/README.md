@@ -2,7 +2,7 @@
 
 Turns the textbook's source files into the site's pages:
 
-- `textbook.html`: the contents page, with every chapter grouped by unit.
+- `index.html`: the site's front page, which is the textbook's contents page, with every chapter grouped by unit.
 - `chapter-<id>.html`: one reading page per chapter that has a source.
 - `assets/img/chapter-<id>-<figure>.png|jpg`: the chapter figures.
 
