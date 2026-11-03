@@ -11,12 +11,12 @@ from tools.textbook.build import RECORD, build, stale, write
 
 
 def test_build_writes_pages_images_and_a_record(sample_site):
-    for name in ("textbook.html", "chapter-from-pdf.html", "chapter-from-word.html", "chapter-from-markdown.html",
+    for name in ("index.html", "chapter-from-pdf.html", "chapter-from-word.html", "chapter-from-markdown.html",
                  "assets/img/chapter-from-pdf-figure-1.png"):
         assert (sample_site / name).is_file(), name
     assert not (sample_site / "chapter-not-written.html").exists()
     record = (sample_site / RECORD).read_text().split()
-    assert "chapter-from-pdf.html" in record and "textbook.html" in record
+    assert "chapter-from-pdf.html" in record and "index.html" in record
 
 
 def test_a_fresh_build_matches_what_is_on_disk(sample_site):
@@ -99,7 +99,7 @@ def test_template_changes_reach_generated_pages(sample_site):
         '  <link rel="stylesheet" href="assets/css/main.css">',
         '  <script src="assets/js/a11y.js"></script>\n  <link rel="stylesheet" href="assets/css/main.css">'))
     write(sample_site, build(sample_site))
-    for name in ("textbook.html", "chapter-from-pdf.html"):
+    for name in ("index.html", "chapter-from-pdf.html"):
         assert '<script src="assets/js/a11y.js"></script>' in (sample_site / name).read_text()
 
 
@@ -122,9 +122,9 @@ def test_cli_build_then_check(site, capsys):
 
 
 def test_cli_check_fails_when_stale(sample_site, capsys):
-    (sample_site / "textbook.html").write_text("old")
+    (sample_site / "index.html").write_text("old")
     code, _, err = run(capsys, "build", "--check", "--root", str(sample_site))
-    assert code == 1 and "Run `python -m tools.textbook build`" in err and "textbook.html" in err
+    assert code == 1 and "Run `python -m tools.textbook build`" in err and "index.html" in err
 
 
 def test_cli_strict_fails_on_warnings(sample_site, capsys):

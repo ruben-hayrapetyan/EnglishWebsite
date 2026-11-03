@@ -36,7 +36,7 @@ def visit(new_page, url, **kw):
 
 
 def test_reader_goes_from_contents_through_every_chapter_and_back(new_page, book_url):
-    page = visit(new_page, f"{book_url}/textbook.html")
+    page = visit(new_page, f"{book_url}/index.html")
     page.get_by_role("link", name="Sample rhythms", exact=True).click()
     page.wait_for_url("**/chapter-from-pdf.html")
     assert page.locator("h1").inner_text() == "Sample rhythms"
@@ -47,12 +47,12 @@ def test_reader_goes_from_contents_through_every_chapter_and_back(new_page, book
     page.get_by_role("link", name="Previous chapter Sample rhythms in Word").click()
     page.wait_for_url("**/chapter-from-word.html")
     page.get_by_role("link", name="See all chapters").click()
-    page.wait_for_url("**/textbook.html")
+    page.wait_for_url("**/index.html")
     assert page.errors == []
 
 
 def test_chapter_without_a_source_is_not_a_link(new_page, book_url):
-    page = visit(new_page, f"{book_url}/textbook.html")
+    page = visit(new_page, f"{book_url}/index.html")
     card = page.locator("article#not-written")
     assert card.get_by_text("Coming soon").is_visible()
     assert card.locator("a").count() == 0
@@ -69,13 +69,13 @@ def test_in_chapter_contents_jumps_to_the_section_below_the_sticky_header(new_pa
 
 
 def test_menu_marks_the_contents_page(new_page, book_url):
-    page = visit(new_page, f"{book_url}/textbook.html")
-    assert page.locator('.site-nav a[aria-current="page"]').get_attribute("href") == "textbook.html"
+    page = visit(new_page, f"{book_url}/index.html")
+    assert page.locator('.site-nav a[aria-current="page"]').get_attribute("href") == "index.html"
 
 
 @pytest.mark.parametrize("theme", ["light", "dark"])
 @pytest.mark.parametrize("width", [390, 1440])
-@pytest.mark.parametrize("name", ["textbook.html", *CHAPTERS])
+@pytest.mark.parametrize("name", ["index.html", *CHAPTERS])
 def test_no_sideways_scroll(new_page, book_url, name, width, theme):
     page = visit(new_page, f"{book_url}/{name}?theme={theme}", width=width)
     overflow = page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
@@ -83,7 +83,7 @@ def test_no_sideways_scroll(new_page, book_url, name, width, theme):
     assert page.errors == []
 
 
-@pytest.mark.parametrize("name", ["textbook.html", *CHAPTERS])
+@pytest.mark.parametrize("name", ["index.html", *CHAPTERS])
 def test_readable_without_javascript(new_page, book_url, name):
     page = visit(new_page, f"{book_url}/{name}", javascript=False)
     assert page.locator("h1").is_visible()
@@ -107,7 +107,7 @@ def test_wide_table_scrolls_on_its_own_and_takes_focus(new_page, book_url):
 
 
 @pytest.mark.parametrize("theme", ["light", "dark"])
-@pytest.mark.parametrize("name", ["textbook.html", "chapter-from-pdf.html"])
+@pytest.mark.parametrize("name", ["index.html", "chapter-from-pdf.html"])
 def test_axe_finds_no_serious_problems(new_page, book_url, name, theme):
     axe_module = pytest.importorskip("axe_playwright_python.sync_playwright")
     page = visit(new_page, f"{book_url}/{name}?theme={theme}")

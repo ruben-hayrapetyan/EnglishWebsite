@@ -13,7 +13,7 @@ from lxml import html as lxml_html
 from book_helpers import ROOT
 from tools.textbook.render import GENERATOR_NOTE
 
-PAGES = ["textbook.html", "chapter-from-pdf.html", "chapter-from-word.html", "chapter-from-markdown.html"]
+PAGES = ["index.html", "chapter-from-pdf.html", "chapter-from-word.html", "chapter-from-markdown.html"]
 
 
 @pytest.fixture
@@ -103,7 +103,7 @@ def test_pager_links_chapters_in_order(pages):
 
 
 def test_contents_page_lists_every_chapter_and_marks_missing_ones(pages):
-    d = doc(pages["textbook.html"])
+    d = doc(pages["index.html"])
     cards = d.xpath("//article[contains(@class,'card')]")
     assert [c.get("id") for c in cards] == ["from-pdf", "from-word", "from-markdown", "not-written"]
     assert [c.xpath("string(.//p[@class='card__meta'])") for c in cards] == [f"Chapter {n}" for n in range(1, 5)]

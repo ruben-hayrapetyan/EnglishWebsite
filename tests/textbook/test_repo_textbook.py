@@ -29,7 +29,7 @@ def test_committed_pages_are_up_to_date():
 
 
 def test_contents_page_is_in_the_menu():
-    assert '{ label: "Textbook", href: "textbook.html" }' in (ROOT / "assets/js/site.js").read_text()
+    assert '{ label: "Textbook", href: "index.html" }' in (ROOT / "assets/js/site.js").read_text()
 
 
 def study_kits():
