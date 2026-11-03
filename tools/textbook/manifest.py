@@ -29,6 +29,11 @@ class Source:
     file: Path
     pages: str | None = None
     heading: str | None = None
+    # False for chapters taken from a whole-book upload: if the chapter's
+    # heading isn't in the book, it stays "Coming soon" with a warning.
+    required: bool = True
+    # Where the chapter sits inside a whole-book PDF (see split.py).
+    clip: tuple | None = None
 
 
 @dataclass

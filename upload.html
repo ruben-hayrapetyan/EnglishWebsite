@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add a chapter · English Website</title>
+  <meta name="description" content="Upload a chapter or the whole textbook as a PDF or Word file; it reaches the site through a pull request.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <script src="assets/js/a11y.js"></script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/upload.css">
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/upload.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+    <div class="container container--narrow page-body">
+      <header class="page-header" data-read-aloud>
+        <p class="page-header__meta">For authors</p>
+        <h1 class="page-header__title">Add a <mark class="highlight--draw">chapter</mark></h1>
+        <p class="page-header__lede">Upload a chapter, or the whole book, as a PDF or Word file. The site converts it and opens a pull request, so nothing is published until the owner merges it.</p>
+      </header>
+
+      <article class="prose" data-read-aloud>
+        <h2 id="how-title">How it works</h2>
+        <ol>
+          <li>You choose the file and say which chapter it is, or that it's the whole book.</li>
+          <li>This page puts the file in <code>textbook/sources/</code> on a new branch of the site's GitHub repository and opens a pull request.</li>
+          <li>GitHub converts the file into the chapter's page, runs the site's checks, and comments on the pull request with anything to fix, such as figures without alt text.</li>
+          <li>The owner reviews and merges it. The chapter appears on the site a minute later, and the contents page, the study hub and the author pages update with it.</li>
+        </ol>
+        <p>Any PDF works: exported from Word, Google Docs, LaTeX or Pages, one or two columns. Scanned pages (pictures of text) need text recognition first. A whole-book file is split into chapters wherever the book names each chapter, such as "Chapter 3: Sleep, caffeine and jet lag".</p>
+        <h2 id="token-title">What you need</h2>
+        <p>A GitHub account with write access to the site's repository, and an access token from it. <a href="https://github.com/settings/personal-access-tokens/new">Create a fine-grained token</a> for the <code>EnglishWebsite</code> repository with <strong>Contents</strong> and <strong>Pull requests</strong> set to "Read and write". This page sends the token only to GitHub and never stores it.</p>
+        <h2 id="github-title">Without this page</h2>
+        <p>You can also <a href="https://github.com/ruben-hayrapetyan/EnglishWebsite/upload/main/textbook/sources">upload the file on GitHub</a>, choosing "Create a new branch" and a pull request. Name it after the chapter's id, like <code>neuronal-activity.pdf</code>, or <code>book.pdf</code> for the whole book. Markdown chapters with images go this way too, with their images next to them.</p>
+      </article>
+
+      <div data-upload-area hidden>
+      <form class="stack upload" data-upload data-repo="ruben-hayrapetyan/EnglishWebsite" aria-labelledby="upload-title">
+        <h2 id="upload-title">Upload a file</h2>
+        <fieldset class="upload__choice stack" style="--stack-space: var(--space-2xs)">
+          <legend class="field__label">What are you uploading?</legend>
+          <label class="checkbox"><input type="radio" name="scope" value="chapter" checked> One chapter</label>
+          <label class="checkbox"><input type="radio" name="scope" value="book"> The whole book, every chapter in one file</label>
+        </fieldset>
+        <div class="field" data-chapter-field>
+          <label class="field__label" for="upload-chapter">Chapter</label>
+          <select class="input" id="upload-chapter" name="chapter">
+            <!-- textbook:chapter-options -->
+            <option value="history-of-chronobiology">Chapter 1: A brief history of chronobiology</option>
+            <option value="molecular-clock">Chapter 2: The basics of biorhythms: the molecular clock</option>
+            <option value="sleep-caffeine-jet-lag">Chapter 3: Sleep, caffeine and jet lag</option>
+            <option value="hunger-digestion-metabolism">Chapter 4: Hunger, digestion and metabolism</option>
+            <option value="chronotypes">Chapter 5: Chronotypes</option>
+            <option value="circulation-cardiac-cycle">Chapter 6: Circulation and the cardiac cycle</option>
+            <option value="neuronal-activity">Chapter 7: Neuronal activity: spikes and local field potentials</option>
+            <option value="breathing-rhythm">Chapter 8: The breathing rhythm</option>
+            <option value="immunity">Chapter 9: Immunity</option>
+            <option value="hair-growth-shedding">Chapter 10: Hair growth and shedding</option>
+            <option value="breeding-migration">Chapter 11: Breeding and migration</option>
+            <option value="predator-prey-dynamics">Chapter 12: Predator-prey population dynamics</option>
+            <!-- /textbook -->
+          </select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="upload-file">File</label>
+          <input class="input" id="upload-file" name="file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-describedby="upload-file-hint" required>
+          <p class="field__hint" id="upload-file-hint">PDF or Word (.docx), up to 50 MB.</p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="upload-token">GitHub access token</label>
+          <input class="input" id="upload-token" name="token" type="password" autocomplete="off" spellcheck="false" aria-describedby="upload-token-hint" required>
+          <p class="field__hint" id="upload-token-hint">Needs Contents and Pull requests access to the repository. See "What you need" above.</p>
+        </div>
+        <div class="cluster">
+          <button class="button" type="submit">Upload and open a pull request</button>
+        </div>
+        <p class="upload__status" role="status" aria-live="polite" data-upload-status></p>
+      </form>
+      </div>
+    </div>
+  </main>
+
+  <aside class="ai-credit" aria-label="Use of generative AI">
+    <p class="container">Generative AI: Claude Opus 5.5 (Anthropic) wrote this page's code and text.</p>
+  </aside>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>

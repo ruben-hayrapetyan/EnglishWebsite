@@ -29,7 +29,19 @@ INVISIBLE = {
     "‌": "",   # zero-width non-joiner
     "⁠": "",   # word joiner
     "﻿": "",   # byte-order mark
+    "‎": "",   # left-to-right mark
+    "‏": "",   # right-to-left mark
 }
+SOFT_HYPHEN = "­"
+
+def strip_invisible(text: str) -> str:
+    """Remove zero-width and direction marks, nothing else. Soft hyphens
+    stay: line joining needs them to rejoin a word split across lines."""
+    for src, dst in INVISIBLE.items():
+        if src != SOFT_HYPHEN:
+            text = text.replace(src, dst)
+    return text
+
 
 SPACES = re.compile(r"[ \t\r\n\f\v  -   　]+")
 
@@ -177,7 +189,9 @@ def caption_label(text: str) -> tuple[str, str, str] | None:
     return kind, label, text[m.end():].strip()
 
 
-BULLET = re.compile(r"^\s*([•◦▪●‣⁃∙·–—*\-])\s+")
+# Bullet glyphs, including the hollow and square ones Word and Google Docs use
+# for second- and third-level items (○, ■, □, ➢).
+BULLET = re.compile(r"^\s*([•◦▪●‣⁃∙·–—*\-○■□➢➤►✓])\s+")
 NUMBERED = re.compile(r"^\s*\(?(\d{1,3}|[a-z]|[ivx]{1,4})[.)]\s+")
 
 

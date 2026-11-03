@@ -36,8 +36,10 @@ from ..model import (
     Paragraph,
     Run,
     Table,
+    plain_text,
 )
 from ..normalize import (
+    strip_invisible,
     caption_label,
     comparable,
     clean_runs,
@@ -172,7 +174,28 @@ def _inside(x: float, y: float, box) -> bool:
     return box[0] - 1 <= x <= box[2] + 1 and box[1] - 1 <= y <= box[3] + 1
 
 
-def extract(path: Path, pages: str | None = None) -> tuple[list[PageInfo], list[int]]:
+# Where a chapter starts and ends inside a whole-book PDF: content on the
+# start page above start_y, and on the end page from end_y down, belongs to
+# the neighbouring chapters. (start page, start y, end page or None, end y)
+Clip = tuple[int, float, "int | None", float]
+
+
+def clip_page(info: PageInfo, index: int, clip: Clip | None) -> None:
+    if clip is None:
+        return
+    start_page, start_y, end_page, end_y = clip
+
+    def keep(item) -> bool:
+        if index == start_page and item.y0 < start_y:
+            return False
+        return not (index == end_page and item.y0 >= end_y)
+
+    info.lines = [l for l in info.lines if keep(l)]
+    info.images = [i for i in info.images if keep(i)]
+    info.tables = [t for t in info.tables if keep(t)]
+
+
+def extract(path: Path, pages: str | None = None, clip: Clip | None = None) -> tuple[list[PageInfo], list[int]]:
     import pymupdf  # imported here so the rest of the package loads without it
 
     pymupdf.no_recommend_layout()
@@ -241,7 +264,11 @@ def extract(path: Path, pages: str | None = None) -> tuple[list[PageInfo], list[
                     # Split the span where a link starts or ends: a link often
                     # covers only some words of a span.
                     for text, href in _split_by_links(s["chars"], links):
-                        spans.append(Span(text=text, href=href, **style))
+                        # Drop invisible characters now (Google Docs puts a zero-width
+                        # space after every bullet), so markers and words are seen as they look.
+                        text = strip_invisible(text)
+                        if text:
+                            spans.append(Span(text=text, href=href, **style))
                 if not "".join(s.text for s in spans).strip():
                     continue
                 x0, y0, x1, y1 = line["bbox"]
@@ -251,6 +278,7 @@ def extract(path: Path, pages: str | None = None) -> tuple[list[PageInfo], list[
                 info.lines.append(Line(spans, x0, y0, x1, y1, index, bno, len(lines)))
         info.doc = doc
         info.drawings = [tuple(d["rect"]) for d in drawings if d.get("rect")]
+        clip_page(info, index, clip)
         out.append(info)
     return out, indices
 
@@ -421,7 +449,7 @@ def _ranges(numbers: list[int]) -> str:
 # exporters (Google Docs, XeTeX) write it as separate text from the words
 # after it on the same line: "-" | "Issues with RNNs", "2" | "Convergence".
 FRAGMENT = re.compile(
-    r"^\s*(\(?[0-9A-Za-z]{1,3}\)?(\.[0-9]{1,3})*[.)]?|[\u2022\u25e6\u25aa\u25cf\u2023\u2043\u2219\u00b7\u2013\u2014*\-])\s*$"
+    r"^\s*(\(?[0-9A-Za-z]{1,3}\)?(\.[0-9]{1,3})*[.)]?|[\u2022\u25e6\u25aa\u25cf\u2023\u2043\u2219\u00b7\u2013\u2014*\-\u25cb\u25a0\u25a1\u27a2\u27a4\u25ba\u2713])\s*$"
 )
 
 
@@ -771,12 +799,22 @@ def starts_paragraph(prev: Line, line: Line, pitch: float, body: float, frame: d
 
 
 def typical_pitch(lines: list[Line], body: float) -> float:
+    """The usual distance from one line to the next, from the most common gap.
+
+    Lines are taken top to bottom per page, whatever block they're in: some
+    exporters (Google Docs) put every line in its own block, and double
+    spacing must still read as one paragraph."""
+    ordered = sorted(lines, key=lambda l: (l.page, l.y0))
     gaps = [
-        b.y0 - a.y0
-        for a, b in zip(lines, lines[1:])
-        if a.page == b.page and a.block == b.block and 0 < b.y0 - a.y0 < body * 3
+        round(b.y0 - a.y0)
+        for a, b in zip(ordered, ordered[1:])
+        if a.page == b.page and body * 0.8 < b.y0 - a.y0 < body * 3.2 and abs(a.size - b.size) < 1
     ]
-    return statistics.median(gaps) if gaps else body * 1.25
+    if not gaps:
+        return body * 1.25
+    # The most common gap is the line spacing; paragraph gaps are fewer and larger.
+    counts = Counter(gaps)
+    return float(min(counts.items(), key=lambda kv: (-kv[1], kv[0]))[0])
 
 
 def frames(pages: list[PageInfo]) -> dict[tuple[int, int], dict]:
@@ -801,8 +839,8 @@ def frame_for(line: Line, info: PageInfo, table: dict) -> dict:
     return table.get((line.page, col)) or {"left": line.x0, "right": line.x1, "width": info.width}
 
 
-def read_pdf(path: Path, pages: str | None = None) -> Document:
-    infos, indices = extract(path, pages)
+def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> Document:
+    infos, indices = extract(path, pages, clip)
     warnings = check_scanned(infos, indices, path.name)
     for info in infos:
         merge_fragments(info)
@@ -880,10 +918,18 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
         flush_item()
         list_stack.clear()
 
-    def last_block_on(page: int, kind):
-        if blocks and isinstance(blocks[-1], kind) and getattr(blocks[-1], "_page", None) == page:
-            return blocks[-1]
+    def last_block_on(page: int, kind, reach: int = 1):
+        """The latest block of a kind on this page, looking back past at most
+        `reach` - 1 short blocks (such as a figure's title line)."""
+        for block in reversed(blocks[-reach:]):
+            if isinstance(block, kind) and getattr(block, "_page", None) == page:
+                return block
+            if not isinstance(block, (Paragraph, Heading)) or len(plain_text(block.content)) > 160:
+                return None
         return None
+
+    # Figures whose caption sits above them: id(image item) -> (label, caption).
+    caption_above: dict[int, tuple[str, Inlines]] = {}
 
     ordered: list[Item] = []
     for info in infos:
@@ -895,6 +941,8 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
         item = ordered[i]
         if isinstance(item, ImageItem):
             figure = Figure(Image(item.data, item.ext), alt="")
+            if id(item) in caption_above:
+                figure.label, figure.caption = caption_above.pop(id(item))
             figure._page = item.page  # type: ignore[attr-defined]
             figure._box = (item.x0, item.y0, item.x1, item.y1)  # type: ignore[attr-defined]
             if para and not item_lines and not ends_sentence(para[-1].text):
@@ -977,9 +1025,12 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
             caption = _strip_label(content)
             info = page_of[line.page]
             if cap_kind == "figure":
-                figure = last_block_on(line.page, Figure)
+                figure = last_block_on(line.page, Figure, reach=3)
+                below = _image_below(ordered, i, line)
                 if figure is not None and not figure.caption:
                     figure.caption, figure.label = caption, label
+                elif below is not None:
+                    caption_above[id(below)] = (label, caption)  # the caption is above its figure
                 else:
                     region = _figure_region(line, info, blocks)
                     if region:
@@ -1095,6 +1146,23 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
             if hasattr(block, attr):
                 delattr(block, attr)
     return Document(blocks, str(path), warnings, notes)
+
+
+def _image_below(ordered: list, i: int, caption: Line) -> "ImageItem | None":
+    """An image straight below a caption on the same page (at most one short
+    line between them), for captions placed above their figure."""
+    lines_between = 0
+    for item in ordered[i + 1 : i + 4]:
+        if item.page != caption.page:
+            return None
+        if isinstance(item, ImageItem):
+            return item if item.y0 - caption.y1 < caption.size * 6 else None
+        if not isinstance(item, Line) or len(item.text) > 120:
+            return None
+        lines_between += 1
+        if lines_between > 1:
+            return None
+    return None
 
 
 def _strip_label(content: Inlines) -> Inlines:

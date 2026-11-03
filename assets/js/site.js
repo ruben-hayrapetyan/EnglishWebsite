@@ -15,6 +15,7 @@ const SITE = {
   ],
   footerLinks: [
     { label: "Style guide", href: "styleguide.html" },
+    { label: "Add a chapter", href: "upload.html" },
   ],
 };
 

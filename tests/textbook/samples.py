@@ -459,3 +459,65 @@ def grid_paper_pdf(path: Path) -> Path:
     pdf.text(20, 60, "Homework is due every Friday.")
     pdf.output(str(path))
     return path
+
+
+# ---- A whole book compiled from several authors --------------------------------
+# Rebuilds what a real class textbook (one Google Doc per author, merged) looked
+# like: a contents page, chapters marked in different ways and set in different
+# fonts, double spacing with one line per text block, captions above and below
+# figures, and a chapter that isn't in the book yet.
+
+COMPILED_CHAPTERS = [
+    {"id": "first-topic", "title": "First topic", "unit": "first", "authors": ["ada"]},
+    {"id": "second-topic", "title": "Second topic", "unit": "first", "authors": ["ben"]},
+    {"id": "third-topic", "title": "Third topic", "unit": "second", "authors": ["cy"]},
+    {"id": "fourth-topic", "title": "Fourth topic", "unit": "second", "authors": ["cy"]},
+]
+
+
+def compiled_book_pdf(path: Path) -> Path:
+    from fpdf import FPDF
+
+    pdf = FPDF(format="Letter", unit="pt")
+    pdf.core_fonts_encoding = "windows-1252"
+    pdf.set_auto_page_break(False)
+
+    def text(x, y, s, family="helvetica", style="", size=11):
+        pdf.set_font(family, style, size)
+        pdf.text(x, y, s)
+
+    # Contents page: every chapter named, as bullets and as plain lines.
+    pdf.add_page()
+    text(72, 72, "Contents", style="B", size=16)
+    for n, title in enumerate(["First topic", "Second topic", "Third topic", "Fourth topic"]):
+        text(72, 110 + n * 20, f"• {title.upper()}")
+        text(300, 110 + n * 20, title, style="B")
+
+    # Chapter 1, by one author: Helvetica 11 labels, Times 12 body, double spaced.
+    pdf.add_page()
+    text(72, 72, "Chapter X: First topic", style="B")
+    lines = ["The first paragraph of the first topic runs over three", "double spaced lines and is still one paragraph",
+             "until it ends here."]
+    for n, line in enumerate(lines):
+        text(72, 110 + n * 25, line, family="times", size=12)
+    text(72, 200, "A second paragraph follows after a larger gap.", family="times", size=12)
+    text(72, 240, "Figure 1: A picture with its caption above it.", size=10)
+    pdf.image(io.BytesIO(png()), x=72, y=250, w=200, h=100)
+    text(72, 380, "The topic ends after the figure.", family="times", size=12)
+
+    # Chapter 2, by another author: Times 12 bold label, and a heading that
+    # mentions the chapter title again.
+    pdf.add_page()
+    text(72, 72, "Chapter 4: Second topic", family="times", style="B", size=12)
+    text(72, 110, "Text that belongs to the second topic.", family="times", size=12)
+    pdf.image(io.BytesIO(png()), x=72, y=130, w=200, h=100)
+    text(72, 250, "A bold title for the figure", style="B")
+    text(72, 268, "Figure 2. A caption below the figure and its title.", size=10)
+    text(72, 310, "Second topic in practice", family="times", style="B", size=14)
+    text(72, 340, "More text about the second topic.", family="times", size=12)
+
+    # Chapter 3 shares its page with the end of chapter 2.
+    text(72, 420, "UNIT AND CHAPTER: Third topic", style="B")
+    text(72, 450, "Text that belongs to the third topic.")
+    pdf.output(str(path))
+    return path

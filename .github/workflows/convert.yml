@@ -1,0 +1,112 @@
+# Converts uploaded textbook sources on a pull request.
+#
+# The upload page (upload.html), or GitHub's own upload, puts a file in
+# textbook/sources/ on a branch and opens a pull request. This job runs the
+# converter, commits the generated pages to that pull request, runs the full
+# test suite, and comments with the converter's warnings. The owner merges.
+name: Convert uploads
+
+on:
+  pull_request:
+    paths:
+      - "textbook/**"
+
+permissions:
+  contents: write        # push the generated pages to the pull request
+  pull-requests: write   # comment with the converter's report
+  statuses: write        # report test results on the pushed commit
+
+jobs:
+  convert:
+    # Only branches of this repository; forks can't be pushed to.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI: "true"
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install development tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Convert
+        id: convert
+        run: |
+          set +e
+          python -m tools.textbook build > build.out 2> build.err
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          cat build.out build.err
+
+      - name: Commit the generated pages
+        id: commit
+        if: steps.convert.outputs.code == '0'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898732+github-actions[bot]@users.noreply.github.com"
+          git add -A -- . ':!build.out' ':!build.err'
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Convert uploaded sources with tools/textbook"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Run the tests
+        id: tests
+        if: steps.convert.outputs.code == '0'
+        run: python -m pytest
+
+      # Pushes made with the workflow's token don't start other workflows,
+      # so record the test result on the new commit directly.
+      - name: Report the tests on the generated commit
+        if: always() && steps.commit.outputs.changed == 'true'
+        run: |
+          state=$([ "${{ steps.tests.outcome }}" = "success" ] && echo success || echo failure)
+          gh api "repos/${{ github.repository }}/statuses/${{ steps.commit.outputs.sha }}" \
+            -f state="$state" -f context="Tests" \
+            -f description="Full test suite after converting the upload" \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Comment with the converter's report
+        if: always()
+        run: |
+          {
+            if [ "${{ steps.convert.outputs.code }}" != "0" ]; then
+              echo "### The upload couldn't be converted"
+              echo "Nothing was published. Fix the problem below, then upload the file again."
+            elif [ "${{ steps.tests.outcome }}" != "success" ]; then
+              echo "### Converted, but the site's checks failed"
+              echo "See the [test run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+            else
+              echo "### Converted"
+              echo "The generated pages are in this pull request, and the site's checks pass. Merge it to publish."
+            fi
+            if [ -s build.err ]; then
+              echo
+              echo "**Converter messages** (missing alt text is set in \`textbook/textbook.json\`, see \`tools/textbook/README.md\`):"
+              echo '```'
+              head -c 60000 build.err
+              echo '```'
+            fi
+          } > report.md
+          gh pr comment "$PR" --body-file report.md
+
+      - name: Fail if the upload couldn't be converted or tested
+        if: steps.convert.outputs.code != '0' || steps.tests.outcome == 'failure'
+        run: exit 1

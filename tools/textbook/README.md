@@ -21,16 +21,20 @@ Setup is in the main README, under "Run the tests".
 
 ## Add or update a chapter
 
-1. Put the source file in `textbook/sources/`.
-2. Point the chapter at it in `textbook/textbook.json`:
+**The usual way: the website.** Open `upload.html` ("Add a chapter" in the footer). Pick the chapter, or "the whole book", choose the PDF or Word file, and paste a GitHub token. The page opens a pull request. The **Convert uploads** workflow (`.github/workflows/convert.yml`) converts it on that pull request, commits the generated pages, runs the tests and comments with any warnings. Merge it to publish.
 
-   ```json
-   { "id": "neuronal-activity", "title": "Neuronal activity: spikes and local field potentials",
-     "unit": "ultradian", "authors": ["daniel"],
-     "source": "sources/neuronal-activity.pdf" }
-   ```
+**Without the page:** upload the file on GitHub into `textbook/sources/` on a new branch and open a pull request. The same workflow converts it.
 
-3. Run `build`. Read the warnings, fix what they point at, then commit the source, the JSON and the generated files together.
+Files are matched to chapters **by name**, so nobody has to edit `textbook.json` to add a source:
+
+| File in `textbook/sources/` | Becomes |
+|---|---|
+| `<chapter id>.pdf`, `.docx` or `.md` | That chapter, e.g. `neuronal-activity.pdf` |
+| `book.pdf`, `.docx` or `.md` | The whole book. Each chapter without its own file is cut out where the book names it: a bold or larger line such as "Chapter 7: Neuronal activity", "Chapter X: Chronotypes", "UNIT AND CHAPTER: …" or just the title. Contents pages and bullets are skipped. Each chapter is then converted on its own, so authors' different fonts don't confuse each other. A chapter that isn't found stays "Coming soon", with a warning. (A Word or Markdown book is split by its headings.) |
+
+Two files for one chapter (say `chronotypes.pdf` and `chronotypes.docx`) is an error; the upload page removes the old one for you.
+
+**By hand, for special cases:** set `source` in `textbook/textbook.json`, which always wins over file names. Then run `build` and commit the source, the JSON and the generated files together.
 
 The source can take three shapes:
 
