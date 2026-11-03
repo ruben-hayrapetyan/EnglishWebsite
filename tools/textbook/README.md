@@ -58,7 +58,7 @@ Run `inspect` on a combined book to see the exact heading text to use.
 
 | Format | How it's read |
 |---|---|
-| **PDF** (from Word, Google Docs, LaTeX, Pages...) | Structure is rebuilt from layout. Headings come from font size, or short bold lines. Running heads, page numbers and repeated logos are dropped. Words split across lines are rejoined. Paragraphs continue across page and column breaks. Two-column pages read left column first. Lists are found by bullets and numbers, captions by "Figure N", "Fig. N" or "Table N". Bordered tables become HTML tables. Figures drawn as vector paths (for example matplotlib exports) are rendered to PNG. Footnotes become a Notes section. |
+| **PDF** (from Word, Google Docs, LaTeX, Pages...) | Structure is rebuilt from layout. Headings come from font size, or short bold lines. The reader also handles:<br>• running heads and page numbers, even when they alternate between left and right pages or carry the page number<br>• repeated logos, and the source's own table of contents (the site builds its own)<br>• words split across lines (rejoined) and paths broken after a slash<br>• paragraphs that continue across page breaks, column breaks or a figure placed mid-sentence<br>• two-column pages, read left column first<br>• bullets and section numbers written as separate text from their words<br>• lists, including numbered items that run over a page with different margins<br>• monospace lines, which become code blocks<br>• captions ("Figure N", "Fig. N", "Table N") and tables, with or without ruled borders<br>• figures drawn as vector paths (for example matplotlib exports), rendered to PNG<br>• footnotes, collected into a Notes section |
 | **Word .docx** (also what Google Docs, Pages and LibreOffice export) | Heading styles, list numbering (including nesting), image alt text, the Caption style, tables, links, quotes and code are read directly. |
 | **Markdown** (.md) | CommonMark plus tables. Images are PNG or JPEG files next to the Markdown file. Raw HTML is dropped, never passed through. |
 
@@ -70,6 +70,7 @@ Anything else (.doc, .odt, .pages, .tex, .html) gets an error that says how to e
 - **Equations** are kept as plain text, with a warning naming the pages. Check them by hand.
 - **PDFs carry no alt text.** Figures from a PDF get their caption as alt text, with a warning, until you add `figures` alt text in `textbook.json`.
 - **Word footnotes** aren't converted yet; you get a warning.
+- **Unusual tables** (merged cells, a borderless table on a two-column page) may come out as plain text. A "Table N" caption with no table found gives a warning.
 
 ## How it's built
 
@@ -91,7 +92,7 @@ Tests are in `tests/textbook/`:
 | Kind | Files |
 |---|---|
 | Glass-box units | `test_normalize.py`, `test_pdf_layout.py` (each layout heuristic on hand-built lines), `test_structure.py`, `test_render.py`, `test_manifest.py` |
-| Black-box | `test_readers.py` (real PDF, .docx and .md files written by `samples.py`), `test_cross_format.py` (the same chapter in all three formats must give the same outline), `test_build.py` (build, CLI, determinism, cleanup) |
+| Black-box | `test_readers.py` (real PDF, .docx and .md files written by `samples.py`, including `real_world_pdf`, which rebuilds the quirks found in real books), `test_cross_format.py` (the same chapter in all three formats must give the same outline), `test_build.py` (build, CLI, determinism, cleanup) |
 | Contracts | `test_generated_pages.py` (site rules and notes and read-aloud needs on real output), `test_repo_textbook.py` (committed pages are fresh; study kits and author pages match `textbook.json`) |
 | End to end | `test_e2e_chapters.py` (a reader clicking through the contents and chapters in Chromium: both themes, 390px and 1440px, keyboard, JavaScript off, axe) |
 

@@ -347,3 +347,93 @@ Table 1. {TABLE_CAPTION}
 
 
 WRITERS = {"pdf": sample_pdf, "docx": sample_docx, "md": sample_markdown}
+
+
+# ---- A PDF with the quirks real books have -------------------------------------
+# Each quirk below was found converting real PDFs (a LibreOffice book, XeTeX and
+# Google Docs exports). Real files can't be committed, so this rebuilds them.
+
+REAL_WORLD_OUTLINE = [
+    ("list", False, ("Bullet one", "Bullet two")),
+    ("p", "Imagine a maze and we are able to stand in the middle of it."),
+    ("figure", "Figure 1", "A picture of a maze."),
+    ("list", True, ("First item that wraps onto a second line without any indent.",
+                    "Second item that wraps under its words and keeps going here.",
+                    "Third item that wraps as well and also keeps going here.")),
+    ("h", 2, "2 Second section"),
+    ("p", "Files live in /usr/bin on most systems."),
+    ("code", "$ ls\nDesktop Music"),
+    ("table", "Table 1", "Shortcuts", (("Shortcut", "Result"), ("cd", "Go home."),
+                                       ("cd -", "Go back to the previous directory."))),
+    ("p", "The end."),
+]
+
+
+def real_world_pdf(path: Path) -> Path:
+    from fpdf import FPDF
+
+    pdf = FPDF(format="A4", unit="mm")
+    pdf.core_fonts_encoding = "windows-1252"
+
+    def page(number: int, head: str | None):
+        pdf.add_page()
+        left = 30 if number % 2 == 0 else 20  # left and right pages differ
+        pdf.set_font("helvetica", "", 9)
+        # Running heads sit below the top 8% (y = 28mm of 297); the folio
+        # sits above the bottom 8%. Even pages: "<number>  <book title>".
+        # Page 3: just a small copy of a heading, with no number.
+        if head:
+            pdf.text(left, 28, head)
+        pdf.text(100, 266, str(number))
+        return left
+
+    def text(x, y, s, size=11, style="", family="helvetica"):
+        pdf.set_font(family, style, size)
+        pdf.text(x, y, s)
+
+    left = page(1, None)
+    text(left, 45, "Real world", size=18, style="B")
+    # A bullet glyph drawn as its own text, a little lower than its words.
+    for n, item in enumerate(["Bullet one", "Bullet two"]):
+        text(left, 57.4 + n * 6, "-")
+        text(left + 6, 57 + n * 6, item)
+    # A figure placed in the middle of a sentence.
+    text(left, 75, "Imagine a maze and we are able to")
+    pdf.image(io.BytesIO(png(200, 100)), x=left, y=79, w=60, h=30)
+    text(left, 115, "Figure 1: A picture of a maze.", size=9)
+    text(left, 122, "stand in the middle of it.")
+    # A numbered item whose wrapped line starts back at the marker.
+    text(left, 134, "1. First item that wraps onto a second line")
+    text(left, 140, "without any indent.")
+
+    # The list goes on over the page, where most lines hang under the
+    # item's words, so this page's text edge looks further right.
+    left = page(2, "2   Real world")
+    y = 45
+    for n, first, rest in [(2, "Second item that wraps under its words", ["and keeps", "going here."]),
+                           (3, "Third item that wraps as well", ["and also keeps", "going here."])]:
+        text(left, y, f"{n}. {first}")
+        for line in rest:
+            y += 6
+            text(left + 6, y, line)
+        y += 6
+
+    left = page(3, "Second section")
+    # Section number and title written as separate texts on one baseline.
+    text(left, 45, "2", size=16, style="B")
+    text(left + 9, 45, "Second section", size=16, style="B")
+    text(left, 57, "Files live in /usr/")
+    text(left, 63, "bin on most systems.")
+    text(left, 75, "$ ls", size=10, family="courier")  # code that runs over the page
+
+    left = page(4, "4   Real world")
+    text(left, 45, "Desktop Music", size=10, family="courier")
+    # A table drawn without borders, with a wrapped cell.
+    text(left, 60, "Table 1: Shortcuts", size=9)
+    for n, (a, b) in enumerate([("Shortcut", "Result"), ("cd", "Go home."), ("cd -", "Go back to the previous")]):
+        text(left, 68 + n * 6, a, style="B" if n == 0 else "")
+        text(left + 40, 68 + n * 6, b, style="B" if n == 0 else "")
+    text(left + 40, 86, "directory.")
+    text(left, 100, "The end.")
+    pdf.output(str(path))
+    return path

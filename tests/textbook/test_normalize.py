@@ -150,3 +150,9 @@ def test_does_not_end_sentence(text):
 )
 def test_comparable_ignores_numbering_case_and_punctuation(a, b):
     assert comparable(a) == comparable(b)
+
+
+def test_paths_broken_after_a_slash_rejoin_without_a_space():
+    assert join_lines("change to /usr/", "bin now", frozenset()) == "change to /usr/bin now"
+    assert join_lines("see https://example.org/", "docs", frozenset()) == "see https://example.org/docs"
+    assert join_lines("either a/", "/b", frozenset()) == "either a/ /b"

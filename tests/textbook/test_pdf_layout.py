@@ -247,6 +247,11 @@ def test_typical_pitch_is_the_median_line_spacing():
     assert typical_pitch([], 10) == 12.5
 
 
+def test_join_runs_keeps_formatting_that_spans_the_line_break():
+    lines = [[Run("as shown by a", frozenset({"em"}))], [Run("graphical file manager", frozenset({"em"}))]]
+    assert join_runs(lines, frozenset()) == [Run("as shown by a graphical file manager", frozenset({"em"}))]
+
+
 def test_join_runs_rejoins_split_words_and_keeps_formatting():
     lines = [[Run("the circa-")], [Run("dian", frozenset({"em"})), Run(" clock")]]
     assert join_runs(lines, frozenset()) == [Run("the circa"), Run("dian", frozenset({"em"})), Run(" clock")]
@@ -259,3 +264,100 @@ def test_spans_to_runs_maps_styles_to_marks():
 
 def test_strip_marker_removes_leading_characters_across_runs():
     assert strip_marker([Run("•"), Run(" item")], 2) == [Run("item")]
+
+
+# ---- Quirks of real PDFs -------------------------------------------------------
+
+from tools.textbook.readers.pdf import (  # noqa: E402
+    find_text_tables,
+    is_code,
+    merge_fragments,
+    remove_contents_pages,
+)
+
+
+def test_marker_fragment_joins_its_words_even_when_drawn_lower():
+    marker = line("•", x0=50, x1=54, y0=101)          # sorts after the words
+    words = line("Find two phases", x0=62, y0=100)
+    number = line("2", x0=50, x1=56, y0=200, size=16)
+    title = line("Convergence", x0=70, y0=200, size=16)
+    far = line("-", x0=50, x1=54, y0=300)
+    other = line("too far away", x0=400, y0=300)
+    info = page_with([words, marker, number, title, far, other])
+    merge_fragments(info)
+    assert sorted(l.text for l in info.lines) == ["-", "2 Convergence", "too far away", "• Find two phases"]
+
+
+def test_contents_pages_are_dropped():
+    toc = page_with([line("Contents", size=16, y0=50)] +
+                    [line(f"{n} – Chapter {n}" + "." * 20 + str(n * 7), y0=80 + n * 14) for n in range(1, 5)])
+    body = page_with([line("Real text. . . and an ellipsis", page=1)])
+    assert remove_contents_pages([toc, body]) == [1]
+    assert toc.lines == [] and len(body.lines) == 1
+
+
+def test_running_heads_beyond_the_fixed_margin():
+    """Heads at 9% from the top and folios at 89%, as in real books."""
+    pages = []
+    for n in range(4):
+        head = f"{n + 7}   Navigation" if n % 2 else f"Section {n}   {n + 7}"
+        pages.append(page_with([
+            line(head, y0=73, page=n),
+            line(f"Body text on page {n}, long enough to be ordinary text.", y0=150, page=n),
+            line(str(n + 7), y0=707, page=n),
+        ]))
+    remove_running_heads(pages)
+    assert [[l.text for l in p.lines] for p in pages] == [
+        [f"Body text on page {n}, long enough to be ordinary text."] for n in range(4)]
+
+
+def test_a_small_copy_of_a_heading_at_the_top_is_a_running_head():
+    pages = [
+        page_with([line("Measuring a period", size=16, y0=200), line("Body.", y0=230)]),
+        page_with([line("Measuring a period", y0=60, page=1), line("More body.", y0=150, page=1)]),
+    ]
+    remove_running_heads(pages)
+    assert [l.text for l in pages[1].lines] == ["More body."]
+    assert [l.text for l in pages[0].lines] == ["Measuring a period", "Body."]
+
+
+def test_punctuation_alone_is_never_a_running_head():
+    pages = [page_with([line("-", y0=60, page=n), line("Text", y0=200, page=n)]) for n in range(3)]
+    remove_running_heads(pages)
+    assert all(p.lines[0].text == "-" for p in pages)
+
+
+def test_borderless_table_with_a_wrapped_cell():
+    rows = [("Shortcut", "Result", 300), ("cd", "Go home.", 320), ("cd -", "Go back to the previous", 340)]
+    lines = [line("Some text before the table.", y0=260, x0=50, x1=500)]
+    for a, b, y in rows:
+        lines += [line(a, x0=50, y0=y), line(b, x0=200, y0=y)]
+    lines += [line("directory.", x0=200, y0=354), line("Text after the table, much later.", y0=420, x0=50, x1=500)]
+    info = page_with(lines)
+    find_text_tables(info)
+    (table,) = info.tables
+    assert table.rows == [["Shortcut", "Result"], ["cd", "Go home."], ["cd -", "Go back to the previous directory."]]
+    assert [l.text for l in info.lines] == ["Some text before the table.", "Text after the table, much later."]
+
+
+def test_side_by_side_math_is_not_a_table():
+    lines = [line("x", x0=50, y0=100, math=True), line("(1)", x0=400, y0=100),
+             line("y", x0=50, y0=120, math=True), line("(2)", x0=400, y0=120)]
+    info = page_with(lines)
+    find_text_tables(info)
+    assert info.tables == [] and len(info.lines) == 4
+
+
+def test_scattered_text_is_not_a_table():
+    lines = [line("a", x0=50, y0=100), line("b", x0=500, y0=100),
+             line("c", x0=150, y0=120), line("d", x0=300, y0=120),
+             line("e", x0=400, y0=140), line("f", x0=250, y0=140)]
+    info = page_with(lines)
+    find_text_tables(info)
+    assert info.tables == []
+
+
+def test_code_lines_are_all_monospace():
+    assert is_code(line("$ ls -l", mono=True))
+    assert not is_code(line("Run ls to list files"))
+    assert classify(line("$ ls -l", mono=True), 10, {}) == ("code", 0)

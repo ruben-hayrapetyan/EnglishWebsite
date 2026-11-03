@@ -266,3 +266,20 @@ def test_missing_file_and_pages_on_non_pdf(tmp_path):
     path.write_text("# x\n")
     with pytest.raises(ReaderError, match='"pages" only works for PDFs'):
         read(path, "1-2")
+
+
+def test_pdf_with_real_book_quirks(tmp_path):
+    """Patterns found converting real PDFs (a LibreOffice book, XeTeX and Google
+    Docs exports), rebuilt in samples.real_world_pdf because real files can't
+    be committed. See that function for each quirk."""
+    from test_cross_format import outline
+
+    doc = chapter_body(read(samples.real_world_pdf(tmp_path / "rw.pdf")), "Real world")
+    got = []
+    for block in doc.blocks:
+        if isinstance(block, Code):
+            got.append(("code", block.text))
+        else:
+            got.extend(outline(type("Doc", (), {"blocks": [block]})))
+    assert got == samples.REAL_WORLD_OUTLINE
+    assert doc.warnings == []

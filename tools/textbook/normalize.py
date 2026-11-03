@@ -131,6 +131,8 @@ def line_joint(previous: str, following: str, hyphenated_words: frozenset[str]) 
         return 1, ""
     if previous.endswith(HYPHENS) and following[0].isdigit():
         return 0, ""  # ranges like "10-" + "12" stay together
+    if previous.endswith("/") and not following.startswith("/"):
+        return 0, ""  # paths and web addresses broken after a slash
     return 0, " "
 
 

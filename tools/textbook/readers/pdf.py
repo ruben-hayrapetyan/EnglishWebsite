@@ -25,6 +25,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..model import (
+    Code,
     Document,
     Figure,
     Heading,
@@ -38,6 +39,7 @@ from ..model import (
 )
 from ..normalize import (
     caption_label,
+    comparable,
     clean_runs,
     clean_text,
     ends_sentence,
@@ -271,7 +273,9 @@ def rasterize(info: PageInfo, page_index: int, box: tuple[float, float, float, f
 # ---- 2. Clean-up -------------------------------------------------------------
 
 PAGE_NUMBER = re.compile(r"^\s*(page\s*)?(\d{1,4}|[ivxlc]{1,7})(\s*(of|/)\s*\d{1,4})?\s*$", re.I)
-MARGIN = 0.08  # top and bottom share of the page that may hold running heads
+MARGIN = 0.08  # top and bottom share of the page that always counts as margin
+EDGE = 0.13    # running heads sit in the first or last line within this share
+NUMBERED_HEAD = re.compile(r"^\s*(\d{1,4})\s+\S.{0,90}$|^.{0,90}\S\s+(\d{1,4})\s*$")
 
 
 def margin_key(text: str) -> str:
@@ -282,21 +286,71 @@ def in_margin(line: Line, info: PageInfo) -> bool:
     return line.y1 <= info.height * MARGIN or line.y0 >= info.height * (1 - MARGIN)
 
 
+def edge_lines(info: PageInfo) -> list[Line]:
+    """The top row and bottom row of text on a page, if they sit near an edge."""
+    if not info.lines:
+        return []
+    top = min(l.y0 for l in info.lines)
+    bottom = max(l.y1 for l in info.lines)
+    edges = [l for l in info.lines if in_margin(l, info)]
+    if top <= info.height * EDGE:
+        edges += [l for l in info.lines if l.y0 <= top + 2]
+    if bottom >= info.height * (1 - EDGE):
+        edges += [l for l in info.lines if l.y1 >= bottom - 2]
+    unique = {id(l): l for l in edges}
+    return list(unique.values())
+
+
+def _short(text: str) -> bool:
+    return len(text.split()) <= 12
+
+
 def remove_running_heads(pages: list[PageInfo]) -> None:
-    """Drop page numbers and headers/footers repeated across pages."""
+    """Drop page numbers, headers and footers.
+
+    A line in the top or bottom row of a page is a running head when it is:
+    a bare page number; text repeated on many pages; a short line whose
+    number rises with the page (\"7  2 \u2013 Navigation\", \"8  Listing...\");
+    or a small copy of a heading that appears elsewhere in the source.
+    """
+    edges = {info_index: edge_lines(info) for info_index, info in enumerate(pages)}
+    edge_ids = {id(l) for lines in edges.values() for l in lines}
+
     counts: Counter[str] = Counter()
-    for info in pages:
-        counts.update({margin_key(l.text) for l in info.lines if in_margin(l, info)})
-    threshold = max(2, round(len(pages) * 0.5))
-    for info in pages:
-        info.lines = [
-            l
-            for l in info.lines
-            if not (
-                in_margin(l, info)
-                and (PAGE_NUMBER.match(l.text) or (len(pages) >= 2 and counts[margin_key(l.text)] >= threshold))
-            )
-        ]
+    for lines in edges.values():
+        counts.update({margin_key(l.text) for l in lines})
+    threshold = max(2, round(len(pages) * 0.25))
+
+    offsets: Counter[int] = Counter()
+    for index, lines in edges.items():
+        for l in lines:
+            m = NUMBERED_HEAD.match(l.text) if _short(l.text) else None
+            if m:
+                offsets[int(m.group(1) or m.group(2)) - index] += 1
+    page_offset = next((off for off, n in offsets.most_common(1) if n >= 2), None)
+
+    body = body_size(pages)
+    headings = {
+        comparable(l.text)
+        for info in pages
+        for l in info.lines
+        if id(l) not in edge_ids and (l.size >= body * HEADING_RATIO or l.bold) and _short(l.text)
+    }
+
+    def running(l: Line, index: int) -> bool:
+        if PAGE_NUMBER.match(l.text):
+            return True
+        repeated = len(pages) >= 2 and counts[margin_key(l.text)] >= threshold
+        if repeated and _short(l.text) and re.search(r"[^\W_]", l.text):
+            return True
+        m = NUMBERED_HEAD.match(l.text) if _short(l.text) else None
+        if m and page_offset is not None and int(m.group(1) or m.group(2)) - index == page_offset:
+            return True
+        return l.size < body * HEADING_RATIO and not l.bold and comparable(l.text) in headings
+
+    for index, info in enumerate(pages):
+        drop = {id(l) for l in edges[index] if running(l, index)}
+        info.lines = [l for l in info.lines if id(l) not in drop]
 
 
 def remove_repeated_images(pages: list[PageInfo]) -> None:
@@ -339,6 +393,154 @@ def _ranges(numbers: list[int]) -> str:
             out.append(f"{start}" if start == prev else f"{start}-{prev}")
             start = prev = n
     return ", ".join(out)
+
+
+# A fragment that only holds a list marker or a section number. Some
+# exporters (Google Docs, XeTeX) write it as separate text from the words
+# after it on the same line: "-" | "Issues with RNNs", "2" | "Convergence".
+FRAGMENT = re.compile(
+    r"^\s*(\(?[0-9A-Za-z]{1,3}\)?(\.[0-9]{1,3})*[.)]?|[\u2022\u25e6\u25aa\u25cf\u2023\u2043\u2219\u00b7\u2013\u2014*\-])\s*$"
+)
+
+
+def merge_fragments(info: PageInfo) -> None:
+    """Rejoin a marker or number fragment with the text that follows it on its line."""
+    lines = sorted(info.lines, key=lambda l: (l.y0, l.x0))
+    used: set[int] = set()
+    merged: list[Line] = []
+    for i, left in enumerate(lines):
+        if i in used:
+            continue
+        if FRAGMENT.match(left.text):
+            height = max(left.y1 - left.y0, 1)
+            # The words may sort before the marker (a bullet drawn a little
+            # lower than its text), so look at the whole row, nearest first.
+            candidates = [
+                (right.x0 - left.x1, j)
+                for j, right in enumerate(lines)
+                if j != i
+                and j not in used
+                and abs((right.y0 + right.y1) / 2 - (left.y0 + left.y1) / 2) < height * 0.6
+                and 0 <= right.x0 - left.x1 < left.size * 5
+                and not FRAGMENT.match(right.text)
+            ]
+            partner = min(candidates)[1] if candidates else None
+            if partner is not None:
+                right = lines[partner]
+                used.add(partner)
+                first = right.spans[0]
+                joint = Span(" ", first.size, bold=first.bold, italic=first.italic)
+                left = Line(left.spans + [joint] + right.spans, left.x0, min(left.y0, right.y0),
+                            right.x1, max(left.y1, right.y1), left.page, right.block, right.block_lines)
+        merged.append(left)
+    info.lines = [l for k, l in enumerate(merged) if not _consumed(l, lines, used)]
+
+
+def _consumed(line: Line, lines: list[Line], used: set[int]) -> bool:
+    return any(line is lines[j] for j in used)
+
+
+# A table-of-contents entry: text, a run of dot leaders, a page number.
+TOC_ENTRY = re.compile(r"(\.\s?){4,}\s*([0-9]{1,4}|[ivxlc]{1,7})\s*$", re.I)
+TOC_HEADING = re.compile(r"^\s*(table of )?contents\s*$", re.I)
+
+
+def remove_contents_pages(pages: list[PageInfo]) -> list[int]:
+    """Drop the source's own table of contents; the site builds its own."""
+    dropped = []
+    for info in pages:
+        entries = [l for l in info.lines if TOC_ENTRY.search(l.text)]
+        if len(entries) < 3:
+            continue
+        dropped.append(entries[0].page + 1)
+        info.lines = [l for l in info.lines if not (TOC_ENTRY.search(l.text) or TOC_HEADING.match(l.text))]
+    return dropped
+
+
+def _rows(lines: list[Line]) -> list[list[Line]]:
+    """Group lines that share a baseline into rows, top to bottom."""
+    rows: list[list[Line]] = []
+    for line in sorted(lines, key=lambda l: (l.y0, l.x0)):
+        if rows:
+            first = rows[-1][0]
+            if abs((line.y0 + line.y1) / 2 - (first.y0 + first.y1) / 2) < max(first.y1 - first.y0, 1) * 0.6:
+                rows[-1].append(line)
+                continue
+        rows.append([line])
+    return [sorted(r, key=lambda l: l.x0) for r in rows]
+
+
+def find_text_tables(info: PageInfo) -> None:
+    """Find tables drawn without ruled borders.
+
+    On a one-column page, ordinary text never has two lines side by side.
+    Two or more rows of side-by-side lines, plus wrapped lines that continue
+    a cell under its own column, make a table.
+    """
+    if not info.lines or is_two_column(info.lines, info.width):
+        return
+    rows = _rows(info.lines)
+    i = 0
+    while i < len(rows):
+        if len(rows[i]) < 2:
+            i += 1
+            continue
+        region = [rows[i]]
+        starts = [l.x0 for l in rows[i]]
+        j = i + 1
+        while j < len(rows):
+            row = rows[j]
+            height = max(row[0].y1 - row[0].y0, 1)
+            near = row[0].y0 - region[-1][-1].y1 < height * 2.2
+            continues_cell = (
+                len(row) == 1 and any(abs(row[0].x0 - x) < 6 for x in starts[1:]) and near
+            )
+            if (len(row) >= 2 and near) or continues_cell:
+                region.append(row)
+                if len(row) >= 2:
+                    starts = sorted(set(starts) | {l.x0 for l in row})
+                j += 1
+            else:
+                break
+        has_math = any(s.math for r in region for l in r for s in l.spans)
+        if sum(1 for r in region if len(r) >= 2) >= 2 and not has_math:
+            columns = _cluster([l.x0 for r in region if len(r) >= 2 for l in r])
+            table: list[list[str]] = []
+            for row in region:
+                cells_here = [(_column(l.x0, columns), clean_text(l.text).strip()) for l in row]
+                if len(row) >= 2 or cells_here[0][0] == 0 or not table:
+                    table.append([""] * len(columns))
+                for col, text in cells_here:
+                    cell = table[-1][col]
+                    table[-1][col] = join_text(cell, text) if cell else text
+            cells = [c for row in table for c in row]
+            if len(columns) > 6 or sum(1 for c in cells if not c) > len(cells) / 2:
+                i = j
+                continue  # mostly empty: scattered text, not a table
+            used = {id(l) for r in region for l in r}
+            x0 = min(l.x0 for r in region for l in r)
+            x1 = max(l.x1 for r in region for l in r)
+            info.tables.append(TableItem(table, x0, region[0][0].y0, x1, region[-1][-1].y1, region[0][0].page))
+            info.lines = [l for l in info.lines if id(l) not in used]
+        i = j
+
+
+def _cluster(xs: list[float], tolerance: float = 6) -> list[float]:
+    columns: list[float] = []
+    for x in sorted(xs):
+        if not columns or x - columns[-1] > tolerance:
+            columns.append(x)
+    return columns
+
+
+def _column(x: float, columns: list[float]) -> int:
+    return max(i for i, c in enumerate(columns) if c <= x + 6) if x + 6 >= columns[0] else 0
+
+
+def join_text(a: str, b: str) -> str:
+    drop, sep = line_joint(a, b, frozenset())
+    a = a.rstrip()
+    return (a[: len(a) - drop] if drop else a) + sep + b.lstrip()
 
 
 def body_size(pages: list[PageInfo]) -> float:
@@ -448,8 +650,14 @@ def is_bold_heading(line: Line, body: float) -> bool:
     )
 
 
+def is_code(line: Line) -> bool:
+    """Every visible character is in a monospace font: a line of code or terminal output."""
+    visible = [s for s in line.spans if s.text.strip()]
+    return bool(visible) and all(s.mono for s in visible)
+
+
 def classify(line: Line, body: float, tiers: dict[float, int]) -> tuple[str, int]:
-    """('heading', level) | ('caption', 0) | ('item', 0) | ('body', 0)."""
+    """('heading', level) | ('caption', 0) | ('code', 0) | ('item', 0) | ('body', 0)."""
     text = line.text.strip()
     if caption_label(text):
         return "caption", 0
@@ -457,6 +665,8 @@ def classify(line: Line, body: float, tiers: dict[float, int]) -> tuple[str, int
         return "heading", tiers[line.size]
     if is_bold_heading(line, body):
         return "heading", len(tiers) + 1
+    if is_code(line):
+        return "code", 0
     if list_marker(text):
         return "item", 0
     return "body", 0
@@ -497,7 +707,8 @@ def join_runs(lines: list[Inlines], vocab: frozenset[str]) -> Inlines:
                 trimmed = trimmed[:-drop]
             out[-1] = Run(trimmed, last.marks, last.href)
             if sep:
-                out.append(Run(sep, last.marks if sep == "-" else frozenset(), None))
+                shared = last.marks & runs[0].marks
+                out.append(Run(sep, last.marks if sep == "-" else shared, last.href if last.href == runs[0].href else None))
             first = runs[0]
             runs = [Run(first.text.lstrip(), first.marks, first.href), *runs[1:]]
         out.extend(runs)
@@ -571,8 +782,16 @@ def frame_for(line: Line, info: PageInfo, table: dict) -> dict:
 def read_pdf(path: Path, pages: str | None = None) -> Document:
     infos, indices = extract(path, pages)
     warnings = check_scanned(infos, indices, path.name)
+    for info in infos:
+        merge_fragments(info)
     remove_running_heads(infos)
     remove_repeated_images(infos)
+    contents_pages = remove_contents_pages(infos)
+    for info in infos:
+        find_text_tables(info)
+    if contents_pages:
+        warnings.append(f"pages {_ranges(contents_pages)}: skipped the source's table of contents; "
+                        "the site builds its own")
     body = body_size(infos)
     note_lines = split_footnotes(infos, body)
     all_lines = [l for info in infos for l in info.lines]
@@ -592,17 +811,35 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
 
     blocks: list = []
     para: list[Line] = []
-    list_stack: list[tuple[float, ListBlock]] = []  # (marker x0, list)
+    deferred: list[Figure] = []  # figures that interrupted an unfinished sentence
+    code: list[Line] = []
+    # (marker x0 relative to the text column's left edge, list). Relative,
+    # because left and right pages often have different margins.
+    list_stack: list[tuple[float, ListBlock]] = []
     item_lines: list[Line] = []
     pending_caption: tuple[str, str, Inlines, Line] | None = None  # table captions sit above
 
     def flush_para():
         nonlocal para
+        flush_code()
         if para:
             content = join_runs([spans_to_runs(l.spans) for l in para], vocab)
             if content:
                 blocks.append(Paragraph(content))
             para = []
+        blocks.extend(deferred)
+        deferred.clear()
+
+    def flush_code():
+        nonlocal code
+        if code:
+            # Indentation is measured from each page's own text edge.
+            rel = [l.x0 - frame_for(l, page_of[l.page], frame_table)["left"] for l in code]
+            left = min(rel)
+            width = max(code[0].size * 0.6, 1)
+            text = "\n".join(" " * round((x - left) / width) + clean_text(l.text).rstrip() for x, l in zip(rel, code))
+            blocks.append(Code(text))
+            code = []
 
     def flush_item():
         nonlocal item_lines
@@ -631,13 +868,17 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
     while i < len(ordered):
         item = ordered[i]
         if isinstance(item, ImageItem):
-            flush_para()
-            close_lists()
             figure = Figure(Image(item.data, item.ext), alt="")
             figure._page = item.page  # type: ignore[attr-defined]
             figure._box = (item.x0, item.y0, item.x1, item.y1)  # type: ignore[attr-defined]
-            blocks.append(figure)
-            prev_body = None
+            if para and not item_lines and not ends_sentence(para[-1].text):
+                # A figure placed mid-sentence: the paragraph goes on after it.
+                deferred.append(figure)
+            else:
+                flush_para()
+                close_lists()
+                blocks.append(figure)
+                prev_body = None
             i += 1
             continue
         if isinstance(item, TableItem):
@@ -674,6 +915,22 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
             content = [Run(r.text, r.marks - {"strong"}, r.href) for r in content]
             blocks.append(Heading(level, clean_runs(content)))
             prev_body = None
+            i += 1
+            continue
+
+        if kind == "caption" and deferred and not deferred[-1].caption and caption_label(line.text)[0] == "figure":
+            group = [line]
+            while (
+                i + 1 < len(ordered)
+                and isinstance(ordered[i + 1], Line)
+                and ordered[i + 1].page == line.page
+                and ordered[i + 1].block == line.block
+            ):
+                i += 1
+                group.append(ordered[i])
+            content = join_runs([spans_to_runs(l.spans) for l in group], vocab)
+            deferred[-1].label = caption_label("".join(r.text for r in content))[1]
+            deferred[-1].caption = _strip_label(content)
             i += 1
             continue
 
@@ -719,24 +976,46 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
             i += 1
             continue
 
+        if kind == "code":
+            if code and code[-1].page == line.page and line.y0 - code[-1].y0 > pitch * 2.5:
+                flush_code()
+            if para:
+                flush_para()
+            close_lists()
+            code.append(line)
+            prev_body = None
+            i += 1
+            continue
+
         if kind == "item":
             flush_para()
             marker = list_marker(line.text)
             ordered_list, number, _ = marker
+            x = line.x0 - frame_for(line, page_of[line.page], frame_table)["left"]
+            last_item = item_lines[-1] if item_lines else None
+            if list_stack and last_item is not None and last_item.page != line.page:
+                # First item on a new page, straight after an item on the last
+                # one: same list, same level. Page margins can't be compared.
+                current = list_stack[-1][1]
+                expected = current.start + len(current.items) + 1
+                if current.ordered == ordered_list and (not ordered_list or number == expected):
+                    # Re-measure the open lists in this page's coordinates.
+                    delta = x - list_stack[-1][0]
+                    list_stack[:] = [(lx + delta, lst) for lx, lst in list_stack]
             flush_item()
-            while list_stack and line.x0 < list_stack[-1][0] - 4:
+            while list_stack and x < list_stack[-1][0] - 4:
                 done = list_stack.pop()[1]
                 if list_stack:
                     list_stack[-1][1].items[-1].children.append(done)
-            if list_stack and line.x0 > list_stack[-1][0] + 8 and list_stack[-1][1].items:
+            if list_stack and x > list_stack[-1][0] + 8 and list_stack[-1][1].items:
                 child = ListBlock(ordered_list, [], number)
-                list_stack.append((line.x0, child))
+                list_stack.append((x, child))
             elif not list_stack or list_stack[-1][1].ordered != ordered_list:
                 if list_stack:
                     close_lists()
                 new = ListBlock(ordered_list, [], number)
                 blocks.append(new)
-                list_stack.append((line.x0, new))
+                list_stack.append((x, new))
             item_lines = [line]
             prev_body = line
             i += 1
@@ -745,10 +1024,16 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
         # Body line: continues a list item, continues a paragraph, or starts one.
         info = page_of[line.page]
         frame = frame_for(line, info, frame_table)
+        flush_code()
         if item_lines:
             prev = item_lines[-1]
-            hanging = line.x0 >= list_stack[-1][0] + 2 if list_stack else False
-            if hanging and not starts_paragraph(prev, line, pitch, body, frame | {"left": prev.x0}):
+            marker_x = frame["left"] + list_stack[-1][0] if list_stack else prev.x0
+            hanging = line.x0 >= marker_x + 2
+            flush_left = abs(line.x0 - marker_x) <= 2
+            item_frame = frame | {"left": line.x0 if hanging else marker_x}
+            # Wrapped item text either hangs under the item's words or starts
+            # back at the marker; a gap or a finished short line ends the item.
+            if (hanging or flush_left) and not starts_paragraph(prev, line, pitch, body, item_frame):
                 item_lines.append(line)
                 prev_body = line
                 i += 1
@@ -759,7 +1044,8 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
                 done = list_stack.pop()[1]
                 list_stack[-1][1].items[-1].children.append(done)
             list_stack.clear()
-        if para and prev_body is not None and starts_paragraph(prev_body, line, pitch, body, frame):
+        resumes = bool(deferred) and bool(para) and line.text.lstrip()[:1].islower()
+        if para and prev_body is not None and not resumes and starts_paragraph(prev_body, line, pitch, body, frame):
             flush_para()
         para.append(line)
         prev_body = line
@@ -767,6 +1053,7 @@ def read_pdf(path: Path, pages: str | None = None) -> Document:
 
     flush_para()
     flush_item()
+    flush_code()
     while len(list_stack) > 1:
         done = list_stack.pop()[1]
         list_stack[-1][1].items[-1].children.append(done)
