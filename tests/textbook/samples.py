@@ -521,3 +521,38 @@ def compiled_book_pdf(path: Path) -> Path:
     text(72, 450, "Text that belongs to the third topic.")
     pdf.output(str(path))
     return path
+
+
+def caption_quirks_pdf(path: Path) -> Path:
+    """Captions as real books place them: a bulleted caption below an image, a
+    caption at the foot of a page whose figure starts the next page, a table
+    captioned as a figure, and a sentence that only looks like a caption."""
+    from fpdf import FPDF
+
+    pdf = FPDF(format="Letter", unit="pt")
+    pdf.core_fonts_encoding = "windows-1252"
+    pdf.set_auto_page_break(False)
+
+    def text(x, y, s, size=12, style=""):
+        pdf.set_font("helvetica", style, size)
+        pdf.text(x, y, s)
+
+    pdf.add_page()
+    text(72, 72, "Captions", size=18, style="B")
+    pdf.image(io.BytesIO(png()), x=72, y=90, w=200, h=100)
+    text(72, 210, "• Figure 1: A bulleted caption below its figure.")
+    text(72, 250, "This sentence ends a paragraph, and the next line refers to a")
+    text(72, 264, "Figure 1 presents nothing new and is not a caption.")
+    text(72, 740, "Figure 2 - A caption at the foot of the page")
+    pdf.add_page()
+    pdf.image(io.BytesIO(png()), x=72, y=60, w=200, h=100)
+    text(72, 200, "Figure 3 - A table the author called a figure")
+    pdf.set_font("helvetica", "", 11)
+    pdf.set_xy(72, 215)
+    with pdf.table(width=300, col_widths=(150, 150), text_align="LEFT") as table:
+        for row in (("Heart", "Rate"), ("Young", "Fast"), ("Old", "Slower")):
+            cells = table.row()
+            for cell in row:
+                cells.cell(cell)
+    pdf.output(str(path))
+    return path

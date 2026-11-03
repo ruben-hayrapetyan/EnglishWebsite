@@ -241,7 +241,7 @@ def extract(path: Path, pages: str | None = None, clip: Clip | None = None) -> t
                 x0, y0, x1, y1 = block["bbox"]
                 if (x1 - x0) < 36 or (y1 - y0) < 36:
                     continue  # bullets, rules, tiny icons
-                data, ext = _normalize_image(block["image"], block.get("ext", "png"))
+                data, ext = _normalize_image(block["image"], block.get("ext", "png"), block.get("mask"))
                 if data:
                     info.images.append(
                         ImageItem(data, ext, x0, y0, x1, y1, index, hashlib.sha1(data).hexdigest())
@@ -295,22 +295,22 @@ def _split_by_links(chars, links) -> list[tuple[str, str | None]]:
     return [(t, h) for t, h in pieces if t]
 
 
-def _normalize_image(data: bytes, ext: str) -> tuple[bytes, str]:
-    """Keep PNG and JPEG as they are; convert anything else to PNG."""
-    ext = ext.lower()
-    if ext in ("png",):
-        return data, "png"
-    if ext in ("jpg", "jpeg"):
-        return data, "jpg"
-    import pymupdf
+def _normalize_image(data: bytes, ext: str, mask: bytes | None = None) -> tuple[bytes, str]:
+    """PNG or JPEG, with any transparency mask flattened onto white."""
+    from ..images import flatten
 
-    try:
-        pix = pymupdf.Pixmap(data)
-        if pix.colorspace and pix.colorspace.n > 3:
-            pix = pymupdf.Pixmap(pymupdf.csRGB, pix)
-        return pix.tobytes("png"), "png"
-    except Exception:
-        return b"", ""
+    ext = ext.lower()
+    if ext not in ("png", "jpg", "jpeg"):
+        import pymupdf
+
+        try:
+            pix = pymupdf.Pixmap(data)
+            if pix.colorspace and pix.colorspace.n > 3:
+                pix = pymupdf.Pixmap(pymupdf.csRGB, pix)
+            data, ext = pix.tobytes("png"), "png"
+        except Exception:
+            return b"", ""
+    return flatten(data, ext, mask)
 
 
 def rasterize(info: PageInfo, page_index: int, box: tuple[float, float, float, float]) -> bytes:
@@ -427,7 +427,8 @@ def check_scanned(pages: list[PageInfo], indices: list[int], name: str) -> list[
             "was written in (Word, Google Docs, LaTeX), or run OCR on the PDF first."
         )
     return [
-        f"page {p}: looks scanned (a picture of text) and was skipped; run OCR or re-export it"
+        f"page {p}: is a picture with no text in it (a scan or a photo of notes); it is kept as a figure, "
+        "so describe it in the chapter's figures alt text, or run OCR on it if it should be text"
         for p in scanned
     ]
 
@@ -700,6 +701,27 @@ def is_bold_heading(line: Line, body: float) -> bool:
     )
 
 
+# A caption's label is followed by a separator ("Figure 3: ...", "Figure 3 - ...",
+# "Figure 3.") or ends the line. "Figure 3 shows ..." or "Figure 3). Thus ..." is
+# a sentence that happens to start a line.
+CAPTION_START = re.compile(
+    r"^\s*(figure|fig\.?|table)\s*[A-Z]?\d+(?:[.\-]\d+)*[a-z]?\s*([:.\u2013\u2014]|-\s|$)", re.IGNORECASE
+)
+
+
+def is_caption(line: Line, body: float) -> bool:
+    text = _without_bullet(line.text.strip())
+    if not caption_label(text):
+        return False
+    return bool(CAPTION_START.match(text)) or line.size < body * 0.95
+
+
+def _without_bullet(text: str) -> str:
+    """"● Figure 2: ..." -> "Figure 2: ..." (captions written as bullet points)."""
+    marker = list_marker(text)
+    return text[marker[2]:] if marker and not marker[0] else text
+
+
 def is_code(line: Line) -> bool:
     """Every visible character is in a monospace font: a line of code or terminal output."""
     visible = [s for s in line.spans if s.text.strip()]
@@ -709,7 +731,7 @@ def is_code(line: Line) -> bool:
 def classify(line: Line, body: float, tiers: dict[float, int]) -> tuple[str, int]:
     """('heading', level) | ('caption', 0) | ('code', 0) | ('item', 0) | ('body', 0)."""
     text = line.text.strip()
-    if caption_label(text):
+    if is_caption(line, body):
         return "caption", 0
     if line.size in tiers:
         return "heading", tiers[line.size]
@@ -960,6 +982,8 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
             close_lists()
             table = Table([[[Run(cell)] if cell else [] for cell in row] for row in item.rows])
             table._page = item.page  # type: ignore[attr-defined]
+            if id(item) in caption_above:  # a table captioned as "Figure N" above it
+                table.label, table.caption = caption_above.pop(id(item))
             if pending_caption and pending_caption[0] == "table" and pending_caption[3].page == item.page:
                 table.label, table.caption = pending_caption[1], pending_caption[2]
                 pending_caption = None
@@ -992,7 +1016,7 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
             i += 1
             continue
 
-        if kind == "caption" and deferred and not deferred[-1].caption and caption_label(line.text)[0] == "figure":
+        if kind == "caption" and deferred and not deferred[-1].caption and (caption_label(_without_bullet(line.text.strip())) or ("",))[0] == "figure":
             group = [line]
             while (
                 i + 1 < len(ordered)
@@ -1002,7 +1026,7 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
             ):
                 i += 1
                 group.append(ordered[i])
-            content = join_runs([spans_to_runs(l.spans) for l in group], vocab)
+            content = _caption_content(join_runs([spans_to_runs(l.spans) for l in group], vocab))
             deferred[-1].label = caption_label("".join(r.text for r in content))[1]
             deferred[-1].caption = _strip_label(content)
             i += 1
@@ -1020,7 +1044,7 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
             ):
                 i += 1
                 group.append(ordered[i])
-            content = join_runs([spans_to_runs(l.spans) for l in group], vocab)
+            content = _caption_content(join_runs([spans_to_runs(l.spans) for l in group], vocab))
             cap_kind, label, _rest = caption_label("".join(r.text for r in content))
             caption = _strip_label(content)
             info = page_of[line.page]
@@ -1148,14 +1172,18 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
     return Document(blocks, str(path), warnings, notes)
 
 
-def _image_below(ordered: list, i: int, caption: Line) -> "ImageItem | None":
-    """An image straight below a caption on the same page (at most one short
-    line between them), for captions placed above their figure."""
+def _image_below(ordered: list, i: int, caption: Line) -> "ImageItem | TableItem | None":
+    """The figure straight below a caption placed above it: an image (or a
+    table the author captioned as a figure), with at most one short line
+    between them, on the same page or first thing on the next one."""
     lines_between = 0
     for item in ordered[i + 1 : i + 4]:
         if item.page != caption.page:
+            # A caption at the foot of a page, its figure first on the next one.
+            if item.page == caption.page + 1 and isinstance(item, (ImageItem, TableItem)):
+                return item
             return None
-        if isinstance(item, ImageItem):
+        if isinstance(item, (ImageItem, TableItem)):
             return item if item.y0 - caption.y1 < caption.size * 6 else None
         if not isinstance(item, Line) or len(item.text) > 120:
             return None
@@ -1163,6 +1191,15 @@ def _image_below(ordered: list, i: int, caption: Line) -> "ImageItem | None":
         if lines_between > 1:
             return None
     return None
+
+
+def _caption_content(content: Inlines) -> Inlines:
+    """Drop a bullet in front of a caption."""
+    text = "".join(r.text for r in content)
+    stripped = _without_bullet(text)
+    if stripped == text:
+        return content
+    return clean_runs(strip_marker(content, len(text) - len(stripped)))
 
 
 def _strip_label(content: Inlines) -> Inlines:

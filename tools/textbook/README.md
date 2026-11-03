@@ -91,7 +91,8 @@ Anything else (.doc, .odt, .pages, .tex, .html) gets an error that says how to e
 
 ### Known limits
 
-- **Scanned PDFs** (pictures of text) are rejected. Run OCR first, or export the original document.
+- **Scanned PDFs** (pictures of text) are rejected. Run OCR first, or export the original document. A few picture-only pages inside an otherwise normal PDF, such as photos of handwritten notes, are kept as figures; describe them with `figures` alt text.
+- **Transparent images**, such as equations from Google Docs, are flattened onto white, so they stay readable in every theme.
 - **Equations** are kept as plain text, with a warning naming the pages. Check them by hand.
 - **PDFs carry no alt text.** Figures from a PDF get their caption as alt text, with a warning, until you add `figures` alt text in `textbook.json`.
 - **Word footnotes** aren't converted yet; you get a warning.

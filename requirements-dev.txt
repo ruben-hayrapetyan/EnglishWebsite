@@ -21,4 +21,4 @@ pymupdf==1.28.2        # PDF reading. AGPL-3.0: fine for a local dev tool that i
 python-docx==1.2.0     # Word .docx reading; tests also use it to write sample .docx files
 markdown-it-py==4.2.0  # Markdown reading
 fpdf2==2.9.0           # tests only: writes sample PDFs
-pillow==13.0.0         # tests only: draws sample images
+pillow==13.0.0         # flattens transparent figures onto white; tests draw sample images

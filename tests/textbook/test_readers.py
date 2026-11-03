@@ -310,3 +310,16 @@ def test_pdf_on_graph_paper_is_text_not_a_table(tmp_path):
     assert texts(doc, Heading) == ["Lecture notes"]
     assert texts(doc, Paragraph) == ["Check the syllabus and the grading policy.", "Homework is due every Friday."]
     assert any("graph or lined paper" in w for w in doc.warnings)
+
+
+def test_pdf_captions_where_real_books_put_them(tmp_path):
+    doc = read(samples.caption_quirks_pdf(tmp_path / "captions.pdf"))
+    figures = [b for b in doc.blocks if isinstance(b, Figure)]
+    assert [(f.label, plain_text(f.caption)) for f in figures] == [
+        ("Figure 1", "A bulleted caption below its figure."),
+        ("Figure 2", "A caption at the foot of the page"),
+    ]
+    (table,) = [b for b in doc.blocks if isinstance(b, Table)]
+    assert (table.label, plain_text(table.caption)) == ("Figure 3", "A table the author called a figure")
+    assert any("Figure 1 presents nothing new" in t for t in texts(doc, Paragraph))
+    assert not any("no figure near it" in w for w in doc.warnings)

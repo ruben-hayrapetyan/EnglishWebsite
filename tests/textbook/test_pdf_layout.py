@@ -113,8 +113,8 @@ def test_mostly_scanned_document_is_rejected():
 def test_one_scanned_page_is_a_warning():
     full = ImageItem(b"x", "png", 0, 0, W, H, 2)
     pages = [page_with([line("text")]), page_with([line("text")]), page_with([], [full])]
-    assert check_scanned(pages, [0, 1, 2], "x.pdf") == [
-        "page 3: looks scanned (a picture of text) and was skipped; run OCR or re-export it"]
+    (warning,) = check_scanned(pages, [0, 1, 2], "x.pdf")
+    assert warning.startswith("page 3: is a picture with no text in it") and "kept as a figure" in warning
 
 
 def test_body_size_is_the_most_used_size():
@@ -373,3 +373,18 @@ def test_real_tables_are_mostly_filled():
     assert not is_real_table(grid)                      # graph paper
     assert not is_real_table([["only one row", "x"]])   # one row is not a table
     assert not is_real_table([["a"], ["b"]])            # one column is not a table
+
+
+from tools.textbook.readers.pdf import _without_bullet, is_caption  # noqa: E402
+
+
+def test_captions_need_a_separator_or_small_type():
+    assert is_caption(line("Figure 3: A wave."), 10)
+    assert is_caption(line("Figure 3 - A wave"), 10)
+    assert is_caption(line("Figure 3"), 10)
+    assert is_caption(line("● Figure 2: Predator-prey graph"), 10)   # written as a bullet
+    assert is_caption(line("Figure 3 shows a wave", size=8), 10)           # smaller type
+    assert not is_caption(line("Figure 3). Thus, serotonin resets the clock"), 10)
+    assert not is_caption(line("Figure 1 presents the dynamics of two species"), 10)
+    assert _without_bullet("● Figure 2: x") == "Figure 2: x"
+    assert _without_bullet("1. Figure 2: x") == "1. Figure 2: x"            # numbers are not bullets

@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from .images import flatten
 from .manifest import Chapter, Manifest
 from .model import (
     MARKS,
@@ -27,6 +28,7 @@ from .model import (
     Document,
     Figure,
     Heading,
+    Image,
     Inlines,
     ListBlock,
     Paragraph,
@@ -265,6 +267,9 @@ class BodyRenderer:
         self.figure_n += 1
         base = slugify(fig.label) if fig.label else f"figure-{self.figure_n}"
         fig.id = self.ids.take(base)
+        data, ext = flatten(fig.image.data, fig.image.ext)  # readable in every theme
+        if data:
+            fig.image = Image(data, ext)
         name = f"assets/img/chapter-{self.chapter.id}-{fig.id}.{fig.image.ext}"
         self.images[name] = fig.image.data
         alt = self.alt_for(fig)
