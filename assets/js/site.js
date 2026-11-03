@@ -12,6 +12,7 @@ const SITE = {
     { label: "About", href: "about.html" },
     { label: "Our team", href: "teams.html" },
     { label: "Study", href: "study.html" },
+    { label: "Settings", href: "settings.html" },
   ],
   footerLinks: [
     { label: "Style guide", href: "styleguide.html" },

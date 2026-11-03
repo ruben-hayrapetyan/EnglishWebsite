@@ -1,0 +1,48 @@
+/* ==========================================================================
+   Reader bar: small floating controls for read-aloud and notes.
+   assets/js/a11y.js adds it to a page only while it has something in it
+   (read-aloud is on, or the page has notes). Never write this markup by hand.
+   <div class="reader-bar" role="region" aria-label="Reading tools">
+     <div class="reader-bar__group">
+       <button class="button button--small">Read page aloud</button>
+       <button class="button button--small button--secondary">Stop</button>
+     </div>
+     <button class="button button--small button--secondary">Notes (2)</button>
+   </div>
+   While reading aloud, the part being spoken gets [data-read-aloud-current].
+   ========================================================================== */
+
+.reader-bar {
+  position: fixed;
+  inset-block-end: var(--space-s);
+  inset-inline-end: var(--space-s);
+  z-index: var(--z-overlay);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  max-width: calc(100% - 2 * var(--space-s));
+  padding: var(--space-2xs);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-m);
+}
+
+.reader-bar__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+}
+
+/* .button sets display, which would otherwise beat the hidden attribute. */
+.reader-bar [hidden] {
+  display: none;
+}
+
+/* The block currently being read. */
+[data-read-aloud-current] {
+  border-radius: var(--radius-s);
+  background-color: var(--color-accent-soft);
+  box-shadow: 0 0 0 var(--space-3xs) var(--color-accent-soft);
+}

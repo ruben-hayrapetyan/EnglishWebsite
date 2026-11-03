@@ -26,7 +26,7 @@
 /* ---- Color swatches ---------------------------------------------------- */
 .swatch {
   display: grid;
-  grid-template-columns: 3rem 1fr;
+  grid-template-columns: 3rem minmax(0, 1fr);
   gap: var(--space-3xs) var(--space-s);
   align-items: center;
 }
@@ -81,13 +81,14 @@
 /* ---- Spacing bars ------------------------------------------------------ */
 .space-row {
   display: grid;
-  grid-template-columns: 7rem 1fr;
+  grid-template-columns: 7rem minmax(0, 1fr);
   align-items: center;
   gap: var(--space-s);
 }
 
 .space-row__bar {
   width: var(--bar);
+  max-width: 100%;
   height: var(--space-xs);
   border-radius: var(--radius-s);
   background: var(--color-accent);

@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings · English Website</title>
+  <meta name="description" content="Change the text size, font, colors and read-aloud voice for every page of the site.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <script src="assets/js/a11y.js"></script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/settings.css">
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/settings.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header></header>
+
+  <main id="main">
+    <div class="container page-body">
+      <header class="page-header">
+        <p class="page-header__meta">Accessibility</p>
+        <h1 class="page-header__title">Reading <mark class="highlight--draw">settings</mark></h1>
+        <p class="page-header__lede">Change how every page of the site looks and sounds. Your choices apply straight away and are saved in this browser.</p>
+      </header>
+
+      <noscript>
+        <div class="callout callout--mark">
+          <p class="callout__title">These settings need JavaScript</p>
+          <p>JavaScript is turned off in your browser, so the controls below can't save anything. You can still make any page bigger with your browser's zoom: press Ctrl and + (or ⌘ and + on a Mac).</p>
+        </div>
+      </noscript>
+
+      <div class="split settings">
+        <!-- Preview: first in the source so it sits above the controls on phones. -->
+        <aside class="stack settings__preview" aria-labelledby="preview-title">
+          <h2 id="preview-title">Preview</h2>
+          <article class="card" data-settings-sample>
+            <p class="card__meta">Unit 1 · Chapter 1</p>
+            <h3 class="card__title">Opening lines</h3>
+            <div class="prose">
+              <blockquote>
+                <p>It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.</p>
+                <cite>Jane Austen, Pride and Prejudice (1813)</cite>
+              </blockquote>
+              <p>Austen opens her novel with a sentence that sounds certain but is meant to be <strong>ironic</strong>. Read it again and ask <a href="#preview-title">who really believes it</a>.</p>
+            </div>
+          </article>
+          <div class="cluster">
+            <button class="button button--secondary" type="button" data-speak-sample data-label="Read the preview aloud" disabled>Read the preview aloud</button>
+          </div>
+          <p class="settings__note">Every page on the site changes with these settings, not just this preview.</p>
+          <p class="settings__note" role="status" data-settings-status></p>
+        </aside>
+
+        <form class="settings__form" data-settings-form>
+          <fieldset class="stack settings__controls" style="--stack-space: var(--space-xl)" data-settings-controls disabled>
+
+            <!-- Text ---------------------------------------------------------- -->
+            <section class="stack settings__section" style="--stack-space: var(--space-l)" aria-labelledby="text-title">
+              <h2 id="text-title">Text</h2>
+
+              <div class="field">
+                <div class="settings-range__label">
+                  <label class="field__label" for="text-size">Text size</label>
+                  <output class="settings-range__value" for="text-size" data-output="textSize">100%</output>
+                </div>
+                <input class="settings-range" id="text-size" name="textSize" type="range" min="0" max="8" step="1" value="3" data-values="75 80 90 100 112 125 150 175 200" aria-describedby="text-size-hint">
+                <p class="field__hint" id="text-size-hint">Works like zoom: everything gets bigger or smaller, but lines still wrap to fit your screen. 100% is normal and 200% is double.</p>
+              </div>
+
+              <fieldset class="settings__group">
+                <legend class="field__label">Font</legend>
+                <div class="grid" style="--grid-min: 13rem; --grid-space: var(--space-xs)">
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="font" value="default">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample" aria-hidden="true"><span class="settings-font--young-serif">Aa</span> <span class="settings-font--atkinson">bd pq Il1</span></span>
+                      <span class="settings-choice__label">Site default</span>
+                      <span class="settings-choice__hint">Atkinson Hyperlegible, with serif headings</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="font" value="hyperlegible">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-font--atkinson" aria-hidden="true">Aa bd pq Il1</span>
+                      <span class="settings-choice__label">Atkinson Hyperlegible</span>
+                      <span class="settings-choice__hint">Made for low-vision readers. Used for headings too.</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="font" value="opendyslexic">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-font--opendyslexic" aria-hidden="true">Aa bd pq Il1</span>
+                      <span class="settings-choice__label">OpenDyslexic</span>
+                      <span class="settings-choice__hint">Heavier letter bottoms. Some readers with dyslexia find it easier.</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="font" value="lexend">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-font--lexend" aria-hidden="true">Aa bd pq Il1</span>
+                      <span class="settings-choice__label">Lexend</span>
+                      <span class="settings-choice__hint">Wide, open letters designed to make reading less tiring.</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="font" value="serif">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-font--georgia" aria-hidden="true">Aa bd pq Il1</span>
+                      <span class="settings-choice__label">Georgia</span>
+                      <span class="settings-choice__hint">A classic book typeface.</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="font" value="system">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-font--system" aria-hidden="true">Aa bd pq Il1</span>
+                      <span class="settings-choice__label">Your device's font</span>
+                      <span class="settings-choice__hint">The font your device uses for its own menus.</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="font" value="mono">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-font--mono" aria-hidden="true">Aa bd pq Il1</span>
+                      <span class="settings-choice__label">Monospaced</span>
+                      <span class="settings-choice__hint">Every letter takes the same width.</span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="settings__group">
+                <legend class="field__label">Text weight</legend>
+                <div class="grid" style="--grid-min: 9rem; --grid-space: var(--space-xs)">
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="weight" value="regular">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-weight--regular" aria-hidden="true">Aa</span>
+                      <span class="settings-choice__label">Regular</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="weight" value="semibold">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-weight--semibold" aria-hidden="true">Aa</span>
+                      <span class="settings-choice__label">Heavier</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="weight" value="bold">
+                    <span class="settings-choice__body">
+                      <span class="settings-choice__sample settings-weight--bold" aria-hidden="true">Aa</span>
+                      <span class="settings-choice__label">Bold</span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="settings__group">
+                <legend class="field__label">Line spacing</legend>
+                <div class="grid" style="--grid-min: 9rem; --grid-space: var(--space-xs)">
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="lineSpacing" value="default"><span class="settings-choice__label">Default</span></label>
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="lineSpacing" value="wide"><span class="settings-choice__label">Wide</span></label>
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="lineSpacing" value="wider"><span class="settings-choice__label">Extra wide</span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="settings__group">
+                <legend class="field__label">Letter and word spacing</legend>
+                <div class="grid" style="--grid-min: 9rem; --grid-space: var(--space-xs)">
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="textSpacing" value="default"><span class="settings-choice__label">Default</span></label>
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="textSpacing" value="wide"><span class="settings-choice__label">Wide</span></label>
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="textSpacing" value="wider"><span class="settings-choice__label">Extra wide</span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="settings__group" aria-describedby="line-length-hint">
+                <legend class="field__label">Line length</legend>
+                <p class="field__hint" id="line-length-hint">Shorter lines make it easier to find the start of the next one.</p>
+                <div class="grid" style="--grid-min: 9rem; --grid-space: var(--space-xs)">
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="lineLength" value="default"><span class="settings-choice__label">Default</span></label>
+                  <label class="settings-choice"><input class="settings-choice__input" type="radio" name="lineLength" value="narrow"><span class="settings-choice__label">Shorter lines</span></label>
+                </div>
+              </fieldset>
+            </section>
+
+            <!-- Colors -------------------------------------------------------- -->
+            <section class="stack settings__section" style="--stack-space: var(--space-l)" aria-labelledby="colors-title">
+              <h2 id="colors-title">Colors</h2>
+
+              <fieldset class="settings__group">
+                <legend class="field__label">Color theme</legend>
+                <div class="grid" style="--grid-min: 11rem; --grid-space: var(--space-xs)">
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="theme" value="auto">
+                    <span class="settings-choice__body">
+                      <span class="settings-swatch settings-swatch--split" aria-hidden="true">
+                        <span class="settings-swatch__half" data-theme-preview="light">Aa</span>
+                        <span class="settings-swatch__half" data-theme-preview="dark">Aa</span>
+                      </span>
+                      <span class="settings-choice__label">Match my device</span>
+                      <span class="settings-choice__hint">Light or dark, following your device setting</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="theme" value="light">
+                    <span class="settings-choice__body">
+                      <span class="settings-swatch" data-theme-preview="light" aria-hidden="true">Aa<span class="settings-swatch__accent"></span></span>
+                      <span class="settings-choice__label">Light</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="theme" value="dark">
+                    <span class="settings-choice__body">
+                      <span class="settings-swatch" data-theme-preview="dark" aria-hidden="true">Aa<span class="settings-swatch__accent"></span></span>
+                      <span class="settings-choice__label">Dark</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="theme" value="sepia">
+                    <span class="settings-choice__body">
+                      <span class="settings-swatch" data-theme-preview="sepia" aria-hidden="true">Aa<span class="settings-swatch__accent"></span></span>
+                      <span class="settings-choice__label">Sepia</span>
+                      <span class="settings-choice__hint">Warm paper with less glare</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="theme" value="contrast-light">
+                    <span class="settings-choice__body">
+                      <span class="settings-swatch" data-theme-preview="contrast-light" aria-hidden="true">Aa<span class="settings-swatch__accent"></span></span>
+                      <span class="settings-choice__label">High contrast light</span>
+                      <span class="settings-choice__hint">Black on white</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="theme" value="contrast-dark">
+                    <span class="settings-choice__body">
+                      <span class="settings-swatch" data-theme-preview="contrast-dark" aria-hidden="true">Aa<span class="settings-swatch__accent"></span></span>
+                      <span class="settings-choice__label">High contrast dark</span>
+                      <span class="settings-choice__hint">White on black</span>
+                    </span>
+                  </label>
+                  <label class="settings-choice">
+                    <input class="settings-choice__input" type="radio" name="theme" value="custom">
+                    <span class="settings-choice__body">
+                      <span class="settings-swatch" data-theme-preview="custom" data-custom-swatch aria-hidden="true">Aa<span class="settings-swatch__accent"></span></span>
+                      <span class="settings-choice__label">Custom</span>
+                      <span class="settings-choice__hint">Your own three colors, chosen below</span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="settings__group" aria-describedby="custom-hint">
+                <legend class="field__label">Custom colors</legend>
+                <p class="field__hint" id="custom-hint">Changing any of these switches the theme to Custom. They start from the theme you're using now.</p>
+                <div class="cluster" style="--cluster-space: var(--space-m)">
+                  <div class="field">
+                    <label class="field__label" for="custom-bg">Background</label>
+                    <input class="settings-color" id="custom-bg" name="customBg" type="color">
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="custom-text">Text</label>
+                    <input class="settings-color" id="custom-text" name="customText" type="color">
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="custom-accent">Links and buttons</label>
+                    <input class="settings-color" id="custom-accent" name="customAccent" type="color">
+                  </div>
+                </div>
+                <p class="field__hint" aria-live="polite" data-contrast></p>
+              </fieldset>
+            </section>
+
+            <!-- Reading aids -------------------------------------------------- -->
+            <section class="stack settings__section" style="--stack-space: var(--space-m)" aria-labelledby="aids-title">
+              <h2 id="aids-title">Reading aids</h2>
+
+              <div class="field">
+                <label class="checkbox"><input type="checkbox" name="ruler" aria-describedby="ruler-hint"> Reading ruler</label>
+                <p class="field__hint" id="ruler-hint">A tinted band that follows your mouse, finger or keyboard focus, to help you keep your place in a line.</p>
+              </div>
+
+              <div class="field">
+                <label class="checkbox"><input type="checkbox" name="emphasis" value="strong" data-unchecked="default" aria-describedby="emphasis-hint"> Stronger links and focus outlines</label>
+                <p class="field__hint" id="emphasis-hint">Thicker underlines under links, and a thicker outline around whatever the keyboard is on.</p>
+              </div>
+
+              <div class="field">
+                <label class="checkbox"><input type="checkbox" name="motion" value="reduce" data-unchecked="auto" aria-describedby="motion-hint"> Turn off animations</label>
+                <p class="field__hint" id="motion-hint" data-motion-hint>Stops movement such as the highlighter drawing in and cards lifting.</p>
+              </div>
+            </section>
+
+            <!-- Notes -------------------------------------------------------- -->
+            <section class="stack settings__section" style="--stack-space: var(--space-m)" aria-labelledby="notes-title">
+              <h2 id="notes-title">Highlights and notes</h2>
+
+              <div class="field">
+                <label class="checkbox"><input type="checkbox" name="notes" aria-describedby="notes-hint"> Let me highlight words and add notes</label>
+                <p class="field__hint" id="notes-hint">Select words on any page and choose "Add note". The words stay highlighted and your note opens beside the page, where you can edit it any time. Notes are saved in this browser only, so they won't appear on other devices and nobody else can see them.</p>
+              </div>
+
+              <div class="cluster">
+                <button class="button button--secondary" type="button" data-notes-clear>Delete all my notes</button>
+              </div>
+              <p class="field__hint" data-notes-count></p>
+            </section>
+
+            <!-- Read aloud ---------------------------------------------------- -->
+            <section class="stack settings__section" style="--stack-space: var(--space-l)" aria-labelledby="speech-title">
+              <h2 id="speech-title">Read aloud</h2>
+
+              <div class="callout callout--danger" data-speech-unsupported hidden>
+                <p class="callout__title">This browser can't read pages aloud</p>
+                <p>Try a current version of Edge, Chrome, Safari or Firefox, or use your device's screen reader (see below).</p>
+              </div>
+
+              <fieldset class="stack settings__group" style="--stack-space: var(--space-l)" data-speech-controls>
+                <legend class="visually-hidden">Read-aloud options</legend>
+
+                <div class="field">
+                  <label class="checkbox"><input type="checkbox" name="speech" aria-describedby="speech-hint"> Show a read-aloud button on every page</label>
+                  <p class="field__hint" id="speech-hint">With no words selected, it reads the whole page from the top. Select some words first to hear only those. Press Escape to stop.</p>
+                </div>
+
+                <div class="field">
+                  <label class="field__label" for="voice">Voice</label>
+                  <select class="input" id="voice" name="voice" aria-describedby="voice-hint">
+                    <option value="">Your browser's default voice</option>
+                  </select>
+                  <p class="field__hint" id="voice-hint">Voices come from your device and browser, so the list is different on each one. Edge and Chrome add extra natural-sounding voices when you're online.</p>
+                </div>
+
+                <div class="grid" style="--grid-min: 12rem">
+                  <div class="field">
+                    <div class="settings-range__label">
+                      <label class="field__label" for="rate">Speed</label>
+                      <output class="settings-range__value" for="rate" data-output="rate">1.0×</output>
+                    </div>
+                    <input class="settings-range" id="rate" name="rate" type="range" min="0.5" max="2" step="0.1" value="1">
+                  </div>
+                  <div class="field">
+                    <div class="settings-range__label">
+                      <label class="field__label" for="pitch">Pitch</label>
+                      <output class="settings-range__value" for="pitch" data-output="pitch">1.0</output>
+                    </div>
+                    <input class="settings-range" id="pitch" name="pitch" type="range" min="0.5" max="1.5" step="0.1" value="1">
+                  </div>
+                  <div class="field">
+                    <div class="settings-range__label">
+                      <label class="field__label" for="volume">Volume</label>
+                      <output class="settings-range__value" for="volume" data-output="volume">100%</output>
+                    </div>
+                    <input class="settings-range" id="volume" name="volume" type="range" min="0.1" max="1" step="0.1" value="1">
+                  </div>
+                </div>
+
+                <label class="checkbox"><input type="checkbox" name="followAlong"> Highlight and scroll to the part being read</label>
+
+                <div class="cluster">
+                  <button class="button button--secondary" type="button" data-speak-sample data-label="Test the voice">Test the voice</button>
+                </div>
+              </fieldset>
+            </section>
+
+            <!-- Reset --------------------------------------------------------- -->
+            <section class="stack settings__section" aria-labelledby="reset-title">
+              <h2 id="reset-title">Start over</h2>
+              <p>Put every setting on this page back to how the site looks by default. Your notes are kept.</p>
+              <div class="cluster">
+                <button class="button button--secondary" type="button" data-settings-reset>Reset all settings</button>
+              </div>
+            </section>
+
+          </fieldset>
+        </form>
+      </div>
+
+      <section class="stack settings__section" aria-labelledby="device-title">
+        <h2 id="device-title">More help from your device</h2>
+        <div class="prose">
+          <p>These work on any website, not only this one.</p>
+          <ul>
+            <li><strong>Zoom:</strong> press Ctrl and + (⌘ and + on a Mac) to make a page bigger, and Ctrl and 0 to reset it.</li>
+            <li><strong>Reading view:</strong> Immersive Reader in Edge and Reading mode in Chrome show only a page's text, and can read it aloud.</li>
+            <li><strong>Screen readers</strong> read out everything on screen, including menus and buttons: NVDA (free for Windows), Narrator (built into Windows), VoiceOver (Mac, iPhone and iPad) and TalkBack (Android).</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <aside class="ai-credit" aria-label="Use of generative AI">
+    <p class="container">Generative AI: Claude Opus 5.5 (Anthropic) designed this settings page and wrote its code and text.</p>
+  </aside>
+
+  <footer class="site-footer" data-site-footer></footer>
+</body>
+</html>

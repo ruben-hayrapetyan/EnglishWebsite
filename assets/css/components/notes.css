@@ -1,0 +1,143 @@
+/* ==========================================================================
+   Notes: reader highlights with notes beside the text. All of it is added
+   by assets/js/notes.js; never write this markup by hand.
+
+   .notes-highlight   the highlighted words in the page
+   .notes-menu        the buttons that pop up next to selected text
+   .notes-panel       the side panel listing the page's notes
+
+   Highlights use the accent, not --color-mark: the yellow highlighter stays
+   reserved for the site's own signature.
+   ========================================================================== */
+
+/* ---- Highlighted words -------------------------------------------------- */
+.notes-highlight {
+  border-bottom: var(--border-width-thick) solid var(--color-accent);
+  background: var(--color-accent-soft);
+  cursor: pointer;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.notes-highlight--active {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* ---- Pop-up menu for a selection ---------------------------------------- */
+.notes-menu {
+  position: fixed;
+  top: var(--menu-y, 0);
+  left: var(--menu-x, 0);
+  z-index: var(--z-overlay);
+  display: inline-flex;
+  gap: var(--space-3xs);
+  padding: var(--space-3xs);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-m);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-body);
+}
+
+.notes-menu[hidden] {
+  display: none;
+}
+
+/* ---- Side panel ---------------------------------------------------------- */
+.notes-panel {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: var(--space-m) var(--gutter);
+  border-top: var(--border-width) solid var(--color-border-strong);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-m);
+}
+
+/* Wide screens: a column on the right, and the page makes room for it. */
+@media (min-width: 52rem) {
+  .notes-panel {
+    top: 0;
+    left: auto;
+    width: min(24rem, 40vw);
+    max-height: none;
+    padding: var(--space-m);
+    border-top: 0;
+    border-inline-start: var(--border-width) solid var(--color-border-strong);
+  }
+
+  :root[data-notes-open] body {
+    padding-inline-end: min(24rem, 40vw);
+  }
+
+  /* Keep the reader bar beside the panel, not under it. */
+  :root[data-notes-open] .reader-bar {
+    inset-inline-end: calc(min(24rem, 40vw) + var(--space-s));
+  }
+}
+
+.notes-panel[hidden] {
+  display: none;
+}
+
+.notes-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.notes-panel__title {
+  font-size: var(--step-2);
+}
+
+.notes-panel__hint {
+  font-size: var(--step--1);
+  line-height: var(--leading-snug);
+  color: var(--color-text-muted);
+}
+
+.notes-panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  padding: 0;
+  list-style: none;
+}
+
+.notes-panel__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-s);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.notes-panel__item:focus-within {
+  border-color: var(--color-accent);
+}
+
+.notes-panel__quote {
+  padding-left: var(--space-xs);
+  border-left: var(--border-width-thick) solid var(--color-accent);
+  font-size: var(--step--1);
+  line-height: var(--leading-snug);
+  color: var(--color-text-muted);
+}
+
+.notes-panel__item [hidden] {
+  display: none;
+}
