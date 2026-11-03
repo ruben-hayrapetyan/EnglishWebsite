@@ -9,6 +9,7 @@ const SITE = {
   nav: [
     { label: "Home", href: "index.html" },
     { label: "About", href: "about.html" },
+    { label: "Our team", href: "teams.html" },
     { label: "Study", href: "study.html" },
   ],
   footerLinks: [
