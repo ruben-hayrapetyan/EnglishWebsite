@@ -50,21 +50,21 @@ def build(root: Path) -> Result:
         return result
     template = load_template(root / "_template.html")
     try:
-        discover_sources(book, root)
+        result.warnings.extend(discover_sources(book, root))
     except ReaderError as exc:
         result.errors.append(str(exc))
         return result
 
     docs = {}
-    cache: dict[tuple[Path, str | None], object] = {}  # read a shared file (a whole book) once
+    cache: dict[tuple, object] = {}  # read a shared file (a whole Word or Markdown book) once
     for chapter in book.chapters:
         source = chapter.source
         if source is None:
             continue
         try:
-            key = (source.file, source.pages)
+            key = (source.file, source.pages, source.clip)
             if key not in cache:
-                cache[key] = read(source.file, source.pages)
+                cache[key] = read(source.file, source.pages, source.clip)
             doc = copy.deepcopy(cache[key])  # each chapter renumbers its own headings
             docs[chapter.id] = chapter_body(doc, chapter.title, source.heading)
         except ReaderError as exc:
@@ -122,14 +122,15 @@ def outline_of(doc) -> list[OutlineNode]:
     return root.children
 
 
-def discover_sources(book, root: Path) -> None:
+def discover_sources(book, root: Path) -> list[str]:
     """Attach uploaded files to chapters by name, for chapters textbook.json
     gives no source:
 
         textbook/sources/<chapter id>.pdf|.docx|.md   that chapter
-        textbook/sources/book.pdf|.docx|.md           the whole book, split by
-                                                      matching each chapter's title
-                                                      to a heading
+        textbook/sources/book.pdf|.docx|.md           the whole book: a PDF is split
+                                                      where each chapter's title line
+                                                      is (split.py); Word and Markdown
+                                                      by matching headings
 
     This is what the upload page (upload.html) relies on: it only has to
     put a correctly named file in textbook/sources.
@@ -144,6 +145,7 @@ def discover_sources(book, root: Path) -> None:
         return found[0] if found else None
 
     whole_book = find(BOOK_NAME)
+    from_book = []
     for chapter in book.chapters:
         if chapter.source is not None:
             continue
@@ -151,7 +153,22 @@ def discover_sources(book, root: Path) -> None:
         if own is not None:
             chapter.source = manifest_mod.Source(own.resolve())
         elif whole_book is not None:
+            from_book.append(chapter)
+    if not from_book:
+        return []
+    if whole_book.suffix.lower() != ".pdf":
+        for chapter in from_book:
             chapter.source = manifest_mod.Source(whole_book.resolve(), heading=chapter.title, required=False)
+        return []
+    from .split import find_chapters
+
+    ranges, missing = find_chapters(whole_book, {c.id: c.title for c in from_book})
+    for chapter in from_book:
+        if chapter.id in ranges:
+            r = ranges[chapter.id]
+            chapter.source = manifest_mod.Source(whole_book.resolve(), pages=r.pages, clip=r.clip, required=False)
+    return [f'{cid}: not found in {whole_book.name} (no line in it names "{c.title}"), so it stays "Coming soon"'
+            for cid, c in ((c.id, c) for c in from_book) if cid in missing]
 
 
 def previous_outputs(root: Path) -> set[str]:

@@ -30,7 +30,7 @@ Files are matched to chapters **by name**, so nobody has to edit `textbook.json`
 | File in `textbook/sources/` | Becomes |
 |---|---|
 | `<chapter id>.pdf`, `.docx` or `.md` | That chapter, e.g. `neuronal-activity.pdf` |
-| `book.pdf`, `.docx` or `.md` | The whole book. Each chapter without its own file is cut out by finding a heading that matches its title ("Chapter 7: Neuronal activity…" matches). A chapter that isn't found stays "Coming soon", with a warning. |
+| `book.pdf`, `.docx` or `.md` | The whole book. Each chapter without its own file is cut out where the book names it: a bold or larger line such as "Chapter 7: Neuronal activity", "Chapter X: Chronotypes", "UNIT AND CHAPTER: …" or just the title. Contents pages and bullets are skipped. Each chapter is then converted on its own, so authors' different fonts don't confuse each other. A chapter that isn't found stays "Coming soon", with a warning. (A Word or Markdown book is split by its headings.) |
 
 Two files for one chapter (say `chronotypes.pdf` and `chronotypes.docx`) is an error; the upload page removes the old one for you.
 

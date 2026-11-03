@@ -213,6 +213,8 @@ class BodyRenderer:
             tag = f"h{block.level}"
             return [f'{ind}<{tag} id="{block.id}">{inline(block.content)}</{tag}>']
         if isinstance(block, Paragraph):
+            if not plain_text(block.content).strip():
+                return []  # never an empty <p>
             return [f"{ind}<p>{inline(block.content)}</p>"]
         if isinstance(block, ListBlock):
             return self.list_block(block, ind)

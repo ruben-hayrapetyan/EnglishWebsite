@@ -84,3 +84,52 @@ def test_chapter_options_region_lists_every_chapter(site):
     out = fill("<select>\n  <!-- textbook:chapter-options -->\n  <!-- /textbook -->\n</select>", book)
     assert '<option value="first-chapter">Chapter 1: First chapter</option>' in out
     assert '<option value="second-chapter">Chapter 2: Second chapter (on the site)</option>' in out
+
+
+# ---- A whole book compiled from several authors (see samples.compiled_book_pdf) ----
+
+import pytest  # noqa: E402
+
+from tools.textbook.split import find_chapters  # noqa: E402
+
+
+@pytest.fixture
+def compiled(site):
+    write_manifest(site, book_manifest(samples.COMPILED_CHAPTERS))
+    samples.compiled_book_pdf(site / "textbook/sources/book.pdf")
+    result = build(site)
+    assert not result.errors, result.errors
+    return result
+
+
+def page(result, cid):
+    return result.files[f"chapter-{cid}.html"].decode()
+
+
+def test_chapters_are_found_by_their_title_lines_not_the_contents_page(site):
+    path = samples.compiled_book_pdf(site / "book.pdf")
+    ranges, missing = find_chapters(path, {c["id"]: c["title"] for c in samples.COMPILED_CHAPTERS})
+    assert {cid: r.pages for cid, r in ranges.items()} == {
+        "first-topic": "2-3", "second-topic": "3-3", "third-topic": "3-3"}
+    assert missing == ["fourth-topic"]
+
+
+def test_each_chapter_gets_only_its_own_text(compiled):
+    first, second, third = page(compiled, "first-topic"), page(compiled, "second-topic"), page(compiled, "third-topic")
+    assert "The topic ends after the figure." in first and "second topic." not in first
+    assert "More text about the second topic." in second and "third topic." not in second
+    assert "Text that belongs to the third topic." in third
+    assert "Chapter X:" not in first and "Chapter 4:" not in second and "UNIT AND CHAPTER" not in third
+    assert "chapter-fourth-topic.html" not in compiled.files
+    assert any(w.startswith("fourth-topic: not found in book.pdf") for w in compiled.warnings)
+
+
+def test_double_spaced_lines_stay_one_paragraph(compiled):
+    assert ("<p>The first paragraph of the first topic runs over three double spaced lines and is still one "
+            "paragraph until it ends here.</p>") in page(compiled, "first-topic")
+
+
+def test_captions_above_and_below_figures_are_paired(compiled):
+    assert "<figcaption><strong>Figure 1.</strong> A picture with its caption above it.</figcaption>" in page(compiled, "first-topic")
+    assert "<figcaption><strong>Figure 2.</strong> A caption below the figure and its title.</figcaption>" in page(compiled, "second-topic")
+    assert not any("no figure near it" in w for w in compiled.warnings)

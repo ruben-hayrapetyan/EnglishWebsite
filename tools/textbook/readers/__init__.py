@@ -14,10 +14,10 @@ class ReaderError(Exception):
     """A source file can't be converted. The message says why and how to fix it."""
 
 
-def _pdf(path: Path, pages: str | None):
+def _pdf(path: Path, pages: str | None, clip=None):
     from .pdf import read_pdf
 
-    return read_pdf(path, pages)
+    return read_pdf(path, pages, clip)
 
 
 def _docx(path: Path, pages: str | None):
@@ -50,7 +50,7 @@ HELP = {
 }
 
 
-def read(path: Path, pages: str | None = None):
+def read(path: Path, pages: str | None = None, clip=None):
     """Read any supported source file into a Document."""
     suffix = path.suffix.lower()
     if not path.is_file():
@@ -64,4 +64,4 @@ def read(path: Path, pages: str | None = None):
     if pages and suffix != ".pdf":
         raise ReaderError(f"{path.name}: \"pages\" only works for PDFs. Use \"heading\" to pick a chapter "
                           "out of a combined document.")
-    return reader(path, pages)
+    return reader(path, pages, clip) if clip is not None else reader(path, pages)

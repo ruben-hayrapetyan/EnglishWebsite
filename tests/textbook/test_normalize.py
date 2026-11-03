@@ -117,6 +117,8 @@ def test_caption_label(text, expected):
     "text, expected",
     [
         ("• item", (False, 1, 2)),
+        ("○ second level", (False, 1, 2)),
+        ("■ third level", (False, 1, 2)),
         ("- item", (False, 1, 2)),
         ("3. step", (True, 3, 3)),
         ("(2) step", (True, 2, 4)),
@@ -156,3 +158,10 @@ def test_paths_broken_after_a_slash_rejoin_without_a_space():
     assert join_lines("change to /usr/", "bin now", frozenset()) == "change to /usr/bin now"
     assert join_lines("see https://example.org/", "docs", frozenset()) == "see https://example.org/docs"
     assert join_lines("either a/", "/b", frozenset()) == "either a/ /b"
+
+
+def test_strip_invisible_keeps_soft_hyphens():
+    from tools.textbook.normalize import strip_invisible
+
+    assert strip_invisible("●​ Item‎﻿") == "● Item"
+    assert strip_invisible("cir­") == "cir­"
