@@ -131,5 +131,25 @@ def test_double_spaced_lines_stay_one_paragraph(compiled):
 
 def test_captions_above_and_below_figures_are_paired(compiled):
     assert "<figcaption><strong>Figure 1.</strong> A picture with its caption above it.</figcaption>" in page(compiled, "first-topic")
-    assert "<figcaption><strong>Figure 2.</strong> A caption below the figure and its title.</figcaption>" in page(compiled, "second-topic")
+    # The bold title between the image and its caption joins the caption.
+    assert ("<figcaption><strong>Figure 2.</strong> A bold title for the figure. "
+            "A caption below the figure and its title.</figcaption>") in page(compiled, "second-topic")
     assert not any("no figure near it" in w for w in compiled.warnings)
+
+
+def test_a_template_book_gives_uniform_chapters_with_only_their_written_content(site):
+    write_manifest(site, book_manifest(samples.TEMPLATE_CHAPTERS))
+    samples.template_book_pdf(site / "textbook/sources/book.pdf")
+    result = build(site)
+    assert not result.errors, result.errors
+    first, second = page(result, "first-topic"), page(result, "second-topic")
+    assert ('<h2 id="background">Background</h2>' in first
+            and "The first topic is written content that readers should see on the site, and it runs" in first)
+    for leftover in ("CONTRIBUTORS", "LEARNING OBJECTIVES", "Explain the first topic", "add-in figure",
+                     "Rhythm: something", "Ada (2020)", "<figure"):
+        assert leftover not in first, leftover
+    assert second.index("Ben&#x27;s part") < second.index("Cy&#x27;s part") if "&#x27;" in second else \
+        second.index("Ben's part") < second.index("Cy's part")
+    for leftover in ("Describe the second topic", "Works Cited", "Cy's plan", "Ben (2021)", "Cy (2022)", "Unit:"):
+        assert leftover not in second, leftover
+    assert '<h2 id="ben-s-part">' in second and '<h2 id="cy-s-part">' in second  # each part levelled the same

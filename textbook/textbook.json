@@ -96,24 +96,7 @@
         "Central and local clocks in the brain and body",
         "Genetic mechanisms of the molecular clock",
         "Clock genes and cyclic behavior"
-      ],
-      "figures": {
-        "figure-1": {
-          "alt": "Cycle diagram of the molecular clock, about 24 hours long: CLOCK and BMAL1 switch on the Per and Cry genes, the PER and CRY proteins build up and block CLOCK-BMAL1, then break down so the cycle restarts."
-        },
-        "figure-1-2": {
-          "alt": "Pathway diagram: tryptophan becomes 5-hydroxytryptophan, then serotonin, then N-acetylserotonin, then melatonin, each step made by an enzyme (TPH, 5-HTP decarboxylase, AANAT and HIOMT)."
-        },
-        "figure-2": {
-          "alt": "Flow diagram: daylight reaches the retina, which signals the SCN in the hypothalamus; the SCN coordinates local clocks in the liver, pancreas, heart and skeletal muscle, which also respond to feeding, hormones and temperature."
-        },
-        "figure-2-2": {
-          "alt": "Diagram of a rodent brain: light reaches the SCN from the retina through the retinohypothalamic tract, while serotonin from the raphe nuclei and signals from the IGL and locus coeruleus carry non-light input to the clock."
-        },
-        "figure-3": {
-          "alt": "Illustration of a person's head showing the signal path from the eye to the SCN, then down through the spinal cord and neck ganglia to the pineal gland, which makes melatonin in darkness."
-        }
-      }
+      ]
     },
     {
       "id": "sleep-caffeine-jet-lag",
@@ -170,21 +153,7 @@
             }
           ]
         }
-      ],
-      "figures": {
-        "figure-1": {
-          "alt": "Graph of pilots' response speed on a vigilance test by flight arrival time: mean speed stays near 4 responses per second at all times, while the slowest 10 percent of responses are about 2.2 to 2.7."
-        },
-        "figure-1-2": {
-          "alt": "Illustration of circadian misalignment: a person's silhouette between an external clock at 11 p.m. at night and an internal clock at 7 a.m. in daylight."
-        },
-        "figure-2": {
-          "alt": "Graph of sleep pressure (Process S) and the circadian pacemaker (Process C) over three days, with jet lag shifting Process C away from the old sleeping times."
-        },
-        "figure-3": {
-          "alt": "Six small line graphs of serum cortisol over a day for six subjects: cortisol is lowest around midnight and rises to a peak in the early morning."
-        }
-      }
+      ]
     },
     {
       "id": "hunger-digestion-metabolism",
@@ -249,12 +218,7 @@
         "What is a chronotype?",
         "How does chronotype affect physiology?",
         "Chronotypes in athletics"
-      ],
-      "figures": {
-        "figure-1": {
-          "alt": "Graph of mean daytime oral temperature from 8:00 to 24:00 for morning, intermediate and evening types; the morning type peaks earlier in the day than the evening type."
-        }
-      }
+      ]
     },
     {
       "id": "circulation-cardiac-cycle",
@@ -286,22 +250,10 @@
         "figure-1": {
           "alt": "Labeled cross-section of the human heart showing its four chambers, its valves, the aorta, the venae cavae and the pulmonary vessels."
         },
-        "figure-1-2": {
-          "alt": "Labeled cross-section of the human heart showing its four chambers, its valves, the aorta, the venae cavae and the pulmonary vessels."
-        },
-        "figure-13": {
-          "alt": "Venn diagram of exercise, diet and sleep around neuroplasticity: aerobic and resistance exercise, healthy diets and good sleep increase it; high-fat, high-sugar diets and sleep loss decrease it."
-        },
         "figure-2": {
           "alt": "Diagram of the heart's conduction system: the signal starts at the sinoatrial node, passes through the atrioventricular node and bundle of His, and spreads along the bundle branches and Purkinje fibers."
         },
         "figure-2-2": {
-          "alt": "Diagram of the heart's nerve supply: parasympathetic fibers in the vagus nerve release acetylcholine to slow the heart, and sympathetic fibers from the spinal cord release norepinephrine to speed it up and strengthen each beat."
-        },
-        "figure-2-3": {
-          "alt": "Diagram of the heart's conduction system: the signal starts at the sinoatrial node, passes through the atrioventricular node and bundle of His, and spreads along the bundle branches and Purkinje fibers."
-        },
-        "figure-3": {
           "alt": "Diagram of the heart's nerve supply: parasympathetic fibers in the vagus nerve release acetylcholine to slow the heart, and sympathetic fibers from the spinal cord release norepinephrine to speed it up and strengthen each beat."
         },
         "figure-4": {
@@ -310,16 +262,7 @@
         "figure-5": {
           "alt": "Chest X-ray of an implanted cardioverter-defibrillator, labeled with the device, the high-voltage coils in the superior vena cava and right ventricle, and the pacing electrodes."
         },
-        "figure-5-2": {
-          "alt": "Diagram of a pacemaker: a pulse generator under the skin, with leads running through a vein into the right atrium and right ventricle."
-        },
         "figure-6": {
-          "alt": "Illustration of a left ventricular assist device: a pump attached to the bottom of the heart's left ventricle, with a tube carrying blood to the aorta."
-        },
-        "figure-6-2": {
-          "alt": "Chest X-ray of an implanted cardioverter-defibrillator, labeled with the device, the high-voltage coils in the superior vena cava and right ventricle, and the pacing electrodes."
-        },
-        "figure-7": {
           "alt": "Illustration of a left ventricular assist device: a pump attached to the bottom of the heart's left ventricle, with a tube carrying blood to the aorta."
         }
       }
@@ -342,33 +285,6 @@
         "figure-11": {
           "alt": "Leaky integrate-and-fire formula: tau m times d V over d t equals minus the quantity V of t minus V rest, plus R m times I of t."
         },
-        "figure-12": {
-          "alt": "Fourier transform formula: X of f equals the integral from minus infinity to infinity of x of t times e to the minus i 2 pi f t, d t."
-        },
-        "figure-13": {
-          "alt": "Wavelet transform formula: W of a and b equals 1 over the square root of a, times the integral of x of t times the complex conjugate of psi of t minus b over a, d t."
-        },
-        "figure-14": {
-          "alt": "Artificial neuron formula: y equals phi of the sum over i of w i times x i, plus b."
-        },
-        "figure-15": {
-          "alt": "Leaky integrate-and-fire formula: tau m times d V over d t equals minus the quantity V of t minus V rest, plus R m times I of t."
-        },
-        "figure-23": {
-          "alt": "Handwritten outline notes for section 1, What is being measured: electrodes record voltage, spikes as action potentials with depolarization and repolarization, and local field potentials."
-        },
-        "figure-24": {
-          "alt": "Handwritten outline notes for section 2, Neural activity is rhythmic: the delta, theta, alpha, beta and gamma frequency bands, with a sketch of each wave."
-        },
-        "figure-25": {
-          "alt": "Handwritten outline notes for section 3, Connection to slower body rhythms: activity in many brain areas syncs with breathing, and slow rhythms control the strength of faster ones."
-        },
-        "figure-26": {
-          "alt": "Handwritten outline notes for section 4, Getting a signal from a recording: spike sorting steps, the Fourier transform, power spectrum and wavelet transform formulas, and open problems such as volume conduction."
-        },
-        "figure-27": {
-          "alt": "Handwritten outline notes for section 5, Biological to artificial: the artificial neuron formula, the leaky integrate-and-fire model with a sketch of spiking, spiking neural networks and spike-timing-dependent plasticity."
-        },
         "figure-6": {
           "alt": "Fourier transform formula: X of f equals the integral from minus infinity to infinity of x of t times e to the minus i 2 pi f t, d t."
         },
@@ -381,43 +297,22 @@
         "figure-a1": {
           "alt": "Three stacked graphs over 120 milliseconds: an intracellular action potential rising from about minus 70 millivolts past threshold, extracellular spikes as brief sharp dips, and the local field potential as a slow, smooth wave."
         },
-        "figure-a1-2": {
-          "alt": "Three stacked graphs over 120 milliseconds: an intracellular action potential rising from about minus 70 millivolts past threshold, extracellular spikes as brief sharp dips, and the local field potential as a slow, smooth wave."
-        },
         "figure-a2": {
-          "alt": "Five sine waves over one second showing the frequency bands: delta at 2 hertz, theta at 6, alpha at 10, beta at 20 and gamma at 40, each with more cycles."
-        },
-        "figure-a2-2": {
           "alt": "Five sine waves over one second showing the frequency bands: delta at 2 hertz, theta at 6, alpha at 10, beta at 20 and gamma at 40, each with more cycles."
         },
         "figure-a3": {
           "alt": "An LFP wave over 1.2 seconds with two neurons' spikes marked: neuron A fires near each peak and neuron B near each trough, at the same average rate."
         },
-        "figure-a3-2": {
-          "alt": "An LFP wave over 1.2 seconds with two neurons' spikes marked: neuron A fires near each peak and neuron B near each trough, at the same average rate."
-        },
         "figure-a4": {
-          "alt": "Three graphs over 2 seconds: a slow 2 hertz breathing cycle, the strength of a fast gamma rhythm rising and falling with it, and the combined signal showing fast oscillations in bursts on each cycle."
-        },
-        "figure-a4-2": {
           "alt": "Three graphs over 2 seconds: a slow 2 hertz breathing cycle, the strength of a fast gamma rhythm rising and falling with it, and the combined signal showing fast oscillations in bursts on each cycle."
         },
         "figure-a5": {
           "alt": "Three panels of spike sorting: a raw recording with candidate spikes crossing a threshold, two different average spike shapes, and a scatter plot where spikes fall into two clusters, one per neuron."
         },
-        "figure-a5-2": {
-          "alt": "Three panels of spike sorting: a raw recording with candidate spikes crossing a threshold, two different average spike shapes, and a scatter plot where spikes fall into two clusters, one per neuron."
-        },
         "figure-a6": {
           "alt": "Three graphs: a raw signal of a slow rhythm with two brief 60 hertz bursts; its whole-recording power spectrum, with a tall peak at the slow frequency and a tiny one at 60 hertz; and a spectrogram that shows each burst at its time."
         },
-        "figure-a6-2": {
-          "alt": "Three graphs: a raw signal of a slow rhythm with two brief 60 hertz bursts; its whole-recording power spectrum, with a tall peak at the slow frequency and a tiny one at 60 hertz; and a spectrogram that shows each burst at its time."
-        },
         "figure-a7": {
-          "alt": "Two graphs: a basic artificial neuron gives the same output value at every input step, while a spiking neuron fires brief pulses at specific times."
-        },
-        "figure-a7-2": {
           "alt": "Two graphs: a basic artificial neuron gives the same output value at every input step, while a spiking neuron fires brief pulses at specific times."
         }
       }
@@ -448,18 +343,7 @@
         "What is the immune system and how does it function?",
         "Diseases during the rest vs active time",
         "Seasonal cycles within the immune system"
-      ],
-      "figures": {
-        "figure-1": {
-          "alt": "Illustrated map of the immune system's cells, from innate cells such as macrophages and neutrophils to adaptive cells such as T cells, B cells and antibody-making plasma cells, linked by colored pathways."
-        },
-        "figure-2": {
-          "alt": "Black-and-white portrait photo of Franz Halberg, an older man in a white lab coat and tie."
-        },
-        "figure-3": {
-          "alt": "Five line graphs of hormone levels in the blood over 24 hours: melatonin peaks at night, cortisol rises in the early morning and falls through the day, and androstenedione, 17-hydroxyprogesterone and DHEAS vary less."
-        }
-      }
+      ]
     },
     {
       "id": "hair-growth-shedding",
@@ -472,12 +356,7 @@
         "Basics of hair growth and shedding",
         "Factors that impact the hair cycle",
         "Potential treatments and interventions"
-      ],
-      "figures": {
-        "figure-1": {
-          "alt": "Table of the four phases of scalp hair growth: anagen (growth, about 2 to 7 years), catagen (transition, about 2 to 3 weeks), telogen (resting, about 2 to 4 months) and exogen (shedding, overlapping with telogen)."
-        }
-      }
+      ]
     },
     {
       "id": "breeding-migration",
@@ -492,18 +371,7 @@
         "Animal migration and navigation",
         "Modern environmental threats",
         "Bird safe architecture"
-      ],
-      "figures": {
-        "figure-1": {
-          "alt": "Line graphs of prolactin over 96 weeks for (a) a long-day breeder, the Siberian hamster, and (b) a short-day breeder, sheep, with testis size and coat color changing from winter to summer."
-        },
-        "figure-2": {
-          "alt": "(A) Photo of the Tribute in Light beams in New York with migratory birds circled in the light. (B, C) Radar maps: about 500 birds near the site with the lights off, and 15,700 with them on."
-        },
-        "figure-3": {
-          "alt": "Two photos of Siberian hamsters: one with a darker brown summer coat and one with a pale, mostly white winter coat."
-        }
-      }
+      ]
     },
     {
       "id": "predator-prey-dynamics",
@@ -516,24 +384,7 @@
         "What are predator-prey rhythms?",
         "The predator-prey cycle in the ecosystem",
         "What factors drive predator-prey periodicity?"
-      ],
-      "figures": {
-        "figure-1": {
-          "alt": "Line graph of hare and lynx populations from 1900 to 1935: both rise and fall in cycles of about 10 years, with lynx peaks following hare peaks."
-        },
-        "figure-2": {
-          "alt": "Idealized graph of predator and prey populations over 25 years as two offset waves, the predator wave peaking just after the prey wave."
-        },
-        "figure-3": {
-          "alt": "Pyramid of feeding levels: plants and other producers at the base, then herbivores, then carnivores, with top carnivores at the peak and soil decomposers beneath."
-        },
-        "figure-4": {
-          "alt": "Bar graph of the mean number of aphids per ear and per shoot, before and after rain: there are fewer aphids after rain in both places."
-        },
-        "figure-5": {
-          "alt": "Bar graph of hares per hectare from 1987 to 1994 under five treatments: control, added food, fertilizer, predator exclosure, and predator exclosure plus food; numbers peak around 1989 to 1991 and are highest with food added."
-        }
-      }
+      ]
     }
   ]
 }

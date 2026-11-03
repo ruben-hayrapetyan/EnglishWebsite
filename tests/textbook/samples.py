@@ -556,3 +556,82 @@ def caption_quirks_pdf(path: Path) -> Path:
                 cells.cell(cell)
     pdf.output(str(path))
     return path
+
+
+TEMPLATE_CHAPTERS = [
+    {"id": "first-topic", "title": "First topic", "unit": "first", "authors": ["ada"]},
+    {"id": "second-topic", "title": "Second topic", "unit": "first", "authors": ["ben", "cy"]},
+]
+
+
+def template_book_pdf(path: Path) -> Path:
+    """A book written to the class's chapter template: each chapter opens with
+    labelled front matter, has its written content (by one or two authors),
+    then add-ins, a glossary and references."""
+    from fpdf import FPDF
+
+    pdf = FPDF(format="Letter", unit="pt")
+    pdf.core_fonts_encoding = "windows-1252"
+    pdf.set_auto_page_break(False)
+    y = [0.0]
+
+    def line(s, size=11, style=""):
+        pdf.set_font("helvetica", style, size)
+        pdf.text(72, y[0], s)
+        y[0] += size * 1.9 + (12 if style == "B" else 0)  # labels have space after them
+
+    def page():
+        pdf.add_page()
+        y[0] = 72
+
+    def prose(words):
+        for chunk in words:
+            line(chunk)
+        y[0] += 8
+
+    page()
+    line("Chapter 1: First topic", style="B")          # title above the opening block
+    line("UNIT AND CHAPTER", style="B")
+    line("CONTRIBUTORS", style="B")
+    line("• Ada, subject matter expert")
+    line("LEARNING OBJECTIVES", style="B")
+    line("1. Explain the first topic")
+    line("CHAPTER OUTLINE", style="B")
+    line("• Section: Background")
+    line("CHAPTER WRITTEN CONTENT", style="B")
+    line("Background", size=15, style="B")
+    prose(["The first topic is written content that readers should see on the site,",
+           "and it runs over several lines that join into one paragraph."])
+    line("CHAPTER ADD-INS", style="B")
+    pdf.image(io.BytesIO(png()), x=72, y=y[0], w=150, h=75)
+    y[0] += 90
+    line("Figure 1: An add-in figure that is not part of the text", size=9)
+    line("GLOSSARY", style="B")
+    line("Rhythm: something that repeats")
+    line("REFERENCES", style="B")
+    line("Ada (2020). A reference.")
+
+    page()
+    line("UNIT AND CHAPTER", style="B")
+    line("Unit: First unit")
+    line("Chapter 2: Second topic", style="B")
+    line("CONTRIBUTORS", style="B")
+    line("• Ben and Cy")
+    line("CHAPTER WRITTEN CONTENT (Ben)", style="B")
+    line("Learning Objectives", style="B")
+    line("1. Describe the second topic")
+    line("Ben's part", size=15, style="B")
+    prose(["Ben wrote this part of the second topic, and it belongs on the page",
+           "together with the part his coauthor wrote afterwards."])
+    line("Works Cited", size=12, style="B")
+    line("Ben (2021). A source.")
+    line("CHAPTER OUTLINE (Cy)", style="B")
+    line("• Cy's plan")
+    line("CHAPTER WRITTEN CONTENT (Cy)", style="B")
+    line("Cy's part", size=15, style="B")
+    prose(["Cy wrote the second part of the second topic, which also belongs on",
+           "the page after Ben's part, in the same order as in the book."])
+    line("REFERENCES", style="B")
+    line("Cy (2022). Another source.")
+    pdf.output(str(path))
+    return path

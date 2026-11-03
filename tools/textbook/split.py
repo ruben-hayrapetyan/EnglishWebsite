@@ -131,6 +131,10 @@ def find_chapters(path: Path, titles: dict[str, str]) -> tuple[dict[str, Chapter
         cluster = [l for _, l in found if l.page == best.page and abs(l.y0 - best.y0) < best.size * 6]
         starts[cid] = (min(cluster, key=lambda l: l.y0), max(cluster, key=lambda l: l.y0))
 
+    template = _template_starts(lines)
+    if len(template) >= 2:
+        return _split_by_template(template, starts, titles, lines)
+
     ordered = sorted(starts.items(), key=lambda item: (item[1][0].page, item[1][0].y0))
     last_page = max((l.page for l in lines), default=0)
     ranges: dict[str, ChapterRange] = {}
@@ -144,5 +148,66 @@ def find_chapters(path: Path, titles: dict[str, str]) -> tuple[dict[str, Chapter
         # Content starts below the chapter's title lines.
         clip: Clip = (bottom.page, bottom.y1 - 0.5, end_page, end_y)
         ranges[cid] = ChapterRange(bottom.page, last, clip)
+    missing = [cid for cid in titles if cid not in ranges]
+    return ranges, missing
+
+
+# ---- Books written to a chapter template ---------------------------------------
+# When every chapter opens with the same labelled block ("UNIT AND CHAPTER",
+# "CONTRIBUTORS", ...), those labels are the reliable chapter boundaries; the
+# title line only says which chapter a block is. The labels themselves are
+# front matter that sections.py removes.
+
+START = re.compile(r"^\s*(unit and chapter|contributors?)\s*:?\s*$", re.I)
+
+
+def _template_starts(lines: list[TitleLine]) -> list[TitleLine]:
+    """The first label of each chapter's opening block."""
+    found = [l for l in lines if l.bold and START.match(l.text)]
+    starts: list[TitleLine] = []
+    for line in found:
+        prev = starts[-1] if starts else None
+        # "UNIT AND CHAPTER" and "CONTRIBUTORS" a few lines apart open one chapter.
+        if prev and line.page == prev.page and line.y0 - prev.y0 < prev.size * 12:
+            continue
+        starts.append(line)
+    return starts
+
+
+def _before(a: TitleLine, b: TitleLine) -> bool:
+    return (a.page, a.y0) < (b.page, b.y0)
+
+
+def _split_by_template(template, starts, titles, lines):
+    blocks: dict[int, tuple[str, TitleLine]] = {}  # block index -> (chapter id, block top)
+    for cid, (top, _bottom) in starts.items():
+        # The title belongs to the block it sits in, or to the block that opens
+        # right after it ("Chapter X: Sleep..." just above "CONTRIBUTORS").
+        index = max((n for n, t in enumerate(template) if not _before(top, t)), default=-1)
+        following = index + 1
+        if following < len(template) and template[following].page - top.page <= 1:
+            index = following
+        if index < 0 or index in blocks:
+            continue
+        opening = top if _before(top, template[index]) else template[index]
+        blocks[index] = (cid, opening)
+    tops = sorted(((opening, n) for n, (_cid, opening) in blocks.items()), key=lambda t: (t[0].page, t[0].y0))
+    block_tops = [t for t in template]
+    last_page = max((l.page for l in lines), default=0)
+    ranges: dict[str, ChapterRange] = {}
+    for opening, n in tops:
+        cid = blocks[n][0]
+        nxt = next((t for t in block_tops if _before(opening, t) and t is not template[n]
+                    and not (t.page == opening.page and abs(t.y0 - opening.y0) < 1)), None)
+        # The next chapter may open with its title just above its template label.
+        later = [o for o, _ in tops if _before(opening, o)]
+        if later and (nxt is None or _before(later[0], nxt)):
+            nxt = later[0]
+        if nxt is not None:
+            end_page, end_y, last = nxt.page, nxt.y0 - 0.5, nxt.page
+        else:
+            end_page, end_y, last = None, 0.0, last_page
+        clip: Clip = (opening.page, opening.y0 - 0.5, end_page, end_y)
+        ranges[cid] = ChapterRange(opening.page, last, clip)
     missing = [cid for cid in titles if cid not in ranges]
     return ranges, missing

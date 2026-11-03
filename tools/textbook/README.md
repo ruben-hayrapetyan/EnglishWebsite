@@ -79,6 +79,26 @@ Only the text between the markers changes. The rest of the page stays its author
 
 Section outlines come from the chapter's real headings once its source is converted, whatever the format. Until then they come from the chapter's `outline` in `textbook.json`. So nothing on these pages depends on one particular PDF: swap the source, rebuild, and every page follows.
 
+## Only the written content, the same shape for every chapter
+
+The class wrote each chapter to a template: UNIT AND CHAPTER, CONTRIBUTORS, LEARNING OBJECTIVES, CHAPTER OUTLINE, then CHAPTER WRITTEN CONTENT, then CHAPTER ADD-INS, GLOSSARY and REFERENCES. When a chapter uses the template, the site shows **only its written content** (`sections.py`):
+
+- **Where it starts:** a "CHAPTER WRITTEN CONTENT" label, including variants like "(Ben)" or "- John Liu".
+- **What stops it:** front-matter labels (contributors, objectives, outline, "Sections:") and end labels (add-ins, glossary, vocab, references, works cited, citations).
+- **Chapters by several authors** keep each author's written part, in order.
+- **A learning-objectives list placed inside the text** is skipped, and the text resumes at the next heading.
+- **A chapter with no "written content" label** starts at the first heading followed by real paragraphs.
+- **A chapter that doesn't use the template** is left whole, even if it has a "References" heading.
+
+Then every chapter gets the same structure (`structure.py`):
+
+- Short bold lines and one-item bold lists ("1. What is being measured?") become headings.
+- A heading that wrapped onto a second line is joined back together.
+- An opening heading that restates the chapter title is removed.
+- Each author's part is levelled on its own: its top headings are h2 and the next level h3. Numbered headings ("1.", "2.", "2.1") take their level from their numbers, and no level is skipped.
+
+A whole-book PDF written to the template is split where each chapter's opening block ("UNIT AND CHAPTER" or "CONTRIBUTORS") starts, which is more reliable than its title line.
+
 ## Supported formats
 
 | Format | How it's read |

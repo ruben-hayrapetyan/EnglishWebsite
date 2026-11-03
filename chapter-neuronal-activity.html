@@ -25,111 +25,59 @@
       <nav class="chapter-nav" aria-labelledby="chapter-contents" data-read-aloud-skip>
         <h2 class="chapter-nav__title" id="chapter-contents">In this chapter</h2>
         <ol class="chapter-nav__list">
-          <li><a class="chapter-nav__link" href="#contributors">CONTRIBUTORS</a></li>
-          <li><a class="chapter-nav__link" href="#learning-objectives">LEARNING OBJECTIVES</a></li>
-          <li><a class="chapter-nav__link" href="#chapter-outline">CHAPTER OUTLINE</a></li>
-          <li><a class="chapter-nav__link" href="#chapter-written-content">CHAPTER WRITTEN CONTENT</a></li>
-          <li><a class="chapter-nav__link" href="#intracellular-action-potential-versus-extracellular-spikes-a">Intracellular action potential versus extracellular spikes and local field potential</a></li>
-          <li><a class="chapter-nav__link" href="#delta-theta-alpha-beta-and-gamma-compared">Delta, theta, alpha, beta, and gamma compared</a></li>
-          <li><a class="chapter-nav__link" href="#spikes-at-different-phases-of-an-lfp-cycle">Spikes at different phases of an LFP cycle</a></li>
-          <li><a class="chapter-nav__link" href="#breathing-cycle-timing-and-fast-oscillation-amplitude">Breathing-cycle timing and fast oscillation amplitude</a></li>
-          <li><a class="chapter-nav__link" href="#power-spectrum-versus-time-frequency-spectrogram">Power spectrum versus time-frequency spectrogram</a></li>
-          <li><a class="chapter-nav__link" href="#chapter-add-ins">CHAPTER ADD-INS</a></li>
-          <li><a class="chapter-nav__link" href="#glossary">GLOSSARY</a></li>
-          <li><a class="chapter-nav__link" href="#references">REFERENCES</a></li>
+          <li><a class="chapter-nav__link" href="#what-is-being-measured">What is Being Measured?</a></li>
+          <li><a class="chapter-nav__link" href="#neural-activity-is-rhythmic">Neural Activity Is Rhythmic</a></li>
+          <li><a class="chapter-nav__link" href="#the-connection-to-slower-body-rhythms">The Connection to Slower Body Rhythms</a></li>
+          <li><a class="chapter-nav__link" href="#getting-a-signal-from-a-recording">Getting a Signal from a Recording</a></li>
+          <li><a class="chapter-nav__link" href="#from-biological-to-artificial">From Biological to Artificial</a></li>
         </ol>
       </nav>
       <article class="prose" data-read-aloud>
-        <h2 id="contributors">CONTRIBUTORS</h2>
-        <ul>
-          <li>Daniel Winter
-            <ul>
-              <li>Subject Matter Expert – ‘Neuronal Activity’</li>
-            </ul>
-          </li>
-          <li>Jacob Li
-            <ul>
-              <li>Peer Reviewer</li>
-            </ul>
-          </li>
-          <li>Ada Langford</li>
-        </ul>
-        <h2 id="learning-objectives">LEARNING OBJECTIVES</h2>
-        <p><strong>After reading this chapter, students should be able to …</strong></p>
-        <ol>
-          <li>LO1 (Remember): Define spike and LFP</li>
-          <li>LO2 (Understand): Describe how brain activity repeats in rhythms (of different speeds)</li>
-          <li>LO3 (Apply): Use breathing as an example of how a body rhythm can affect brain rhythm</li>
-          <li>LO4 (Analyze): Compare how scientists pull spikes and rhythms out of recordings and the limitations of these methods</li>
-          <li>LO5 (Understand): Explain one way spiking neural networks use timing that artificial neural networks do not</li>
-        </ol>
-        <h2 id="chapter-outline">CHAPTER OUTLINE</h2>
-        <ul>
-          <li>What is Being Measured</li>
-          <li>Neural Activity is Rhythmic</li>
-          <li>Connection to Slower Body Rhythms</li>
-          <li>Getting a Signal from a Recording</li>
-          <li>From Biological to Artificial</li>
-        </ul>
-        <h2 id="chapter-written-content">CHAPTER WRITTEN CONTENT</h2>
-        <ol>
-          <li><strong>What is Being Measured?</strong></li>
-        </ol>
+        <h2 id="what-is-being-measured">What is Being Measured?</h2>
         <p>When scientists put a thin wire (an electrode) into the brain, they record changes in voltage outside the cells, a method called extracellular recording. What results is a noisy wave-like line, containing spikes and local field potentials (LFPs). Telling these apart, and distinguishing extracellular recordings from voltage measured inside a cell, is the first step towards understanding how neurons communicate and how they relate to rhythms.</p>
         <p>A spike is an action potential; it’s a rapid change in voltage across a cell membrane that neurons use to communicate with one another.A typical neuron has a resting membrane voltage of about -70 mV (relative to the outside of the cell). Stimuli make the inside of the cell less negative until it hits a trigger point (threshold around -55 mV), causing voltage-gated sodium channels to open. This causes <strong>depolarization</strong>, causing the sharp spike up to +30 mV. Sodium channels then inactivate and potassium channels open, letting potassium rush out to drop the voltage back down, a process called <strong>repolarization</strong>. The important thing to note is that the neuron either reaches the threshold and fires an action potential or remains below the threshold and does not fire; exact voltage values vary across neurons.</p>
         <p>But these neurons are seldom isolated; on average, a single neuron in the human brain connects directly to about 1,000 to 10,000 other neurons through contact points called <strong>synapses</strong>. To extract information from these neurons, scientists measure electrical signals with electrodes. For example, a local field potential (LFP) reflects the combined transmembrane currents of many neurons, especially synaptic currents, as recorded near an electrode (Buzsáki et al., 2012). Its amplitude also depends on the geometry of those currents. This wave, unlike the spikes generated by single neurons, is smooth and changes much more gradually.</p>
         <figure id="figure-a1">
           <img src="assets/img/chapter-neuronal-activity-figure-a1.png" alt="Three stacked graphs over 120 milliseconds: an intracellular action potential rising from about minus 70 millivolts past threshold, extracellular spikes as brief sharp dips, and the local field potential as a slow, smooth wave." width="1648" height="1155" loading="lazy">
-          <figcaption><strong>Figure A1.</strong> <strong>Based on: Buzsáki et al. (2012); Rey et al. (2015); OpenStax, Section 12.4.</strong></figcaption>
+          <figcaption><strong>Figure A1.</strong> Intracellular action potential versus extracellular spikes and local field potential. <strong>Based on: Buzsáki et al. (2012); Rey et al. (2015); OpenStax, Section 12.4.</strong></figcaption>
         </figure>
-        <h2 id="intracellular-action-potential-versus-extracellular-spikes-a">Intracellular action potential versus extracellular spikes and local field potential</h2>
         <p>One challenge of analyzing LFPs is that the same electrode captures both signals. This forces scientists to use clever mathematical techniques to filter out the signals that they are trying to isolate. Since spike frequencies range in the hundreds of hertz while LFPs oscillate at much lower frequencies, their signals are distinguishable. However, spike waveforms leak into the lower frequency range, so what looks like fast LFP activity can be polluted by nearby spiking signals.</p>
         <p>Scale is the main difference between spikes and LFPs. A spike tells you what a single neuron is doing, while a local field potential tells you what a group of neurons are doing together; neither is the whole picture. Imagine trying to single out one person’s conversation at a large party. To hear what they are saying, you have to zone out the rest of the noise, and vice versa. If the goal is to hear the volume of the room (which changes over time), you lose the ability to single out individual voices from the crowd.</p>
         <p>There is also a relationship between a single neuron’s signal and its group's signal. When LFPs follow cyclical patterns, some neurons tend to spike at specific phases in the cycle. The following sections will go into much greater detail on this relationship and the connection between LFP rhythms and those of the rest of the body.</p>
-        <ol start="2">
-          <li><strong>Neural Activity Is Rhythmic</strong> A spike tells you about one moment in one particular cell. In comparison, local field</li>
-        </ol>
-        <p>potentials follow very different patterns. LFPs often rise and fall in repeated cycles, sometimes for minutes at a time. Some neurons become active and idle together, over and over, and the LFP records that group behavior as a wave. although not all neurons do so. These repeated LFP fluctuations are called oscillations, and researchers use them to understand neural activity.</p>
+        <h2 id="neural-activity-is-rhythmic">Neural Activity Is Rhythmic</h2>
+        <p>A spike tells you about one moment in one particular cell. In comparison, local field potentials follow very different patterns. LFPs often rise and fall in repeated cycles, sometimes for minutes at a time. Some neurons become active and idle together, over and over, and the LFP records that group behavior as a wave. although not all neurons do so. These repeated LFP fluctuations are called oscillations, and researchers use them to understand neural activity.</p>
         <p>To study these oscillations, researchers can analyze them as simpler sine-wave components using mathematical techniques. Researchers group these components by how fast they cycle. The unit is hertz (Hz), meaning cycles per second. The common bands are delta (𝛿: 1 to 4 Hz), theta (𝜃: 4 to 8 Hz), alpha (𝛼: 8 to 12 Hz), beta (𝛽: 15 to 30 Hz), and gamma (𝛾: 30 to 100 Hz). Different bands are associated with different patterns of neural activity and can provide clues about the processes occurring at any given time. These band conventions are not universally agreed upon, so different laboratories draw the lines in slightly different places, and different animals run the same functional rhythm at different speeds. Gamma in the olfactory system of rats and mice sits between 40 and 100 Hz, while in insects (the comparable rhythm) is around 20 Hz (Kay, 2014). The rhythms occur in different species, despite the variations in frequency.</p>
         <p>Frequency and period are reciprocals of one another, so a rhythm at 40 Hz completes one cycle every 25 milliseconds, while a 4 Hz rhythm takes 250 milliseconds to complete a cycle. A single spike lasts about a millisecond, meaning dozens of spikes can fit in one slow cycle, so the timing of a spike within a cycle can carry information in some circuits, in addition to how many spikes occur.</p>
         <figure id="figure-a2">
           <img src="assets/img/chapter-neuronal-activity-figure-a2.png" alt="Five sine waves over one second showing the frequency bands: delta at 2 hertz, theta at 6, alpha at 10, beta at 20 and gamma at 40, each with more cycles." width="1648" height="1204" loading="lazy">
-          <figcaption><strong>Figure A2.</strong> <strong>Based on:</strong><a href="https://doi.org/10.1126/science.1099745"><strong> Buzsáki &amp; Draguhn (2004)</strong></a><strong>;</strong><a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"><strong> Kay (2014), Section 3</strong></a><strong>.</strong></figcaption>
+          <figcaption><strong>Figure A2.</strong> Delta, theta, alpha, beta, and gamma compared. <strong>Based on:</strong><a href="https://doi.org/10.1126/science.1099745"><strong> Buzsáki &amp; Draguhn (2004)</strong></a><strong>;</strong><a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"><strong> Kay (2014), Section 3</strong></a><strong>.</strong></figcaption>
         </figure>
-        <h2 id="delta-theta-alpha-beta-and-gamma-compared">Delta, theta, alpha, beta, and gamma compared</h2>
         <p>For a very long time, it was reasonable to ask if these LFP oscillations do anything meaningful at all. A bridge vibrates when traffic crosses it, but the vibration is not why the bridge was built. Buzsáki and Draguhn (2004) propose that brain oscillations are not merely that kind of byproduct. Oscillations span five orders of magnitude in frequency and are preserved across species, which suggests they may serve important functions. They also propose that oscillations can bias which inputs reach a population of neurons, temporarily link neurons so they can work together, and support synaptic changes involved in learning. These functions are supported to different degrees across circuits.</p>
         <p>Every rhythm in this chapter completes <em>many </em>cycles per day (ultradian rhythm). A gamma cycle finishes roughly three and a half million times in the span of a single circadian day, orders of magnitude faster than rhythms measured in minutes and hours rather than milliseconds.</p>
         <p>Most claims about what a brain rhythm does are correlational; a rhythm gets stronger during some behavior, and researchers infer a relationship between the two. However, experiments on olfactory gamma provide stronger evidence for a functional contribution. Experiments reviewed by Kay (2014) found that disrupting odor-related oscillations impaired discrimination of similar odors in insects, while mice with enhanced gamma activity showed improved fine discrimination. These findings support a role for oscillatory coordination, although the manipulations can affect other properties of the circuit. Beta oscillations, at 15 to 30 Hz, also appear during odor learning, although their role is less clearly understood (Kay, 2014).</p>
         <p>This brings us back to the single neuron. Recall that some neurons tend to fire at a preferred point in the ongoing LFP cycle rather than at random moments. That point in the cycle is called the <em>phase</em>, which is the position of a wave relative to one complete cycle. A neuron that tends to fire near the trough of a cycle and one that tends to fire near the peak may have identical firing rates while contributing differently to circuit activity. The group rhythm can influence spike timing, while individual neurons supply the spikes.</p>
         <figure id="figure-a3">
           <img src="assets/img/chapter-neuronal-activity-figure-a3.png" alt="An LFP wave over 1.2 seconds with two neurons' spikes marked: neuron A fires near each peak and neuron B near each trough, at the same average rate." width="1648" height="874" loading="lazy">
-          <figcaption><strong>Figure A3.</strong> Based on:<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figure 5</a>;<a href="https://doi.org/10.1126/science.1099745"> Buzsáki &amp; Draguhn (2004)</a>.</figcaption>
+          <figcaption><strong>Figure A3.</strong> Spikes at different phases of an LFP cycle. Based on:<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figure 5</a>;<a href="https://doi.org/10.1126/science.1099745"> Buzsáki &amp; Draguhn (2004)</a>.</figcaption>
         </figure>
-        <h2 id="spikes-at-different-phases-of-an-lfp-cycle">Spikes at different phases of an LFP cycle</h2>
-        <ol start="3">
-          <li><strong>The Connection to Slower Body Rhythms</strong> Until now, we have focused on rhythms generated within the brain; but the brain sits</li>
-        </ol>
-        <p>inside a body that keeps its own time, and it turns out, the slowest rhythms discussed here are tied to one of the most ordinary processes there is: breathing. Slower body rhythms can influence faster neural activity.</p>
+        <h2 id="the-connection-to-slower-body-rhythms">The Connection to Slower Body Rhythms</h2>
+        <p>Until now, we have focused on rhythms generated within the brain; but the brain sits inside a body that keeps its own time, and it turns out, the slowest rhythms discussed here are tied to one of the most ordinary processes there is: breathing. Slower body rhythms can influence faster neural activity.</p>
         <p>Neural activity that synchronizes with the breathing cycle has been found in a wide range of mammals, humans included (Tort et al., 2025). The surprising part is where this breathing-related neural activity appears. Neural “coupling” to breathing in the olfactory system has been known for a long time, and it makes intuitive sense, since air carrying odor molecules arrives in rhythmic pulses rather than continuously. However, recent work shows that the coupling extends well past just olfactory and respiratory areas into regions associated with emotion and higher cognition (Tort et al., 2025).</p>
         <p>One important pathway begins at the nose, where airflow through the nasal passage leads to waves of sensory activity that travel through the brain, sometimes aligning neuronal activity with the breathing cycle and modulating faster oscillations (Tort et al., 2025). This is an example of phase-amplitude coupling: the phase of a slow rhythm is associated with changes in the amplitude of a faster rhythm.</p>
         <figure id="figure-a4">
           <img src="assets/img/chapter-neuronal-activity-figure-a4.png" alt="Three graphs over 2 seconds: a slow 2 hertz breathing cycle, the strength of a fast gamma rhythm rising and falling with it, and the combined signal showing fast oscillations in bursts on each cycle." width="1648" height="1171" loading="lazy">
-          <figcaption><strong>Figure A4.</strong> Based on:<a href="https://www.nature.com/articles/s41583-025-00920-7"> Tort et al. (2025), Figure 1</a>;<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figures 2 and 4</a>.</figcaption>
+          <figcaption><strong>Figure A4.</strong> Breathing-cycle timing and fast oscillation amplitude. Based on:<a href="https://www.nature.com/articles/s41583-025-00920-7"> Tort et al. (2025), Figure 1</a>;<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figures 2 and 4</a>.</figcaption>
         </figure>
-        <h2 id="breathing-cycle-timing-and-fast-oscillation-amplitude">Breathing-cycle timing and fast oscillation amplitude</h2>
         <p>It is worth noting that breathing can modulate or “entrain” existing brain rhythms; it does not generate every rhythm with which it becomes synchronized. Brain oscillations continue in the absence of nasal airflow. What breathing does is supply a shared reference signal that distant regions can lock onto, which can help coordinate activity across distant regions, though synchronized activity alone does not prove direct communication.</p>
         <p>In rodents, sniffing runs at roughly 4 to 12 Hz, which overlaps with the theta band. A rhythm recorded in the hippocampus at 8 Hz could be hippocampal theta, could reflect respiratory coupling, or both. The two rhythms can occur at similar frequencies without being continuously synchronized (Kay, 2014), so separating them requires recording breathing rather than assuming they are the same. This is a recurring difficulty across chronobiology: two rhythms with the same period are <em>not </em>necessarily the same rhythm.</p>
         <p>There is an encapsulating principle that generalizes past just breathing. Slower rhythms can coordinate faster ones. Such interactions appear across multiple timescales, including those discussed here. (See Circulation and the Cardiac Cycle)</p>
-        <ol start="4">
-          <li><strong>Getting a Signal from a Recording</strong> So far, we assumed that spikes and rhythms are simply ready for researchers to read. In</li>
-        </ol>
-        <p>practice, what comes off an electrode is a single messy voltage trace, and getting anything interpretable out of it requires solving two difficult separate problems: figuring out which neuron produced which spike, and figuring out which rhythms are present and when.</p>
+        <h2 id="getting-a-signal-from-a-recording">Getting a Signal from a Recording</h2>
+        <p>So far, we assumed that spikes and rhythms are simply ready for researchers to read. In practice, what comes off an electrode is a single messy voltage trace, and getting anything interpretable out of it requires solving two difficult separate problems: figuring out which neuron produced which spike, and figuring out which rhythms are present and when.</p>
         <p>An electrode sitting in tissue picks up several neurons at once and nothing in the signal labels them. The first problem is handled by spike sorting. The process occurs in four steps (Rey et al., 2015). First, the recording is bandpass filtered (typically between 300 and 3,000 Hz). Second, the filtered trace is scanned for moments where the voltage crosses a set limit, a technique called thresholding. Third, the shape of each detected waveform is measured. Fourth, waveforms with similar shapes are clustered together and treated as possibly originating from one specific neuron. If a researcher stops after the second step and simply counts every threshold crossing without assigning it to a cell, the result is multi-unit activity: a record of how much the local population is firing, without knowing which specific cells are responsible for what parts of the signal. The procedure partly rests on the assumption that a given neuron produces a relatively consistent waveform and waveforms differ between neurons because each one sits at a different distance and orientation relative to the electrode tip.</p>
         <figure id="figure-a5">
           <img src="assets/img/chapter-neuronal-activity-figure-a5.png" alt="Three panels of spike sorting: a raw recording with candidate spikes crossing a threshold, two different average spike shapes, and a scatter plot where spikes fall into two clusters, one per neuron." width="2048" height="720" loading="lazy">
-          <figcaption><strong>Figure A5.</strong> Based on:<a href="https://doi.org/10.1016/j.brainresbull.2015.04.007"> Rey et al. (2015)</a>;<a href="https://elifesciences.org/articles/34518/figures"> Yger et al. (2018), figures</a>.</figcaption>
+          <figcaption><strong>Figure A5.</strong> How spike sorting estimates neurons from waveforms. Based on:<a href="https://doi.org/10.1016/j.brainresbull.2015.04.007"> Rey et al. (2015)</a>;<a href="https://elifesciences.org/articles/34518/figures"> Yger et al. (2018), figures</a>.</figcaption>
         </figure>
-        <p><strong>How spike sorting estimates neurons from waveforms</strong></p>
         <p>But that assumption has limitations; sorting accuracy degrades significantly when many neurons sit close to an electrode because their waveforms begin to look too similar (Rey et al., 2015). Two spikes arriving at the same instant can overlap and form a shape that matches neither neuron, making them difficult to classify. And most importantly, neurons that fire rarely are easily lost underneath neighboring neurons that fire more often. This matters when studying sparsely firing cells, including some neurons involved in memory-related tasks (Rey et al., 2015). Sorting errors can bias a dataset toward neurons with more detectable or distinctive waveforms.</p>
         <p>The second major problem, actually finding rhythms, is handled by the Fourier transform. The idea is that any complex repeating signal can be rebuilt by adding together simple sine waves of different frequencies, amplitudes, and phases. Formally, the Fourier transform is:</p>
         <figure id="figure-6">
@@ -140,9 +88,8 @@
         <p>The Fourier transform is an incredible tool, but it has one significant limitation. When researchers calculate a single Fourier spectrum for an entire recording, the result summarizes its frequency content without showing when each rhythm occurred. This does not mean the Fourier transform assumes the rhythm is steady. But brain activity does not behave that way. Gamma arrives in short bursts; theta waxes and wanes. When averaged over a long recording, a brief strong burst and a weak continuous rhythm can produce similar spectra.</p>
         <figure id="figure-a6">
           <img src="assets/img/chapter-neuronal-activity-figure-a6.png" alt="Three graphs: a raw signal of a slow rhythm with two brief 60 hertz bursts; its whole-recording power spectrum, with a tall peak at the slow frequency and a tiny one at 60 hertz; and a spectrogram that shows each burst at its time." width="1644" height="1330" loading="lazy">
-          <figcaption><strong>Figure A6.</strong> Based on:<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figure 4</a>;<a href="https://doi.org/10.1038/nrn3599"> Einevoll et al. (2013)</a>.</figcaption>
+          <figcaption><strong>Figure A6.</strong> Power spectrum versus time-frequency spectrogram. Based on:<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figure 4</a>;<a href="https://doi.org/10.1038/nrn3599"> Einevoll et al. (2013)</a>.</figcaption>
         </figure>
-        <h2 id="power-spectrum-versus-time-frequency-spectrogram">Power spectrum versus time-frequency spectrogram</h2>
         <p>The wavelet transform solves this by replacing the infinite sine wave with a short, localized wave that can be moved and stretched:</p>
         <figure id="figure-8">
           <img src="assets/img/chapter-neuronal-activity-figure-8.png" alt="Wavelet transform formula: W of a and b equals 1 over the square root of a, times the integral of x of t times the complex conjugate of psi of t minus b over a, d t." width="960" height="150" loading="lazy">
@@ -150,10 +97,8 @@
         <p>This allows researchers to get information about what is happening at a given frequency <em>at a given moment</em>, rather than averaging across an entire recording.</p>
         <p>And of course, signal analysis has another limitation. If a signal is sampled fs times per second, the highest frequency that can be recovered is: fNyquist = fs/2. Without appropriate filtering before sampling, frequencies above that threshold can “fold back” and reappear as misleading lower frequencies (an artifact called aliasing). A fast spike recorded at too low a sampling rate can falsely be disguised as a slow rhythm, which is why extracellular recordings intended for spike sorting typically use high sampling rates, often exceeding 20,000 Hz, along with anti-aliasing filters.</p>
         <p>Finally, there are limits to what an LFP can reveal <em>no matter </em>how carefully it is analyzed. The signal reflects population currents, but does not identify which cells within it are responsible. The word “local” is also misleading because currents conduct through brain tissue and are added up at the electrode; some of what is recorded can originate beyond the tissue immediately surrounding the tip (a phenomenon called volume conduction). Herreras (2016) goes even further, arguing that the amplitude of an LFP depends strongly on the topology and spatial arrangement of the sources, not just how much activity is occurring, meaning a weaker but well-aligned source can produce a larger signal than a stronger disorganized one nearby (Pesaran et al., 2018). Truly recovering the underlying neural activity from a field potential generally requires building a model of how the signal was generated in the first place (Einevoll et al., 2013).</p>
-        <ol start="5">
-          <li><strong>From Biological to Artificial</strong> Having seen how much effort goes into recovering timing information from a biological</li>
-        </ol>
-        <p>recording, it is informative to turn to a field where engineers have deliberately built that timing in.</p>
+        <h2 id="from-biological-to-artificial">From Biological to Artificial</h2>
+        <p>Having seen how much effort goes into recovering timing information from a biological recording, it is informative to turn to a field where engineers have deliberately built that timing in.</p>
         <p>Artificial neural networks are computer programs modeled on biological brains. Each unit receives a set of inputs, multiplies each one by a predetermined number called a synaptic weight, sums the results, and passes the total through a function that produces a single output:</p>
         <figure id="figure-9">
           <img src="assets/img/chapter-neuronal-activity-figure-9.png" alt="Artificial neuron formula: y equals phi of the sum over i of w i times x i, plus b." width="523" height="133" loading="lazy">
@@ -161,9 +106,8 @@
         <p>Here the xi are the inputs, the wi are their weights, b is an offset, and φ is a function that turns those inputs into a meaningful result. But notice what is absent from this basic feed-forward equation: there is no explicit spike time t. The output is a number, not a timed spike event, and nothing in the expression says when a spike happened. Everything the preceding sections established about spike timing, about phase, about a neuron firing at the trough rather than the peak of an ongoing rhythm, is not represented in this particular equation. Other artificial neural networks, however, can process time-dependent inputs.</p>
         <figure id="figure-a7">
           <img src="assets/img/chapter-neuronal-activity-figure-a7.png" alt="Two graphs: a basic artificial neuron gives the same output value at every input step, while a spiking neuron fires brief pulses at specific times." width="1828" height="808" loading="lazy">
-          <figcaption><strong>Figure A7.</strong> Based on:<a href="https://doi.org/10.1038/s42256-020-0159-4"> Imam &amp; Cleland (2020)</a>.</figcaption>
+          <figcaption><strong>Figure A7.</strong> Basic artificial neuron output versus discrete spike times. Based on:<a href="https://doi.org/10.1038/s42256-020-0159-4"> Imam &amp; Cleland (2020)</a>.</figcaption>
         </figure>
-        <p><strong>Basic artificial neuron output versus discrete spike times</strong></p>
         <p>Models that represent the timing of individual spikes look different. The leaky integrate-and-fire model approximates how membrane voltage accumulates input and leaks toward rest; it is written as a differential equation:</p>
         <figure id="figure-11">
           <img src="assets/img/chapter-neuronal-activity-figure-11.png" alt="Leaky integrate-and-fire formula: tau m times d V over d t equals minus the quantity V of t minus V rest, plus R m times I of t." width="935" height="128" loading="lazy">
@@ -171,160 +115,6 @@
         <p>The voltage (V) accumulates a current I(t) and is constantly “leaking” back towards its natural resting value. When enough voltage has accumulated to reach a threshold, the model spikes and resets. This is a drastic simplification of the ion channel process that is described at the start of this chapter. The most important feature is still present though; the output arrives as a discrete spiking signal at a specific time.</p>
         <p>Spiking neural networks extend this idea across entire systems, with “neurons” communicating with each other through timed pulses (rather than continuous values), allowing them to process information using spike timing. In one form of spike-timing-dependent plasticity (STDP), which changes the connection strength between neurons based on the precise millisecond timing of their electrical impulses, the synaptic weight depends on the interval between a presynaptic and postsynaptic spike (∆t = tpost - tpre) and the sign of that interval. Under a common STDP rule, the connection strengthens if the presynaptic spike comes just before the postsynaptic spike and weakens if it arrives just after, with the size of the change getting smaller as the interval gets longer. If Neuron A fires before Neuron B, the connection becomes stronger under this simplified timing rule. If Neuron A fires after Neuron B, the connection becomes weaker under the same rule. Actual plasticity depends on the circuit and conditions.</p>
         <p>At Cornell University, Imam and Cleland (2020) built a working example of a spiking neural network, constructing a circuit based on the architecture of the mammalian olfactory bulb and implementing it on Intel’s Loihi neuromorphic chip (specifically designed for computation with spikes). The algorithm applies spike-timing-dependent plasticity iteratively over sequential gamma-frequency packets. Basically, the system learns to recognize a complex pattern by taking a rapid sequence of timed snapshots, using the split-second arrival order of electrical pulses in each snapshot to adjust and strengthen selected connections while tuning out the noise. Now what can this do? This result describes the tested model rather than all spiking networks. However, the resulting system learned to distinguish odor patterns after limited exposure, even with interference from other odors.</p>
-        <h2 id="chapter-add-ins">CHAPTER ADD-INS</h2>
-        <figure id="figure-12">
-          <img src="assets/img/chapter-neuronal-activity-figure-12.png" alt="Fourier transform formula: X of f equals the integral from minus infinity to infinity of x of t times e to the minus i 2 pi f t, d t." width="675" height="146" loading="lazy">
-        </figure>
-        <figure id="figure-13">
-          <img src="assets/img/chapter-neuronal-activity-figure-13.png" alt="Wavelet transform formula: W of a and b equals 1 over the square root of a, times the integral of x of t times the complex conjugate of psi of t minus b over a, d t." width="960" height="150" loading="lazy">
-        </figure>
-        <figure id="figure-14">
-          <img src="assets/img/chapter-neuronal-activity-figure-14.png" alt="Artificial neuron formula: y equals phi of the sum over i of w i times x i, plus b." width="523" height="133" loading="lazy">
-        </figure>
-        <figure id="figure-15">
-          <img src="assets/img/chapter-neuronal-activity-figure-15.png" alt="Leaky integrate-and-fire formula: tau m times d V over d t equals minus the quantity V of t minus V rest, plus R m times I of t." width="935" height="128" loading="lazy">
-        </figure>
-        <ol>
-          <li><strong>Intracellular action potential versus extracellular spikes and local field potential</strong></li>
-        </ol>
-        <figure id="figure-a1-2">
-          <img src="assets/img/chapter-neuronal-activity-figure-a1-2.png" alt="Three stacked graphs over 120 milliseconds: an intracellular action potential rising from about minus 70 millivolts past threshold, extracellular spikes as brief sharp dips, and the local field potential as a slow, smooth wave." width="1648" height="1155" loading="lazy">
-          <figcaption><strong>Figure A1.</strong> Based on:<a href="https://doi.org/10.1038/nrn3241"> Buzsáki et al. (2012)</a>;<a href="https://doi.org/10.1016/j.brainresbull.2015.04.007"> Rey et al. (2015)</a>;<a href="https://openstax.org/books/anatomy-and-physiology/pages/12-4-the-action-potential"> OpenStax, Section 12.4</a>.</figcaption>
-        </figure>
-        <ol start="2">
-          <li><strong>Delta, theta, alpha, beta, and gamma compared</strong></li>
-        </ol>
-        <figure id="figure-a2-2">
-          <img src="assets/img/chapter-neuronal-activity-figure-a2-2.png" alt="Five sine waves over one second showing the frequency bands: delta at 2 hertz, theta at 6, alpha at 10, beta at 20 and gamma at 40, each with more cycles." width="1648" height="1204" loading="lazy">
-          <figcaption><strong>Figure A2.</strong> <strong>Based on:</strong><a href="https://doi.org/10.1126/science.1099745"><strong> Buzsáki &amp; Draguhn (2004)</strong></a><strong>;</strong><a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"><strong> Kay (2014), Section 3</strong></a><strong>.</strong></figcaption>
-        </figure>
-        <ol start="3">
-          <li><strong>Spikes at different phases of an LFP cycle</strong></li>
-        </ol>
-        <figure id="figure-a3-2">
-          <img src="assets/img/chapter-neuronal-activity-figure-a3-2.png" alt="An LFP wave over 1.2 seconds with two neurons' spikes marked: neuron A fires near each peak and neuron B near each trough, at the same average rate." width="1648" height="874" loading="lazy">
-          <figcaption><strong>Figure A3.</strong> Based on:<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figure 5</a>;<a href="https://doi.org/10.1126/science.1099745"> Buzsáki &amp; Draguhn (2004)</a>.</figcaption>
-        </figure>
-        <ol start="4">
-          <li><strong>Breathing-cycle timing and fast oscillation amplitude</strong></li>
-        </ol>
-        <figure id="figure-a4-2">
-          <img src="assets/img/chapter-neuronal-activity-figure-a4-2.png" alt="Three graphs over 2 seconds: a slow 2 hertz breathing cycle, the strength of a fast gamma rhythm rising and falling with it, and the combined signal showing fast oscillations in bursts on each cycle." width="1648" height="1171" loading="lazy">
-          <figcaption><strong>Figure A4.</strong> Based on:<a href="https://www.nature.com/articles/s41583-025-00920-7"> Tort et al. (2025), Figure 1</a>;<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figures 2 and 4</a>.</figcaption>
-        </figure>
-        <ol start="5">
-          <li><strong>How spike sorting estimates neurons from waveforms</strong></li>
-        </ol>
-        <figure id="figure-a5-2">
-          <img src="assets/img/chapter-neuronal-activity-figure-a5-2.png" alt="Three panels of spike sorting: a raw recording with candidate spikes crossing a threshold, two different average spike shapes, and a scatter plot where spikes fall into two clusters, one per neuron." width="2048" height="720" loading="lazy">
-          <figcaption><strong>Figure A5.</strong> Based on:<a href="https://doi.org/10.1016/j.brainresbull.2015.04.007"> Rey et al. (2015)</a>;<a href="https://elifesciences.org/articles/34518/figures"> Yger et al. (2018), figures</a>.</figcaption>
-        </figure>
-        <ol start="6">
-          <li><strong>Power spectrum versus time-frequency spectrogram</strong></li>
-        </ol>
-        <figure id="figure-a6-2">
-          <img src="assets/img/chapter-neuronal-activity-figure-a6-2.png" alt="Three graphs: a raw signal of a slow rhythm with two brief 60 hertz bursts; its whole-recording power spectrum, with a tall peak at the slow frequency and a tiny one at 60 hertz; and a spectrogram that shows each burst at its time." width="1644" height="1330" loading="lazy">
-          <figcaption><strong>Figure A6.</strong> Based on:<a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7"> Kay (2014), Figure 4</a>;<a href="https://doi.org/10.1038/nrn3599"> Einevoll et al. (2013)</a>.</figcaption>
-        </figure>
-        <ol start="7">
-          <li><strong>Basic artificial neuron output versus discrete spike times</strong></li>
-        </ol>
-        <figure id="figure-a7-2">
-          <img src="assets/img/chapter-neuronal-activity-figure-a7-2.png" alt="Two graphs: a basic artificial neuron gives the same output value at every input step, while a spiking neuron fires brief pulses at specific times." width="1828" height="808" loading="lazy">
-          <figcaption><strong>Figure A7.</strong> Based on:<a href="https://doi.org/10.1038/s42256-020-0159-4"> Imam &amp; Cleland (2020)</a>.</figcaption>
-        </figure>
-        <p><a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7">Kay (2014), Figure 4</a> Example recordings and spectrogram illustrating gamma bursts. <a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7">Kay (2014), Figure 9</a> Experimental tests of odor discrimination and gamma oscillations. <a href="https://www.nature.com/articles/s41583-025-00920-7">Tort et al. (2025), Figure 1</a> Breathing-related activity at multiple neuronal scales.</p>
-        <p><a href="https://elifesciences.org/articles/34518/figures">Yger et al. (2018), Figures</a> Examples of spike detection and sorting.</p>
-        <p><a href="https://openstax.org/books/anatomy-and-physiology/pages/12-4-the-action-potential">OpenStax, Section 12.4</a> Annotated neuronal action-potential waveform.</p>
-        <p><a href="https://www.jezzamon.com/fourier/">https://www.jezzamon.com/fourier/</a>GREAT SITE FOR FOURIER DEMONSTRATION</p>
-        <h2 id="glossary">GLOSSARY</h2>
-        <table id="table-1" tabindex="0">
-          <thead>
-            <tr><th scope="col">Term</th><th scope="col">Definition</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Action potential (spikes)</td><td>A rapid reversal of the membrane potential that propagates</td></tr>
-          </tbody>
-        </table>
-        <table id="table-2" tabindex="0">
-          <thead>
-            <tr><th scope="col"></th><th scope="col">along an axon to transmit information between neurons.</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Membrane potential</td><td>The difference in voltage between the inside and outside of a cell membrane.</td></tr>
-            <tr><td>Axon (and hillock)</td><td>The axon is the long tail of the neuron that conducts electrical impulses away from itself. The axon hillock is the specialized region of the cell body that connects to the axon where the action potentials are created.</td></tr>
-            <tr><td>Refractory period</td><td>The short time after a neuron fires (action potential) where it cannot fire again in succession, unless a much stronger stimulus is provided.</td></tr>
-            <tr><td>Extracellular recording</td><td>A method of measuring electrical activity from outside the cell membrane (using electrodes).</td></tr>
-            <tr><td>Intracellular recording</td><td>A method of measuring electrical activity in just a single cell (with a microelectrode)</td></tr>
-            <tr><td>Oscillation</td><td>Repeating and rhythmic fluctuations in electrical activity across a group of neurons.</td></tr>
-            <tr><td>Frequency</td><td>The number of cycles (waves) an oscillation completes in a second (measured in Hertz)</td></tr>
-            <tr><td>Phase</td><td>The position of a wave at a specific point with respect to a complete cycle.</td></tr>
-            <tr><td>Power spectral density</td><td>A mathematical measure that shows how the energy of a signal is distributed across different frequencies.</td></tr>
-            <tr><td>Bandpass filter</td><td>A signal processing tool that blocks frequencies outside a certain range, allowing to single out certain wavelengths.</td></tr>
-            <tr><td>Local field potential</td><td>The recorded extracellular electrical signal that reflects the synaptic activity of a local population of cells.</td></tr>
-            <tr><td>Phase-amplitude coupling</td><td>A special type of cross-frequency coupling of a brain signal interaction where the strength (amplitude) of a fast brain wave is controlled by the cycle (phase) of a slow brain wave.</td></tr>
-            <tr><td>Cross-frequency coupling</td><td>An interaction between different frequency bands where neural oscillations interact with each other to process information.</td></tr>
-            <tr><td>Entrainment</td><td>The interaction where an internal brain rhythm is affected by external periodic rhythms (such as sensory stimulus or behavioral cycles).</td></tr>
-            <tr><td>Spike sorting</td><td>A data processing step used to group extracellular signals to</td></tr>
-          </tbody>
-        </table>
-        <table id="table-3" tabindex="0">
-          <thead>
-            <tr><th scope="col"></th><th scope="col">individual neurons.</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Fourier transform</td><td>A mathematical tool that is used to break down complex signals into its individual sine wave frequency components, revealing which rhythms are present and how strong they are.</td></tr>
-            <tr><td>Wavelet transform</td><td>A similar tool to the Fourier transform that breaks down a signal into localized wavelets, allowing analysis of how frequency components change over time.</td></tr>
-            <tr><td>Multi-unit activity (MUA)</td><td>The combined activity of several neurons that are recorded by a single electrode.</td></tr>
-            <tr><td>Nyquist frequency</td><td>The highest frequency that can be captured without distortions (half the sampling rate).</td></tr>
-            <tr><td>Aliasing</td><td>Distortions and “ghost frequencies” that occur when not abiding by the Nyquist frequency threshold.</td></tr>
-            <tr><td>Signal-to-noise ratio</td><td>A measure that compares the meaningful neural parts of a signal to background noise.</td></tr>
-            <tr><td>Thresholding</td><td>A processing technique used to separate real neural signals from noise using a specific voltage limit.</td></tr>
-            <tr><td>Integrate-and-fire model</td><td>A model of a neuron that adds up incoming electrical inputs over time until a threshold is reached and then “fires.”</td></tr>
-            <tr><td>Memristor</td><td>An electronic component that mimics biological synapses by “remembering” the amount of charge that previously flowed through it.</td></tr>
-            <tr><td>Spiking Neural Network (SNN)</td><td>An artificial neural network that uses timed pulses (spikes) instead of continuous values to communicate.</td></tr>
-            <tr><td>Neuromorphic computing</td><td>An approach to computer engineering where systems are designed to mimic natural biological processes and structures of the nervous system.</td></tr>
-            <tr><td>Neuromorphic hardware</td><td>Specially designed circuits designed to use brain-like structures to execute neural networks.</td></tr>
-            <tr><td>Synaptic weights</td><td>In an artificial neural network, these are the values that determine how strong the connection between two nodes are (how much they influence one another).</td></tr>
-            <tr><td>Artificial neural network (ANN)</td><td>A computer program modeled after biological brains, where continuous values are created by summing weighted inputs rather than discrete spikes.</td></tr>
-          </tbody>
-        </table>
-        <table id="table-4" tabindex="0">
-          <thead>
-            <tr><th scope="col">Volume conduction</th><th scope="col">The spread of electrical current through brain tissue, allowing an electrode to record signals generated away from its tip</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Spike-timing-dependent plasticity (STDP)</td><td>An algorithm used to update the connection model weights of an ANN where the change in a synaptic connection depends on the interval between a presynaptic and postsynaptic spike (and which came first)</td></tr>
-          </tbody>
-        </table>
-        <h2 id="references">REFERENCES</h2>
-        <p><strong>Sources:</strong></p>
-        <p>Buzsáki, G., Anastassiou, C. A., &amp; Koch, C. (2012). The origin of extracellular fields and currents: EEG, ECoG, LFP and spikes. Nature Reviews Neuroscience, 13(6), 407–420. <a href="https://doi.org/10.1038/nrn3241">https://doi.org/10.1038/nrn3241</a></p>
-        <p>Buzsáki, G., &amp; Draguhn, A. (2004). Neuronal oscillations in cortical networks. Science, 304(5679), 1926–1929. <a href="https://doi.org/10.1126/science.1099745">https://doi.org/10.1126/science.1099745</a></p>
-        <p>Einevoll, G. T., Kayser, C., Logothetis, N. K., &amp; Panzeri, S. (2013). Modelling and analysis of local field potentials for studying the function of cortical circuits. Nature Reviews Neuroscience, 14(11), 770–785. <a href="https://doi.org/10.1038/nrn3599">https://doi.org/10.1038/nrn3599</a></p>
-        <p>Herreras, O. (2016). Local field potentials: Myths and misunderstandings. Frontiers in Neural Circuits, 10, 101. <a href="https://doi.org/10.3389/fncir.2016.00101">https://doi.org/10.3389/fncir.2016.00101</a></p>
-        <p>Imam, N., &amp; Cleland, T. A. (2020). Rapid online learning and robust recall in a neuromorphic olfactory circuit. Nature Machine Intelligence, 2(3), 181–191.</p>
-        <p><a href="https://doi.org/10.1038/s42256-020-0159-4">https://doi.org/10.1038/s42256-020-0159-4</a> Kay, L. M. (2014). Circuit oscillations in odor perception and memory. In E. Barkai &amp; D. A. Wilson (Eds.), Progress in brain research: Odor memory and perception (Vol. 208, pp. 223–251). Elsevier. <a href="https://doi.org/10.1016/B978-0-444-63350-7.00009-7">https://doi.org/10.1016/B978-0-444-63350-7.00009-7</a></p>
-        <p>Pesaran, B., Vinck, M., Einevoll, G. T., Sirota, A., Fries, P., Siegel, M., Truccolo, W., Schroeder, C. E., &amp; Srinivasan, R. (2018). Investigating large-scale brain dynamics using field potential recordings: Analysis and interpretation. Nature Neuroscience, 21(7), 903–919. <a href="https://doi.org/10.1038/s41593-018-0171-8">https://doi.org/10.1038/s41593-018-0171-8</a></p>
-        <p>Rey, H. G., Pedreira, C., &amp; Quian Quiroga, R. (2015). Past, present and future of spike sorting techniques. Brain Research Bulletin, 119, 106–117.</p>
-        <p><a href="https://doi.org/10.1016/j.brainresbull.2015.04.007">https://doi.org/10.1016/j.brainresbull.2015.04.007</a></p>
-        <p>Tort, A. B. L., Laplagne, D. A., Draguhn, A., &amp; González, J. (2025). Global coordination of brain activity by the breathing cycle. Nature Reviews Neuroscience, 26(6), 333–353. <a href="https://doi.org/10.1038/s41583-025-00920-7">https://doi.org/10.1038/s41583-025-00920-7</a> <strong>UNIT AND CHAPTER</strong></p>
-        <figure id="figure-23">
-          <img src="assets/img/chapter-neuronal-activity-figure-23.png" alt="Handwritten outline notes for section 1, What is being measured: electrodes record voltage, spikes as action potentials with depolarization and repolarization, and local field potentials." width="610" height="724" loading="lazy">
-        </figure>
-        <figure id="figure-24">
-          <img src="assets/img/chapter-neuronal-activity-figure-24.png" alt="Handwritten outline notes for section 2, Neural activity is rhythmic: the delta, theta, alpha, beta and gamma frequency bands, with a sketch of each wave." width="588" height="728" loading="lazy">
-        </figure>
-        <figure id="figure-25">
-          <img src="assets/img/chapter-neuronal-activity-figure-25.png" alt="Handwritten outline notes for section 3, Connection to slower body rhythms: activity in many brain areas syncs with breathing, and slow rhythms control the strength of faster ones." width="598" height="306" loading="lazy">
-        </figure>
-        <figure id="figure-26">
-          <img src="assets/img/chapter-neuronal-activity-figure-26.png" alt="Handwritten outline notes for section 4, Getting a signal from a recording: spike sorting steps, the Fourier transform, power spectrum and wavelet transform formulas, and open problems such as volume conduction." width="622" height="1176" loading="lazy">
-        </figure>
-        <figure id="figure-27">
-          <img src="assets/img/chapter-neuronal-activity-figure-27.png" alt="Handwritten outline notes for section 5, Biological to artificial: the artificial neuron formula, the leaky integrate-and-fire model with a sketch of spiking, spiking neural networks and spike-timing-dependent plasticity." width="918" height="1074" loading="lazy">
-        </figure>
-        <p><strong>Unit:</strong> Infradian Rhythms</p>
       </article>
       <p class="cluster">
         <a class="button" href="study-neuronal-activity.html">Practice with the study kit</a>

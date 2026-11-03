@@ -813,6 +813,8 @@ def starts_paragraph(prev: Line, line: Line, pitch: float, body: float, frame: d
     gap = line.y0 - prev.y0
     if gap > pitch * 1.35 or gap < -1:
         return True
+    if prev.bold and not line.bold and len(prev_text) < 90:
+        return True  # a bold label line ("Works Cited") is not the start of the text below it
     indent = line.x0 - frame["left"]
     if indent > body * 0.8 and prev.x0 - frame["left"] < body * 0.5:
         return True
@@ -879,7 +881,30 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
     all_lines = [l for info in infos for l in info.lines]
     tiers = heading_tiers(all_lines, body)
     vocab = hyphenated_vocabulary([l.text for l in all_lines])
-    pitch = typical_pitch(sorted(all_lines, key=lambda l: (l.page, l.block, l.y0)), body)
+    book_pitch = typical_pitch(sorted(all_lines, key=lambda l: (l.page, l.block, l.y0)), body)
+    # Line spacing per page: chapters compiled from several authors change
+    # spacing between parts, so one figure for the whole chapter misreads some.
+    # Per page and per font size: one page can mix a single-spaced 11pt list
+    # with double-spaced 12pt text.
+    page_pitch: dict[tuple[int, float], float] = {}
+    size_pitch: dict[float, float] = {}
+    by_size: dict[float, list[Line]] = defaultdict(list)
+    for line in all_lines:
+        by_size[round(line.size)].append(line)
+    for size, lines_of_size in by_size.items():
+        if len(lines_of_size) >= 6:
+            size_pitch[size] = typical_pitch(lines_of_size, size)
+        per_page: dict[int, list[Line]] = defaultdict(list)
+        for line in lines_of_size:
+            per_page[line.page].append(line)
+        for page, page_lines in per_page.items():
+            if len(page_lines) >= 5:
+                page_pitch[(page, size)] = typical_pitch(page_lines, size)
+
+    def pitch_at(line) -> float:
+        size = round(line.size)
+        return page_pitch.get((line.page, size), size_pitch.get(size, book_pitch))
+
     frame_table = frames(infos)
     page_of = dict(zip(indices, infos))
 
@@ -1011,7 +1036,23 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
             content = join_runs([spans_to_runs(l.spans) for l in group], vocab)
             # Heading weight is implied; don't wrap the whole heading in <strong>.
             content = [Run(r.text, r.marks - {"strong"}, r.href) for r in content]
-            blocks.append(Heading(level, clean_runs(content)))
+            last = blocks[-1] if blocks else None
+            prev_line = getattr(last, "_line", None)
+            if (
+                isinstance(last, Heading)
+                and last.level == level
+                and prev_line is not None
+                and prev_line.page == group[0].page
+                and 0 <= group[0].y0 - prev_line.y1 < group[0].size * 0.8
+                and not ends_sentence(plain_text(last.content))
+            ):
+                # The heading wrapped onto a second line that is its own text block.
+                last.content = clean_runs(last.content + [Run(" ")] + content)
+                last._line = group[-1]  # type: ignore[attr-defined]
+            else:
+                heading = Heading(level, clean_runs(content))
+                heading._line = group[-1]  # type: ignore[attr-defined]
+                blocks.append(heading)
             prev_body = None
             i += 1
             continue
@@ -1052,7 +1093,14 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
                 figure = last_block_on(line.page, Figure, reach=3)
                 below = _image_below(ordered, i, line)
                 if figure is not None and not figure.caption:
-                    figure.caption, figure.label = caption, label
+                    # Short lines between the image and its caption are the
+                    # figure's title ("Intracellular action potential versus ...").
+                    at = max(k for k, b in enumerate(blocks) if b is figure)
+                    titles = [plain_text(b.content).strip() for b in blocks[at + 1 :]]
+                    del blocks[at + 1 :]
+                    if titles:
+                        caption = [Run(" ".join(t.rstrip(".") + "." for t in titles if t) + " ")] + caption
+                    figure.caption, figure.label = clean_runs(caption), label
                 elif below is not None:
                     caption_above[id(below)] = (label, caption)  # the caption is above its figure
                 else:
@@ -1078,7 +1126,7 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
             continue
 
         if kind == "code":
-            if code and code[-1].page == line.page and line.y0 - code[-1].y0 > pitch * 2.5:
+            if code and code[-1].page == line.page and line.y0 - code[-1].y0 > pitch_at(line) * 2.5:
                 flush_code()
             if para:
                 flush_para()
@@ -1134,7 +1182,10 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
             item_frame = frame | {"left": line.x0 if hanging else marker_x}
             # Wrapped item text either hangs under the item's words or starts
             # back at the marker; a gap or a finished short line ends the item.
-            if (hanging or flush_left) and not starts_paragraph(prev, line, pitch, body, item_frame):
+            # A bold numbered line ("2. Neural activity is rhythmic") is a heading:
+            # plain text after it starts a paragraph, not the rest of the item.
+            heading_item = all(l.bold for l in item_lines) and not line.bold
+            if (hanging or flush_left) and not heading_item and not starts_paragraph(prev, line, pitch_at(line), body, item_frame):
                 item_lines.append(line)
                 prev_body = line
                 i += 1
@@ -1146,7 +1197,7 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
                 list_stack[-1][1].items[-1].children.append(done)
             list_stack.clear()
         resumes = bool(deferred) and bool(para) and line.text.lstrip()[:1].islower()
-        if para and prev_body is not None and not resumes and starts_paragraph(prev_body, line, pitch, body, frame):
+        if para and prev_body is not None and not resumes and starts_paragraph(prev_body, line, pitch_at(line), body, frame):
             flush_para()
         para.append(line)
         prev_body = line
@@ -1166,7 +1217,7 @@ def read_pdf(path: Path, pages: str | None = None, clip: Clip | None = None) -> 
     notes = [_strip_footnote_marker(n) for n in notes if n]
 
     for block in blocks:
-        for attr in ("_page", "_box"):
+        for attr in ("_page", "_box", "_line"):
             if hasattr(block, attr):
                 delattr(block, attr)
     return Document(blocks, str(path), warnings, notes)
