@@ -138,3 +138,9 @@ def test_body_renders_every_block_type():
         "</table>",
     ])
     assert body.sections == [("main-2", "Main"), ("main-3", "Main")]
+
+
+def test_links_over_only_whitespace_become_plain_text():
+    runs = [Run("Nature."), Run(" ", href="https://x.org/a"), Run("doi", href="https://x.org/b")]
+    assert inline(runs) == 'Nature. <a href="https://x.org/b">doi</a>'
+    assert inline([Run("  ", frozenset({"em"}), href="https://x.org")]) == "<em>  </em>"
