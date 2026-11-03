@@ -31,6 +31,7 @@ from .model import (
     ListBlock,
     Paragraph,
     Quote,
+    Run,
     Table,
     plain_text,
 )
@@ -129,8 +130,24 @@ def safe_href(href: str | None) -> str | None:
     return href
 
 
+def drop_empty_links(content: Inlines) -> Inlines:
+    """A link must have text to click. PDFs often put a link over just the
+    space between two words; those become plain text."""
+    out = list(content)
+    i = 0
+    while i < len(out):
+        j = i
+        while j < len(out) and out[j].href is not None and out[j].href == out[i].href:
+            j += 1
+        if j > i and not "".join(r.text for r in out[i:j]).strip():
+            out[i:j] = [Run(r.text, r.marks, None) for r in out[i:j]]
+        i = max(j, i + 1)
+    return out
+
+
 def inline(content: Inlines) -> str:
     """Render runs with minimal, correctly nested tags."""
+    content = drop_empty_links(content)
     out: list[str] = []
     stack: list[tuple[str, str | None]] = []  # (tag, href)
     for run in content:
