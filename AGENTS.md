@@ -42,6 +42,7 @@ This is a **static website**: plain HTML pages, CSS and vanilla JavaScript. The 
 
 - Vanilla JS only, loaded with `<script defer>`. No frameworks and no CDN libraries without a design change.
 - `assets/js/site.js` is shared. Only touch it to add or remove a nav or footer link (one line each).
+- `assets/js/study.js` is the one other shared script: the engine every study kit (`study-*.html`) loads. Kits set it up through their markup, as `STUDY-MATERIALS.md` describes, and never edit it. Changes to the engine go in a `design/*` branch.
 - Page-specific behavior goes in `assets/js/<page-name>.js`, loaded only by that page.
 - Page content must stay readable with JavaScript off. JS can enhance a page but must never be the only way to see its content. The shared header and footer are the one exception.
 
@@ -81,6 +82,7 @@ Every page must end with a small credit naming any generative AI used to make it
 | `assets/css/components/<new>.css` | ✅ Yes, to add one | See "Add a component" |
 | `assets/css/main.css` | ➕ Add one `@import` line | Keep the components block alphabetical |
 | `assets/js/site.js` | ➕ Add one nav or footer entry | Nothing else |
+| `assets/js/study.js` | ❌ No | The shared study-kit engine; only in a `design/*` branch |
 | `styleguide.html` | ➕ Add a demo for a new component | Don't change existing demos |
 | `assets/img/` | ✅ Yes | Optimize images, use lowercase-hyphenated names |
 | `tokens.css`, `base.css`, `layout.css`, existing components | ❌ No | Only in a `design/*` branch |

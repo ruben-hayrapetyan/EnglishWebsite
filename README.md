@@ -57,6 +57,7 @@ EnglishWebsite/
 │   │   └── pages/          Optional page-only styles, one file per page
 │   ├── js/
 │   │   ├── site.js         Renders the shared header and footer; holds the nav list
+│   │   ├── study.js        Shared engine for study kits: slides, flashcards, quizzes
 │   │   └── styleguide.js   Prints live token values on the style guide
 │   └── img/                Images and the favicon
 ├── tools/                  Development tools (Python); never loaded by pages
