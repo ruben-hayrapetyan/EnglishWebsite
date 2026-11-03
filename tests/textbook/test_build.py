@@ -157,3 +157,20 @@ def test_cli_runs_as_a_module(sample_site):
     proc = subprocess.run([sys.executable, "-m", "tools.textbook", "build", "--check", "--root", str(sample_site)],
                           cwd=ROOT, capture_output=True, text=True)
     assert proc.returncode == 0, proc.stderr
+
+
+def test_images_that_look_the_same_are_not_stale(sample_site):
+    """PNG bytes differ between zlib versions (a laptop vs CI); pixels decide."""
+    import io
+
+    from PIL import Image
+
+    path = sample_site / "assets/img/chapter-from-pdf-figure-1.png"
+    image = Image.open(path)
+    out = io.BytesIO()
+    image.save(out, "PNG", compress_level=1)  # same pixels, different bytes
+    assert out.getvalue() != path.read_bytes()
+    path.write_bytes(out.getvalue())
+    assert stale(sample_site, build(sample_site)) == []
+    Image.new("RGB", image.size, "red").save(path)  # different pixels
+    assert stale(sample_site, build(sample_site)) == ["assets/img/chapter-from-pdf-figure-1.png"]

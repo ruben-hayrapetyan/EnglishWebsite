@@ -171,6 +171,30 @@ def discover_sources(book, root: Path) -> list[str]:
             for cid, c in ((c.id, c) for c in from_book) if cid in missing]
 
 
+def same_content(path: Path, data: bytes) -> bool:
+    """Is the file on disk what the build would write?
+
+    Images compare by pixels, not bytes: PNG compression differs between
+    machines (zlib versions), so the same picture can encode differently on
+    a laptop and in CI."""
+    if not path.is_file():
+        return False
+    current = path.read_bytes()
+    if current == data:
+        return True
+    if path.suffix.lower() not in (".png", ".jpg", ".jpeg"):
+        return False
+    import io
+
+    from PIL import Image
+
+    try:
+        a, b = Image.open(io.BytesIO(current)), Image.open(io.BytesIO(data))
+        return a.size == b.size and a.convert("RGBA").tobytes() == b.convert("RGBA").tobytes()
+    except Exception:
+        return False
+
+
 def previous_outputs(root: Path) -> set[str]:
     path = root / RECORD
     if not path.is_file():
@@ -182,8 +206,7 @@ def stale(root: Path, result: Result) -> list[str]:
     """Files that a build would create, change or delete."""
     out = []
     for name, data in sorted({**result.files, **result.regions}.items()):
-        path = root / name
-        if not path.is_file() or path.read_bytes() != data:
+        if not same_content(root / name, data):
             out.append(name)
     for name in sorted(previous_outputs(root) - set(result.files)):
         if (root / name).exists():
@@ -196,7 +219,7 @@ def write(root: Path, result: Result) -> list[str]:
     changed = []
     for name, data in sorted({**result.files, **result.regions}.items()):
         path = root / name
-        if path.is_file() and path.read_bytes() == data:
+        if same_content(path, data):
             continue
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
