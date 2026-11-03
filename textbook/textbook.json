@@ -1,0 +1,46 @@
+{
+  "title": "The chronobiology textbook",
+  "highlight": "chronobiology",
+  "lede": "Twelve chapters on the rhythms of living things, from the molecular clock to migration, written by the students of one class.",
+  "description": "The class's chronobiology textbook: twelve chapters on circadian, ultradian and infradian rhythms.",
+  "units": [
+    { "id": "background", "title": "Background" },
+    { "id": "circadian", "title": "Circadian rhythms" },
+    { "id": "ultradian", "title": "Ultradian rhythms" },
+    { "id": "infradian", "title": "Infradian rhythms" }
+  ],
+  "authors": {
+    "ada": "Ada Langford",
+    "ben": "Benjamin Shamash",
+    "binqi": "Binqi Zhan",
+    "clara": "Clara Davis",
+    "daniel": "Daniel Winter",
+    "jack": "Jack Lou",
+    "jacob": "Jacob Li",
+    "john": "John Liu",
+    "joseph": "Joseph Sultan",
+    "kaleb": "Kaleb Yoon",
+    "matthew": "Matthew Hernandez",
+    "ruben": "Ruben Hayrapetyan",
+    "ryan": "Ryan Nordahl",
+    "sam": "Sam Ding",
+    "sarah": "Sarah Kim",
+    "sebert": "Sebert Supamongkolthavessuk",
+    "will": "Will Protasowicki",
+    "zoe": "Zoe Kessler"
+  },
+  "chapters": [
+    { "id": "history-of-chronobiology", "title": "A brief history of chronobiology", "unit": "background", "authors": ["jacob"] },
+    { "id": "molecular-clock", "title": "The basics of biorhythms: the molecular clock", "unit": "background", "authors": ["john", "matthew"] },
+    { "id": "sleep-caffeine-jet-lag", "title": "Sleep, caffeine and jet lag", "unit": "circadian", "authors": ["sarah", "ben", "joseph", "sebert"] },
+    { "id": "hunger-digestion-metabolism", "title": "Hunger, digestion and metabolism", "unit": "circadian", "authors": ["will", "zoe", "clara"] },
+    { "id": "chronotypes", "title": "Chronotypes", "unit": "circadian", "authors": ["jack"] },
+    { "id": "circulation-cardiac-cycle", "title": "Circulation and the cardiac cycle", "unit": "ultradian", "authors": ["ada", "ryan"] },
+    { "id": "neuronal-activity", "title": "Neuronal activity: spikes and local field potentials", "unit": "ultradian", "authors": ["daniel"] },
+    { "id": "breathing-rhythm", "title": "The breathing rhythm", "unit": "ultradian", "authors": ["daniel"] },
+    { "id": "immunity", "title": "Immunity", "unit": "infradian", "authors": ["ruben"] },
+    { "id": "hair-growth-shedding", "title": "Hair growth and shedding", "unit": "infradian", "authors": ["kaleb"] },
+    { "id": "breeding-migration", "title": "Breeding and migration", "unit": "infradian", "authors": ["sam"] },
+    { "id": "predator-prey-dynamics", "title": "Predator-prey population dynamics", "unit": "infradian", "authors": ["binqi"] }
+  ]
+}
