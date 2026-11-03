@@ -129,8 +129,15 @@ def test_scripts_are_deferred(page):
     path, doc = page
     scripts = doc.xpath("//script[@src]")
     assert any(s.get("src") == "assets/js/site.js" for s in scripts), f"{path.name}: load site.js"
-    eager = [s.get("src") for s in scripts if s.get("defer") is None]
+    # AGENTS.md: the one exception is a11y.js, which loads without defer in
+    # <head>, before the stylesheet, so reader settings apply before first paint.
+    eager = [s.get("src") for s in scripts if s.get("defer") is None and s.get("src") != "assets/js/a11y.js"]
     assert not eager, f"{path.name}: load scripts with defer: {eager}"
+    for a11y in doc.xpath("//script[@src='assets/js/a11y.js']"):
+        assert a11y.getparent().tag == "head", f"{path.name}: load a11y.js in <head>"
+        head = list(a11y.getparent())
+        sheet = doc.xpath("//head/link[@href='assets/css/main.css']")[0]
+        assert head.index(a11y) < head.index(sheet), f"{path.name}: load a11y.js before main.css"
     assert not doc.xpath("//script[not(@src)][normalize-space()]"), (
         f"{path.name}: no inline scripts; use assets/js/<page>.js"
     )

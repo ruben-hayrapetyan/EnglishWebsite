@@ -220,6 +220,18 @@
         <p>The reader added <span class="notes-highlight">a note about these words</span>, and it opens in the side panel.</p>
         <pre><code>&lt;article class="prose" data-read-aloud&gt; …read this… &lt;/article&gt;
 &lt;div data-read-aloud-skip&gt; …never read this, e.g. answers… &lt;/div&gt;</code></pre>
+        <p class="sg-label">Reader bar: floating read-aloud and notes controls, bottom corner</p>
+        <p>It floats over the page, so it isn't drawn here. Turn on read aloud on <a href="settings.html">the settings page</a> to see it. <code>a11y.js</code> adds this markup:</p>
+        <pre><code>&lt;div class="reader-bar" role="region" aria-label="Reading tools"&gt;
+  &lt;div class="reader-bar__group"&gt;
+    &lt;button class="button button--small"&gt;Read page aloud&lt;/button&gt;
+    &lt;button class="button button--small button--secondary"&gt;Stop&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;button class="button button--small button--secondary"&gt;Notes (2)&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+        <p class="sg-label">Reading ruler: a tinted band that follows the pointer</p>
+        <p>It spans the whole screen, so it isn't drawn here. Turn on the reading ruler on <a href="settings.html">the settings page</a> to see it. <code>a11y.js</code> adds it and moves it with <code>--ruler-y</code>:</p>
+        <pre><code>&lt;div class="reading-ruler" aria-hidden="true"&gt;&lt;/div&gt;</code></pre>
       </section>
 
       <!-- Prose ------------------------------------------------------------ -->
