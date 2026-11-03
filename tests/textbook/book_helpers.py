@@ -38,7 +38,7 @@ def book_manifest(chapters: list[dict], **overrides) -> dict:
         "lede": "A sample book for the converter's tests.",
         "description": "A sample book used only by the tests.",
         "units": [{"id": "first", "title": "First unit"}, {"id": "second", "title": "Second unit"}],
-        "authors": AUTHORS,
+        "authors": dict(AUTHORS),  # a copy: tests mutate it
         "chapters": chapters,
     }
     data.update(overrides)

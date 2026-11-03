@@ -9,10 +9,10 @@ The finished example is [`study-neuronal-activity.html`](study-neuronal-activity
 ## Make your chapter's kit
 
 1. Branch from `main`: `git switch -c page/study-<chapter-id>`.
-2. Copy `_study-template.html` to `study-<chapter-id>.html`. Use a short, lowercase, hyphenated id, such as `chronotypes` or `sleep-caffeine-jet-lag`.
+2. Copy `_study-template.html` to `study-<chapter-id>.html`. The id is your chapter's `id` in `textbook/textbook.json`, such as `chronotypes` or `sleep-caffeine-jet-lag`. CI checks that it matches.
 3. Replace every `CHAPTER-ID` in the file with that id. It keys each reader's saved progress, so it must be unique.
 4. Fill in the five parts below.
-5. On `study.html`, turn your chapter's card into a link: wrap the title in `<a href="study-<chapter-id>.html">`, change the tag to `<span class="tag tag--accent">Ready</span>`, and add the `card__footer` line. Copy the neuronal activity card.
+5. Run `python -m tools.textbook build`. It marks your chapter "Ready" on `study.html`, counts your slides and questions, and adds the study-kit button to your chapter's page. Don't edit the cards on `study.html` by hand: they come from `textbook/textbook.json`.
 6. Fill in the AI credit, then run the checklist in `AGENTS.md` and open a pull request.
 
 You write plain HTML. `assets/js/study.js` finds the slides, flashcards and quiz by their classes and makes them interactive. Don't edit it, and don't write JavaScript for these parts. If you need something it doesn't do, ask in a pull request.

@@ -67,6 +67,10 @@ def test_source_can_be_a_plain_path_or_an_object(site):
         (lambda d: d["chapters"].append(chapter(id="q", title="Q", source={"file": "a.md", "page": 1})),
          'unknown source key "page"'),
         (lambda d: d["chapters"].append(chapter(id="q", title="Q", source=5)), '"source" must be a file path'),
+        (lambda d: d["chapters"].append(chapter(id="q", title="Q", outline="Intro")), '"outline" must be a list'),
+        (lambda d: d["chapters"].append(chapter(id="q", title="Q", outline=[{"section": "A", "subsections": [3]}])),
+         '"outline" must be a list'),
+        (lambda d: d["chapters"].append(chapter(id="q", title="Q", outline=[{"name": "A"}])), '"outline" must be a list'),
     ],
 )
 def test_each_mistake_is_reported(site, mutate, message):
@@ -92,3 +96,11 @@ def test_unreadable_files_are_reported(site):
     path.write_text(json.dumps([1, 2]))
     with pytest.raises(ManifestError, match="top level must be an object"):
         load(path)
+
+
+def test_outlines_nest(site):
+    from tools.textbook.manifest import OutlineNode
+
+    data = book_manifest([chapter(outline=["A", {"section": "B", "subsections": [{"section": "C", "subsections": ["D"]}]}])])
+    (ch,) = load(write_manifest(site, data)).chapters
+    assert ch.outline == [OutlineNode("A"), OutlineNode("B", [OutlineNode("C", [OutlineNode("D")])])]

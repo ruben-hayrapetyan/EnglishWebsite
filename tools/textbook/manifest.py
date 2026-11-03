@@ -31,6 +31,14 @@ class Source:
     heading: str | None = None
 
 
+@dataclass
+class OutlineNode:
+    """One section of a chapter outline, with its subsections."""
+
+    title: str
+    children: list["OutlineNode"] = field(default_factory=list)
+
+
 @dataclass(frozen=True)
 class Unit:
     id: str
@@ -49,6 +57,9 @@ class Chapter:
     source: Source | None = None
     ai_credit: str | None = None
     figures: dict[str, dict] = field(default_factory=dict)
+    # Section outline shown on author pages until the chapter's source is
+    # converted; after that the real headings are used.
+    outline: list["OutlineNode"] = field(default_factory=list)
 
     @property
     def filename(self) -> str:
@@ -72,7 +83,7 @@ class Manifest:
 
 TOP_KEYS = {"title", "highlight", "lede", "description", "units", "authors", "chapters"}
 UNIT_KEYS = {"id", "title"}
-CHAPTER_KEYS = {"id", "title", "unit", "authors", "summary", "highlight", "source", "ai_credit", "figures"}
+CHAPTER_KEYS = {"id", "title", "unit", "authors", "summary", "highlight", "source", "ai_credit", "figures", "outline"}
 SOURCE_KEYS = {"file", "pages", "heading"}
 
 
@@ -179,6 +190,10 @@ def load(path: Path) -> Manifest:
         ):
             problems.append(f'{where}: "figures" must look like {{"figure-1": {{"alt": "What the figure shows"}}}}')
             figures = {}
+        outline, outline_ok = _outline(c.get("outline", []))
+        if not outline_ok:
+            problems.append(f'{where}: "outline" must be a list of section names, or of '
+                            '{"section": "Name", "subsections": [...]} (subsections nest the same way)')
         source = None
         raw_source = c.get("source")
         if raw_source is not None:
@@ -196,6 +211,7 @@ def load(path: Path) -> Manifest:
                 source=source,
                 ai_credit=c.get("ai_credit"),
                 figures=figures,
+                outline=outline,
             )
         )
 
@@ -211,6 +227,24 @@ def load(path: Path) -> Manifest:
         authors=dict(authors),
         chapters=chapters,
     )
+
+
+def _outline(raw) -> tuple[list["OutlineNode"], bool]:
+    """A list of names, or {"section", "subsections"} objects nested to any depth."""
+    if not isinstance(raw, list):
+        return [], False
+    out = []
+    for item in raw:
+        if _text(item):
+            out.append(OutlineNode(item))
+        elif isinstance(item, dict) and set(item) <= {"section", "subsections"} and _text(item.get("section")):
+            children, ok = _outline(item.get("subsections", []))
+            if not ok:
+                return [], False
+            out.append(OutlineNode(item["section"], children))
+        else:
+            return [], False
+    return out, True
 
 
 def _source(base: Path, raw, where: str) -> tuple[Source | None, list[str]]:

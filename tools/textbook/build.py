@@ -7,6 +7,9 @@
 The list of files from the last build is kept in textbook/generated.txt so
 a renamed or removed chapter's old files are cleaned up, and nothing that
 the converter didn't create is ever deleted.
+
+Hand-written pages with book-driven regions (see regions.py) are updated in
+place: only their regions change, and they are never deleted.
 """
 
 from __future__ import annotations
@@ -15,7 +18,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from . import manifest as manifest_mod
+from .manifest import OutlineNode
+from .model import Heading, plain_text
 from .readers import ReaderError, read
+from .regions import Book, RegionError, fill, has_regions
 from .render import CONTENTS_FILE, load_template, render_chapter, render_contents
 from .structure import chapter_body
 
@@ -26,6 +32,7 @@ RECORD = Path("textbook/generated.txt")
 @dataclass
 class Result:
     files: dict[str, bytes] = field(default_factory=dict)  # repo-relative path -> content
+    regions: dict[str, bytes] = field(default_factory=dict)  # hand-written pages with regions filled in
     warnings: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
 
@@ -67,7 +74,34 @@ def build(root: Path) -> Result:
     result.files[CONTENTS_FILE] = contents.encode("utf-8")
     record = "\n".join(sorted(result.files)) + "\n"
     result.files[str(RECORD)] = record.encode("utf-8")
+
+    facts = Book(book, root, {c.id for c in available}, {cid: outline_of(doc) for cid, doc in docs.items()})
+    for page in sorted(root.glob("*.html")):
+        if page.name in result.files or page.name.startswith("_"):
+            continue
+        text = page.read_text(encoding="utf-8")
+        if not has_regions(text):
+            continue
+        try:
+            result.regions[page.name] = fill(text, facts).encode("utf-8")
+        except RegionError as exc:
+            result.errors.append(f"{page.name}: {exc}")
     return result
+
+
+def outline_of(doc) -> list[OutlineNode]:
+    """A converted chapter's headings as a tree: h2 sections, h3 under them, and so on."""
+    root = OutlineNode("")
+    stack: list[tuple[int, OutlineNode]] = [(1, root)]
+    for block in doc.blocks:
+        if not isinstance(block, Heading):
+            continue
+        node = OutlineNode(plain_text(block.content))
+        while stack[-1][0] >= block.level:
+            stack.pop()
+        stack[-1][1].children.append(node)
+        stack.append((block.level, node))
+    return root.children
 
 
 def previous_outputs(root: Path) -> set[str]:
@@ -80,7 +114,7 @@ def previous_outputs(root: Path) -> set[str]:
 def stale(root: Path, result: Result) -> list[str]:
     """Files that a build would create, change or delete."""
     out = []
-    for name, data in sorted(result.files.items()):
+    for name, data in sorted({**result.files, **result.regions}.items()):
         path = root / name
         if not path.is_file() or path.read_bytes() != data:
             out.append(name)
@@ -93,7 +127,7 @@ def stale(root: Path, result: Result) -> list[str]:
 def write(root: Path, result: Result) -> list[str]:
     previous = previous_outputs(root)  # read before the new record overwrites it
     changed = []
-    for name, data in sorted(result.files.items()):
+    for name, data in sorted({**result.files, **result.regions}.items()):
         path = root / name
         if path.is_file() and path.read_bytes() == data:
             continue

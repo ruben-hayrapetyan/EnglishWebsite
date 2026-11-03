@@ -4,10 +4,22 @@
   "lede": "Twelve chapters on the rhythms of living things, from the molecular clock to migration, written by the students of one class.",
   "description": "The class's chronobiology textbook: twelve chapters on circadian, ultradian and infradian rhythms.",
   "units": [
-    { "id": "background", "title": "Background" },
-    { "id": "circadian", "title": "Circadian rhythms" },
-    { "id": "ultradian", "title": "Ultradian rhythms" },
-    { "id": "infradian", "title": "Infradian rhythms" }
+    {
+      "id": "background",
+      "title": "Background"
+    },
+    {
+      "id": "circadian",
+      "title": "Circadian rhythms"
+    },
+    {
+      "id": "ultradian",
+      "title": "Ultradian rhythms"
+    },
+    {
+      "id": "infradian",
+      "title": "Infradian rhythms"
+    }
   ],
   "authors": {
     "ada": "Ada Langford",
@@ -30,17 +42,257 @@
     "zoe": "Zoe Kessler"
   },
   "chapters": [
-    { "id": "history-of-chronobiology", "title": "A brief history of chronobiology", "unit": "background", "authors": ["jacob"] },
-    { "id": "molecular-clock", "title": "The basics of biorhythms: the molecular clock", "unit": "background", "authors": ["john", "matthew"] },
-    { "id": "sleep-caffeine-jet-lag", "title": "Sleep, caffeine and jet lag", "unit": "circadian", "authors": ["sarah", "ben", "joseph", "sebert"] },
-    { "id": "hunger-digestion-metabolism", "title": "Hunger, digestion and metabolism", "unit": "circadian", "authors": ["will", "zoe", "clara"] },
-    { "id": "chronotypes", "title": "Chronotypes", "unit": "circadian", "authors": ["jack"] },
-    { "id": "circulation-cardiac-cycle", "title": "Circulation and the cardiac cycle", "unit": "ultradian", "authors": ["ada", "ryan"] },
-    { "id": "neuronal-activity", "title": "Neuronal activity: spikes and local field potentials", "unit": "ultradian", "authors": ["daniel"] },
-    { "id": "breathing-rhythm", "title": "The breathing rhythm", "unit": "ultradian", "authors": ["daniel"] },
-    { "id": "immunity", "title": "Immunity", "unit": "infradian", "authors": ["ruben"] },
-    { "id": "hair-growth-shedding", "title": "Hair growth and shedding", "unit": "infradian", "authors": ["kaleb"] },
-    { "id": "breeding-migration", "title": "Breeding and migration", "unit": "infradian", "authors": ["sam"] },
-    { "id": "predator-prey-dynamics", "title": "Predator-prey population dynamics", "unit": "infradian", "authors": ["binqi"] }
+    {
+      "id": "history-of-chronobiology",
+      "title": "A brief history of chronobiology",
+      "unit": "background",
+      "authors": [
+        "jacob"
+      ],
+      "outline": [
+        "Time-keeping throughout history",
+        "Ancient chronobiology",
+        "The birth of a new field",
+        "Chronobiology in the modern day"
+      ]
+    },
+    {
+      "id": "molecular-clock",
+      "title": "The basics of biorhythms: the molecular clock",
+      "unit": "background",
+      "authors": [
+        "john",
+        "matthew"
+      ],
+      "outline": [
+        "The molecular clock and circadian rhythms",
+        {
+          "section": "Serotonin",
+          "subsections": [
+            "What is serotonin?",
+            "Serotonin’s daily rhythm",
+            "Serotonin as input to the clock",
+            "Serotonin as substrate of the clock’s output",
+            "What remains unsettled"
+          ]
+        },
+        "Central and local clocks in the brain and body",
+        "Genetic mechanisms of the molecular clock",
+        "Clock genes and cyclic behavior"
+      ]
+    },
+    {
+      "id": "sleep-caffeine-jet-lag",
+      "title": "Sleep, caffeine and jet lag",
+      "unit": "circadian",
+      "authors": [
+        "sarah",
+        "ben",
+        "joseph",
+        "sebert"
+      ],
+      "outline": [
+        {
+          "section": "The sleep/wake cycle",
+          "subsections": [
+            "How circadian rhythms influence sleep",
+            "What can disrupt the sleep/wake cycle?",
+            "Effects of a disrupted sleep/wake cycle",
+            "Maintaining a healthy sleep/wake cycle"
+          ]
+        },
+        {
+          "section": "Caffeine",
+          "subsections": [
+            "Introduction",
+            "How caffeine affects the brain and body",
+            "Caffeine timing and sleep quality",
+            "Caffeine in everyday life"
+          ]
+        },
+        {
+          "section": "What is jet lag?",
+          "subsections": [
+            {
+              "section": "What is internal desynchrony",
+              "subsections": [
+                {
+                  "section": "Disruption of human circadian rhythms",
+                  "subsections": [
+                    "Sleep/wake"
+                  ]
+                },
+                "Disruption of human ultradian rhythms",
+                "Disruption of human infradian rhythms"
+              ]
+            },
+            {
+              "section": "Flying against the biological clock",
+              "subsections": [
+                "How flight schedules disrupt circadian timing",
+                "What happens to the pilot?",
+                "Designing aviation around human biology"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hunger-digestion-metabolism",
+      "title": "Hunger, digestion and metabolism",
+      "unit": "circadian",
+      "authors": [
+        "will",
+        "zoe",
+        "clara"
+      ],
+      "outline": [
+        {
+          "section": "Hunger and digestion",
+          "subsections": [
+            "How are hunger and digestion related?",
+            "Hunger signalling and the nervous system",
+            "Eating cycles in non-humans",
+            "Processes involved with digestion",
+            "Rhythm disruption and health complications",
+            "Hunger/metabolism-related diseases"
+          ]
+        },
+        {
+          "section": "Metabolism",
+          "subsections": [
+            "Circadian rhythm of metabolism",
+            "Health effects of unstable metabolism",
+            "Metabolism’s effect on other systems",
+            "How alcohol affects the metabolism cycle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chronotypes",
+      "title": "Chronotypes",
+      "unit": "circadian",
+      "authors": [
+        "jack"
+      ],
+      "outline": [
+        "What is a chronotype?",
+        "How does chronotype affect physiology?",
+        "Chronotypes in athletics"
+      ]
+    },
+    {
+      "id": "circulation-cardiac-cycle",
+      "title": "Circulation and the cardiac cycle",
+      "unit": "ultradian",
+      "authors": [
+        "ada",
+        "ryan"
+      ],
+      "outline": [
+        {
+          "section": "Mechanics of the heart",
+          "subsections": [
+            "How does the heart pump blood periodically?"
+          ]
+        },
+        "Sympathetic vs parasympathetic control",
+        "Diurnal blood pressure/heart rate",
+        {
+          "section": "How does long-term health affect the heart’s clock?",
+          "subsections": [
+            "Heart function with increased endurance training"
+          ]
+        },
+        "How does disruption/failure of different parts of the heart affect its clock?",
+        "Can we artificially support normal cardiac rhythms?"
+      ]
+    },
+    {
+      "id": "neuronal-activity",
+      "title": "Neuronal activity: spikes and local field potentials",
+      "unit": "ultradian",
+      "authors": [
+        "daniel"
+      ],
+      "outline": [
+        "What is being measured",
+        "Neural activity is rhythmic",
+        "Connection to slower body rhythms",
+        "Getting a signal from a recording",
+        "From biological to artificial"
+      ]
+    },
+    {
+      "id": "breathing-rhythm",
+      "title": "The breathing rhythm",
+      "unit": "ultradian",
+      "authors": [
+        "daniel"
+      ],
+      "outline": [
+        "Where each breath begins",
+        "A rhythm that runs on its own",
+        "Where the beat comes from",
+        "Sighs, calm, and panic",
+        "When the rhythm stops"
+      ]
+    },
+    {
+      "id": "immunity",
+      "title": "Immunity",
+      "unit": "infradian",
+      "authors": [
+        "ruben"
+      ],
+      "outline": [
+        "What is the immune system and how does it function?",
+        "Diseases during the rest vs active time",
+        "Seasonal cycles within the immune system"
+      ]
+    },
+    {
+      "id": "hair-growth-shedding",
+      "title": "Hair growth and shedding",
+      "unit": "infradian",
+      "authors": [
+        "kaleb"
+      ],
+      "outline": [
+        "Basics of hair growth and shedding",
+        "Factors that impact the hair cycle",
+        "Potential treatments and interventions"
+      ]
+    },
+    {
+      "id": "breeding-migration",
+      "title": "Breeding and migration",
+      "unit": "infradian",
+      "authors": [
+        "sam"
+      ],
+      "outline": [
+        "How annual biological clocks work",
+        "Breeding timeline across species",
+        "Animal migration and navigation",
+        "Modern environmental threats",
+        "Bird safe architecture"
+      ]
+    },
+    {
+      "id": "predator-prey-dynamics",
+      "title": "Predator-prey population dynamics",
+      "unit": "infradian",
+      "authors": [
+        "binqi"
+      ],
+      "outline": [
+        "What are predator-prey rhythms?",
+        "The predator-prey cycle in the ecosystem",
+        "What factors drive predator-prey periodicity?"
+      ]
+    }
   ]
 }

@@ -53,6 +53,27 @@ Run `inspect` on a combined book to see the exact heading text to use.
 | `highlight` | no | The words of the title that get the highlighter. |
 | `ai_credit` | no | The authors' own statement about generative AI in the chapter, e.g. "Figures 2 and 3 were plotted with code written by Claude (Anthropic)." It's added to the page's AI credit. |
 | `figures` | no | Alt text per figure, e.g. `{"figure-1": {"alt": "..."}}`. Use this when the source has none. |
+| `outline` | no | Section names, shown on the author pages until the source is converted. Write names, or `{"section": "Name", "subsections": [...]}` to nest. |
+
+## Pages that describe the book
+
+Some hand-written pages also describe the book: the study hub (`study.html`), the author pages (`author-*.html`) and the team page (`teams.html`). Those parts are never typed out by hand. Each one is a marked region that the build fills in from `textbook.json` and the converted chapters:
+
+```html
+<!-- textbook:author-chapters daniel -->
+...generated...
+<!-- /textbook -->
+```
+
+Only the text between the markers changes. The rest of the page stays its author's. `build --check` fails if a region is out of date, just like a chapter page.
+
+| Region | What it shows |
+|---|---|
+| `count authors`, `count chapters`, `count units` | A number from `textbook.json`, inline |
+| `study-cards <unit id>` | A unit's chapters on the study hub. A chapter shows "Ready", with its slide and question counts, as soon as `study-<id>.html` exists. |
+| `author-chapters <author slug>` | An author's chapter cards: unit, title, coauthors, a link to the chapter once it's converted, and its section outline |
+
+Section outlines come from the chapter's real headings once its source is converted, whatever the format. Until then they come from the chapter's `outline` in `textbook.json`. So nothing on these pages depends on one particular PDF: swap the source, rebuild, and every page follows.
 
 ## Supported formats
 
