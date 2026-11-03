@@ -129,6 +129,30 @@
         </div>
       </section>
 
+      <!-- Chapter nav ------------------------------------------------------ -->
+      <section class="sg-block" aria-labelledby="sg-chapter-nav">
+        <h2 id="sg-chapter-nav">Chapter nav</h2>
+        <p class="sg-block__note">For long reading pages in a sequence, like textbook chapters. The plain form lists the page's sections near the top. The pager form links the previous and next pages at the bottom; leave out a step at either end.</p>
+        <nav class="chapter-nav" aria-labelledby="sg-chapter-nav-title">
+          <h3 class="chapter-nav__title" id="sg-chapter-nav-title">In this chapter</h3>
+          <ol class="chapter-nav__list">
+            <li><a class="chapter-nav__link" href="#sg-chapter-nav">What a rhythm is</a></li>
+            <li><a class="chapter-nav__link" href="#sg-chapter-nav">Measuring a period</a></li>
+            <li><a class="chapter-nav__link" href="#sg-chapter-nav">Summary</a></li>
+          </ol>
+        </nav>
+        <nav class="chapter-nav chapter-nav--pager" aria-label="Example chapters">
+          <a class="chapter-nav__step" href="#sg-chapter-nav" rel="prev">
+            <span class="chapter-nav__label">Previous chapter</span>
+            <span class="chapter-nav__name">The previous chapter's title</span>
+          </a>
+          <a class="chapter-nav__step chapter-nav__step--next" href="#sg-chapter-nav" rel="next">
+            <span class="chapter-nav__label">Next chapter</span>
+            <span class="chapter-nav__name">The next chapter's title</span>
+          </a>
+        </nav>
+      </section>
+
       <!-- Tags ------------------------------------------------------------- -->
       <section class="sg-block" aria-labelledby="sg-tags">
         <h2 id="sg-tags">Tags</h2>

@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Chapter nav: moving around a long reading page and between pages in a
+   sequence (textbook chapters). Two forms of the same block:
+
+   .chapter-nav            "In this chapter": links to the page's sections
+     <nav class="chapter-nav" aria-labelledby="chapter-nav-title">
+       <h2 class="chapter-nav__title" id="chapter-nav-title">In this chapter</h2>
+       <ol class="chapter-nav__list">
+         <li><a class="chapter-nav__link" href="#section-id">Section</a></li>
+       </ol>
+     </nav>
+
+   .chapter-nav--pager     previous and next pages in the sequence
+     <nav class="chapter-nav chapter-nav--pager" aria-label="Chapters">
+       <a class="chapter-nav__step" href="prev.html" rel="prev">
+         <span class="chapter-nav__label">Previous chapter</span>
+         <span class="chapter-nav__name">Title</span>
+       </a>
+       <a class="chapter-nav__step chapter-nav__step--next" href="next.html" rel="next">
+         <span class="chapter-nav__label">Next chapter</span>
+         <span class="chapter-nav__name">Title</span>
+       </a>
+     </nav>
+   Either step may be left out at the start or end of the sequence.
+   ========================================================================== */
+
+.chapter-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-width: var(--measure);
+  padding: var(--space-m);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+/* Styled as a small label so it doesn't compete with the chapter's own h2s. */
+.chapter-nav__title {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--leading-snug);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.chapter-nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: 0;
+  list-style: none;
+  counter-reset: chapter-nav;
+}
+
+.chapter-nav__list > li {
+  display: flex;
+  gap: var(--space-xs);
+  line-height: var(--leading-snug);
+  counter-increment: chapter-nav;
+}
+
+.chapter-nav__list > li::before {
+  content: counter(chapter-nav);
+  min-width: 2ch;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+}
+
+.chapter-nav__link {
+  color: var(--color-text);
+  text-decoration-color: var(--color-border-strong);
+}
+
+.chapter-nav__link:hover {
+  color: var(--color-accent-strong);
+}
+
+/* ---- Pager: previous / next -------------------------------------------- */
+.chapter-nav--pager {
+  display: grid;
+  gap: var(--space-s);
+  max-width: none;
+  padding: var(--space-l) 0 0;
+  border-width: var(--border-width) 0 0;
+  border-radius: 0;
+  background: none;
+}
+
+@media (min-width: 40rem) {
+  .chapter-nav--pager {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.chapter-nav__step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding: var(--space-s) var(--space-m);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  background-image: none;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: border-color var(--duration-fast) linear;
+}
+
+.chapter-nav__step:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.chapter-nav__step--next {
+  grid-column: -2;
+  text-align: end;
+}
+
+.chapter-nav__label {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.chapter-nav__name {
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+
+.chapter-nav__step:hover .chapter-nav__name {
+  color: var(--color-accent-strong);
+}
