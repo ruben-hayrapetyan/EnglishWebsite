@@ -4,19 +4,25 @@
    into one question at a time with a confidence rating, feedback on the
    option you picked, and a score by learning objective at the end.
 
-   Multiple choice (mark the right option with data-correct; data-why says
-   why an option is right or wrong):
+   Multiple choice (mark the right option with data-correct; .quiz__whys says
+   why each option is right or wrong, in option order, inside the answer so
+   it doesn't give the answer away and still shows without JavaScript):
    <ol class="quiz" data-quiz="chapter-id">
      <li class="quiz__item" data-objective="LO1">
        <p class="quiz__question">Question?</p>
        <ol class="quiz__options" type="A">
-         <li data-correct data-why="Why this is right.">Option</li>
-         <li data-why="Why this is wrong.">Option</li>
+         <li data-correct>Option</li>
+         <li>Option</li>
        </ol>
        <details class="reveal">
          <summary class="reveal__summary">Show the answer</summary>
          <div class="reveal__body">
            <p class="quiz__key">Answer: A</p>
+           <p>Why each option is right or wrong:</p>
+           <ol class="quiz__whys" type="A">
+             <li>Why this is right.</li>
+             <li>Why this is wrong.</li>
+           </ol>
            <div class="quiz__explanation"><p>Explanation.</p></div>
          </div>
        </details>
@@ -69,12 +75,19 @@
   gap: var(--space-2xs);
 }
 
+.quiz__whys {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding-left: 1.6em; /* same indent as .quiz__options, so the letters line up */
+}
+
 /* ---- The practice app (added by JavaScript) ------------------------------ */
 .quiz__app {
   display: flex;
   flex-direction: column;
   gap: var(--space-m);
-  max-width: 46rem;
+  max-width: var(--container-narrow);
   padding: var(--space-l) var(--space-m);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-m);

@@ -138,8 +138,9 @@
     </section>
 
     <!-- 4. Quiz. 10 to 20 questions; every objective gets at least two.
-         Multiple choice: mark the right option with data-correct. Give every option a data-why
-         that says why it is right or wrong (this is the feedback readers see).
+         Multiple choice: mark the right option with data-correct. In the answer, list why each
+         option is right or wrong in .quiz__whys, in option order (this is the feedback readers
+         see after answering, and what they read with JavaScript off).
          Number answer: no options list; add data-answer, data-tolerance and data-unit. -->
     <section class="section section--tinted" id="quiz" aria-labelledby="quiz-title">
       <div class="container">
@@ -152,15 +153,22 @@
           <li class="quiz__item" data-objective="LO1">
             <p class="quiz__question">Multiple-choice question?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Why this is right.">Correct option</li>
-              <li data-why="Why this is wrong, naming the misconception.">Plausible wrong option</li>
-              <li data-why="Why this is wrong.">Plausible wrong option</li>
-              <li data-why="Why this is wrong.">Plausible wrong option</li>
+              <li data-correct>Correct option</li>
+              <li>Plausible wrong option</li>
+              <li>Plausible wrong option</li>
+              <li>Plausible wrong option</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Why this is right.</li>
+                  <li>Why this is wrong, naming the misconception.</li>
+                  <li>Why this is wrong.</li>
+                  <li>Why this is wrong.</li>
+                </ol>
                 <div class="quiz__explanation"><p>The explanation, tied back to the chapter.</p></div>
               </div>
             </details>

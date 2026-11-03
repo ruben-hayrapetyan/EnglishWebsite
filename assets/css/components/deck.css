@@ -95,7 +95,8 @@
   min-width: 0;
 }
 
-/* Figures are drawn on white, so they sit on a white plate in both themes. */
+/* Figures are drawn on opaque white, so they look the same in both themes;
+   the hairline border keeps them from floating on a dark page. */
 .deck__figure img {
   width: 100%;
   border: var(--border-width) solid var(--color-border);

@@ -454,15 +454,22 @@
           <li class="quiz__item" data-objective="LO1">
             <p class="quiz__question">Which description fits a local field potential (LFP)?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Right: the LFP is a population signal, dominated by synaptic currents near the electrode.">The combined transmembrane currents of many neurons near the electrode, especially synaptic currents</li>
-              <li data-why="That describes a spike (and an intracellular recording of one). An LFP is recorded outside cells and reflects many neurons.">The voltage change across one neuron's membrane when it fires</li>
-              <li data-why="The LFP isn't noise to be thrown away; it's a meaningful signal about what a group of neurons is doing together.">Electrical noise from the electrode that must be filtered out before analysis</li>
-              <li data-why="The axon hillock is where action potentials start in a single cell. The LFP is a population measure.">The voltage at the axon hillock just before threshold</li>
+              <li data-correct>The combined transmembrane currents of many neurons near the electrode, especially synaptic currents</li>
+              <li>The voltage change across one neuron's membrane when it fires</li>
+              <li>Electrical noise from the electrode that must be filtered out before analysis</li>
+              <li>The voltage at the axon hillock just before threshold</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Right: the LFP is a population signal, dominated by synaptic currents near the electrode.</li>
+                  <li>That describes a spike (and an intracellular recording of one). An LFP is recorded outside cells and reflects many neurons.</li>
+                  <li>The LFP isn't noise to be thrown away; it's a meaningful signal about what a group of neurons is doing together.</li>
+                  <li>The axon hillock is where action potentials start in a single cell. The LFP is a population measure.</li>
+                </ol>
                 <div class="quiz__explanation"><p>An LFP reflects the combined transmembrane currents of many neurons, especially synaptic currents, recorded near an electrode (Buzsáki et al., 2012). Unlike a spike, it is smooth and changes gradually, and its amplitude also depends on the geometry of those currents.</p></div>
               </div>
             </details>
@@ -471,15 +478,22 @@
           <li class="quiz__item" data-objective="LO1">
             <p class="quiz__question">A neuron at rest sits near −70 mV. What happens once stimuli push it to about −55 mV?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Right: threshold opens voltage-gated sodium channels and the cell depolarizes sharply.">Voltage-gated sodium channels open and the cell depolarizes sharply, to about +30 mV</li>
-              <li data-why="Potassium rushes out during repolarization, after the peak, not at threshold.">Potassium channels open and the voltage drops below rest</li>
-              <li data-why="Spikes are all or nothing: past threshold the neuron fires a full action potential, not a proportional one.">The neuron fires a spike whose size depends on how far past threshold it went</li>
-              <li data-why="Reaching threshold is exactly what triggers firing; the neuron doesn't wait for more input.">Nothing yet; it needs to reach 0 mV before it fires</li>
+              <li data-correct>Voltage-gated sodium channels open and the cell depolarizes sharply, to about +30 mV</li>
+              <li>Potassium channels open and the voltage drops below rest</li>
+              <li>The neuron fires a spike whose size depends on how far past threshold it went</li>
+              <li>Nothing yet; it needs to reach 0 mV before it fires</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Right: threshold opens voltage-gated sodium channels and the cell depolarizes sharply.</li>
+                  <li>Potassium rushes out during repolarization, after the peak, not at threshold.</li>
+                  <li>Spikes are all or nothing: past threshold the neuron fires a full action potential, not a proportional one.</li>
+                  <li>Reaching threshold is exactly what triggers firing; the neuron doesn't wait for more input.</li>
+                </ol>
                 <div class="quiz__explanation"><p>At threshold (around −55 mV) voltage-gated sodium channels open, causing depolarization up to about +30 mV. Then sodium channels inactivate and potassium channels open, bringing the voltage back down (repolarization). The neuron either reaches threshold and fires or stays below and doesn't; exact values vary across neurons.</p></div>
               </div>
             </details>
@@ -488,15 +502,22 @@
           <li class="quiz__item" data-objective="LO1">
             <p class="quiz__question">Which statement best captures the main difference between spikes and LFPs?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Right: the chapter calls scale the main difference, and says neither alone is the whole picture.">Scale: a spike tells you what one neuron is doing; an LFP tells you what a group is doing together</li>
-              <li data-why="Both come from the same extracellular electrode. That's why separating them takes filtering.">They need different electrodes, so they're never recorded together</li>
-              <li data-why="Spikes run in the hundreds of hertz and LFPs much lower, so it's the other way round.">LFPs are faster than spikes</li>
-              <li data-why="The chapter says neither is the whole picture; they answer different questions.">LFPs are more accurate than spikes, so spikes are rarely used</li>
+              <li data-correct>Scale: a spike tells you what one neuron is doing; an LFP tells you what a group is doing together</li>
+              <li>They need different electrodes, so they're never recorded together</li>
+              <li>LFPs are faster than spikes</li>
+              <li>LFPs are more accurate than spikes, so spikes are rarely used</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Right: the chapter calls scale the main difference, and says neither alone is the whole picture.</li>
+                  <li>Both come from the same extracellular electrode. That's why separating them takes filtering.</li>
+                  <li>Spikes run in the hundreds of hertz and LFPs much lower, so it's the other way round.</li>
+                  <li>The chapter says neither is the whole picture; they answer different questions.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Like a party: you can follow one person's conversation (a spike) or hear the volume of the room (an LFP), but tuning into one means losing the other. Both are picked up by the same electrode.</p></div>
               </div>
             </details>
@@ -505,15 +526,22 @@
           <li class="quiz__item" data-objective="LO2">
             <p class="quiz__question">A rhythm cycles 6 times per second. Which band is it in?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="Delta is 1 to 4 Hz, slower than this.">Delta</li>
-              <li data-correct data-why="Right: theta is 4 to 8 Hz.">Theta</li>
-              <li data-why="Alpha is 8 to 12 Hz, a bit faster.">Alpha</li>
-              <li data-why="Gamma is 30 to 100 Hz, far faster.">Gamma</li>
+              <li>Delta</li>
+              <li data-correct>Theta</li>
+              <li>Alpha</li>
+              <li>Gamma</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: B</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Delta is 1 to 4 Hz, slower than this.</li>
+                  <li>Right: theta is 4 to 8 Hz.</li>
+                  <li>Alpha is 8 to 12 Hz, a bit faster.</li>
+                  <li>Gamma is 30 to 100 Hz, far faster.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Delta 1–4 Hz, theta 4–8 Hz, alpha 8–12 Hz, beta 15–30 Hz, gamma 30–100 Hz. Labs draw these lines in slightly different places, and different animals run the same functional rhythm at different speeds.</p></div>
               </div>
             </details>
@@ -533,15 +561,22 @@
           <li class="quiz__item" data-objective="LO2">
             <p class="quiz__question">Neuron A tends to fire near the peaks of an LFP cycle; neuron B near the troughs. Both fire at the same average rate. What follows?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="Equal rates hide the difference. The chapter's point is that phase can matter even when rates match.">They are doing the same thing, since only firing rate carries information</li>
-              <li data-correct data-why="Right: same rate, different phase, potentially different contribution.">They may contribute differently to circuit activity, because they fire at different phases</li>
-              <li data-why="Firing near the trough is still firing; the figure shows both neurons spiking five times.">Neuron B is effectively silent, because troughs are when neurons rest</li>
-              <li data-why="Phase applies to any LFP rhythm, not only gamma.">Phase only matters if the rhythm is in the gamma band</li>
+              <li>They are doing the same thing, since only firing rate carries information</li>
+              <li data-correct>They may contribute differently to circuit activity, because they fire at different phases</li>
+              <li>Neuron B is effectively silent, because troughs are when neurons rest</li>
+              <li>Phase only matters if the rhythm is in the gamma band</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: B</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Equal rates hide the difference. The chapter's point is that phase can matter even when rates match.</li>
+                  <li>Right: same rate, different phase, potentially different contribution.</li>
+                  <li>Firing near the trough is still firing; the figure shows both neurons spiking five times.</li>
+                  <li>Phase applies to any LFP rhythm, not only gamma.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Phase is the position of a wave relative to one complete cycle. Some neurons prefer a particular phase. Two neurons with identical rates can still contribute differently depending on when in the cycle they fire: the group rhythm shapes spike timing, while individual neurons supply the spikes.</p></div>
               </div>
             </details>
@@ -550,15 +585,22 @@
           <li class="quiz__item" data-objective="LO2">
             <p class="quiz__question">Why did Buzsáki and Draguhn (2004) argue that brain oscillations are more than a byproduct, like a bridge vibrating under traffic?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Right: breadth across frequencies and conservation across species suggest function.">They span five orders of magnitude in frequency and are preserved across species</li>
-              <li data-why="Breathing can modulate brain rhythms, but it doesn't generate them, and that wasn't their argument.">They are all generated by breathing</li>
-              <li data-why="The chapter stresses the opposite: most claims about what rhythms do are correlational.">Every function of every rhythm has been proven by causal experiments</li>
-              <li data-why="Rhythms appear across many species; that's part of the argument.">They only appear in the human brain</li>
+              <li data-correct>They span five orders of magnitude in frequency and are preserved across species</li>
+              <li>They are all generated by breathing</li>
+              <li>Every function of every rhythm has been proven by causal experiments</li>
+              <li>They only appear in the human brain</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Right: breadth across frequencies and conservation across species suggest function.</li>
+                  <li>Breathing can modulate brain rhythms, but it doesn't generate them, and that wasn't their argument.</li>
+                  <li>The chapter stresses the opposite: most claims about what rhythms do are correlational.</li>
+                  <li>Rhythms appear across many species; that's part of the argument.</li>
+                </ol>
                 <div class="quiz__explanation"><p>They also proposed that oscillations can bias which inputs reach a population, temporarily link neurons, and support synaptic changes in learning. Support varies by circuit; olfactory gamma gives some of the strongest evidence (Kay, 2014).</p></div>
               </div>
             </details>
@@ -567,15 +609,22 @@
           <li class="quiz__item" data-objective="LO3">
             <p class="quiz__question">In breathing-related phase-amplitude coupling, what is linked to what?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Right: slow phase, fast amplitude.">The phase of the slow breathing cycle goes with changes in the amplitude of a faster brain rhythm</li>
-              <li data-why="It's the other way round: the slow rhythm's phase, the fast rhythm's amplitude.">The amplitude of the breathing cycle sets the phase of gamma</li>
-              <li data-why="They don't have to share a frequency; that's what makes it cross-frequency coupling.">Breathing and gamma run at the same frequency</li>
-              <li data-why="Breathing modulates rhythms that already exist; brain oscillations continue without nasal airflow.">Breathing generates the fast rhythm from scratch</li>
+              <li data-correct>The phase of the slow breathing cycle goes with changes in the amplitude of a faster brain rhythm</li>
+              <li>The amplitude of the breathing cycle sets the phase of gamma</li>
+              <li>Breathing and gamma run at the same frequency</li>
+              <li>Breathing generates the fast rhythm from scratch</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Right: slow phase, fast amplitude.</li>
+                  <li>It's the other way round: the slow rhythm's phase, the fast rhythm's amplitude.</li>
+                  <li>They don't have to share a frequency; that's what makes it cross-frequency coupling.</li>
+                  <li>Breathing modulates rhythms that already exist; brain oscillations continue without nasal airflow.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Airflow through the nose sends waves of sensory activity through the brain, which can align neurons with the breathing cycle and modulate faster oscillations (Tort et al., 2025). In Figure A4, gamma bursts are largest at one point in each breath.</p></div>
               </div>
             </details>
@@ -584,15 +633,22 @@
           <li class="quiz__item" data-objective="LO3">
             <p class="quiz__question">A rat is sniffing, and you record an 8 Hz rhythm in its hippocampus. What is the safest conclusion?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="Possible, but 8 Hz also falls in the sniffing range, so you can't assume it.">It is hippocampal theta</li>
-              <li data-why="Possible, but matching frequency isn't proof; the two can run at similar speeds without being synchronized.">It is respiratory coupling, because sniffing runs at 4–12 Hz</li>
-              <li data-correct data-why="Right: same period doesn't mean same rhythm, so record breathing.">It could be theta, respiratory coupling or both; you'd need to record breathing to separate them</li>
-              <li data-why="Synchronized activity alone doesn't prove direct communication.">It proves the hippocampus and the nose are communicating directly</li>
+              <li>It is hippocampal theta</li>
+              <li>It is respiratory coupling, because sniffing runs at 4–12 Hz</li>
+              <li data-correct>It could be theta, respiratory coupling or both; you'd need to record breathing to separate them</li>
+              <li>It proves the hippocampus and the nose are communicating directly</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: C</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Possible, but 8 Hz also falls in the sniffing range, so you can't assume it.</li>
+                  <li>Possible, but matching frequency isn't proof; the two can run at similar speeds without being synchronized.</li>
+                  <li>Right: same period doesn't mean same rhythm, so record breathing.</li>
+                  <li>Synchronized activity alone doesn't prove direct communication.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Rodent sniffing (about 4–12 Hz) overlaps theta. The two can occur at similar frequencies without being continuously synchronized (Kay, 2014). This is a recurring problem across chronobiology: two rhythms with the same period are not necessarily the same rhythm.</p></div>
               </div>
             </details>
@@ -601,15 +657,22 @@
           <li class="quiz__item" data-objective="LO3">
             <p class="quiz__question">If nasal airflow stops, what happens to brain oscillations, according to the chapter?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="Breathing modulates rhythms; it isn't their only source.">They stop, because breathing drives them</li>
-              <li data-correct data-why="Right: breathing entrains existing rhythms rather than generating every one.">They continue; breathing modulates or entrains existing rhythms but doesn't generate them all</li>
-              <li data-why="Nothing in the chapter says they switch bands.">They all shift into the delta band</li>
-              <li data-why="Coupling extends well beyond smell areas, but that doesn't make breathing the source.">Only the olfactory rhythms continue</li>
+              <li>They stop, because breathing drives them</li>
+              <li data-correct>They continue; breathing modulates or entrains existing rhythms but doesn't generate them all</li>
+              <li>They all shift into the delta band</li>
+              <li>Only the olfactory rhythms continue</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: B</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Breathing modulates rhythms; it isn't their only source.</li>
+                  <li>Right: breathing entrains existing rhythms rather than generating every one.</li>
+                  <li>Nothing in the chapter says they switch bands.</li>
+                  <li>Coupling extends well beyond smell areas, but that doesn't make breathing the source.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Breathing supplies a shared reference signal that distant regions can lock onto, which can help coordinate activity. The broader principle: slower rhythms can coordinate faster ones, across many timescales.</p></div>
               </div>
             </details>
@@ -618,15 +681,22 @@
           <li class="quiz__item" data-objective="LO4">
             <p class="quiz__question">What is the order of the four spike sorting steps?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="Clustering needs measured shapes, and shapes need detected spikes, so clustering can't come first.">Cluster, threshold, filter, measure shape</li>
-              <li data-correct data-why="Right: filter, detect, describe, group.">Bandpass filter, threshold, measure waveform shape, cluster</li>
-              <li data-why="You threshold the filtered trace, so filtering comes before detection.">Threshold, bandpass filter, cluster, measure waveform shape</li>
-              <li data-why="Shapes are measured on detected events, after thresholding.">Measure waveform shape, bandpass filter, threshold, cluster</li>
+              <li>Cluster, threshold, filter, measure shape</li>
+              <li data-correct>Bandpass filter, threshold, measure waveform shape, cluster</li>
+              <li>Threshold, bandpass filter, cluster, measure waveform shape</li>
+              <li>Measure waveform shape, bandpass filter, threshold, cluster</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: B</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Clustering needs measured shapes, and shapes need detected spikes, so clustering can't come first.</li>
+                  <li>Right: filter, detect, describe, group.</li>
+                  <li>You threshold the filtered trace, so filtering comes before detection.</li>
+                  <li>Shapes are measured on detected events, after thresholding.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Bandpass filter (typically 300–3,000 Hz), find threshold crossings, measure each waveform's shape, then cluster similar shapes as possibly coming from one neuron (Rey et al., 2015).</p></div>
               </div>
             </details>
@@ -635,15 +705,22 @@
           <li class="quiz__item" data-objective="LO4">
             <p class="quiz__question">A researcher stops after thresholding and simply counts every crossing, without assigning any to a cell. What do they have?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="Single units need the clustering step to assign spikes to cells.">Sorted single-unit activity</li>
-              <li data-correct data-why="Right: a record of how much the population fires, not who fired.">Multi-unit activity</li>
-              <li data-why="The LFP is the slow, low-frequency part; thresholding works on the spike band.">A local field potential</li>
-              <li data-why="A power spectrum comes from a Fourier transform, not from counting crossings.">A power spectrum</li>
+              <li>Sorted single-unit activity</li>
+              <li data-correct>Multi-unit activity</li>
+              <li>A local field potential</li>
+              <li>A power spectrum</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: B</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Single units need the clustering step to assign spikes to cells.</li>
+                  <li>Right: a record of how much the population fires, not who fired.</li>
+                  <li>The LFP is the slow, low-frequency part; thresholding works on the spike band.</li>
+                  <li>A power spectrum comes from a Fourier transform, not from counting crossings.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Multi-unit activity records how much the local population is firing, without knowing which specific cells are responsible.</p></div>
               </div>
             </details>
@@ -652,15 +729,22 @@
           <li class="quiz__item" data-objective="LO4">
             <p class="quiz__question">Which neurons is spike sorting most likely to miss?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="Distinctive waveforms are the easiest to sort; datasets get biased toward them.">Neurons with distinctive waveforms</li>
-              <li data-correct data-why="Right: sparse firers get buried under busier neighbors.">Neurons that fire rarely, next to neighbors that fire often</li>
-              <li data-why="Frequent firers dominate the recording; they're the ones that bury others.">Neurons that fire very often</li>
-              <li data-why="Spike sorting doesn't use LFP phase at all.">Neurons that fire at the peak of the LFP</li>
+              <li>Neurons with distinctive waveforms</li>
+              <li data-correct>Neurons that fire rarely, next to neighbors that fire often</li>
+              <li>Neurons that fire very often</li>
+              <li>Neurons that fire at the peak of the LFP</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: B</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Distinctive waveforms are the easiest to sort; datasets get biased toward them.</li>
+                  <li>Right: sparse firers get buried under busier neighbors.</li>
+                  <li>Frequent firers dominate the recording; they're the ones that bury others.</li>
+                  <li>Spike sorting doesn't use LFP phase at all.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Rarely firing neurons are easily lost under neighbors that fire more often, which matters for sparse cells such as some involved in memory tasks (Rey et al., 2015). Accuracy also drops when many neurons sit close to the electrode, and overlapping spikes can match neither neuron.</p></div>
               </div>
             </details>
@@ -669,15 +753,22 @@
           <li class="quiz__item" data-objective="LO4">
             <p class="quiz__question">A whole-recording power spectrum shows a big theta peak and only a tiny bump at 60 Hz. Why might a wavelet (time-frequency) analysis tell you more?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="The chapter is explicit that the Fourier transform doesn't assume the rhythm is steady. The problem is that one spectrum doesn't show when.">The Fourier transform assumes rhythms never change, so it's wrong</li>
-              <li data-correct data-why="Right: a short strong burst and a weak steady rhythm can average to similar spectra.">It shows when each frequency occurred, so brief 60 Hz bursts stand out instead of being averaged away</li>
-              <li data-why="The Nyquist limit depends on the sampling rate, not on which transform you use.">Wavelets can recover frequencies above the Nyquist limit</li>
-              <li data-why="Removing spikes is spike-band filtering, not what a wavelet transform is for.">Wavelets remove spike contamination from the LFP</li>
+              <li>The Fourier transform assumes rhythms never change, so it's wrong</li>
+              <li data-correct>It shows when each frequency occurred, so brief 60 Hz bursts stand out instead of being averaged away</li>
+              <li>Wavelets can recover frequencies above the Nyquist limit</li>
+              <li>Wavelets remove spike contamination from the LFP</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: B</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>The chapter is explicit that the Fourier transform doesn't assume the rhythm is steady. The problem is that one spectrum doesn't show when.</li>
+                  <li>Right: a short strong burst and a weak steady rhythm can average to similar spectra.</li>
+                  <li>The Nyquist limit depends on the sampling rate, not on which transform you use.</li>
+                  <li>Removing spikes is spike-band filtering, not what a wavelet transform is for.</li>
+                </ol>
                 <div class="quiz__explanation"><p>The wavelet transform swaps the infinite sine wave for a short wave that can be moved and stretched, giving information about a given frequency at a given moment. Figure A6 shows the 60 Hz bursts nearly vanishing in the whole-record spectrum but standing out clearly in the spectrogram.</p></div>
               </div>
             </details>
@@ -697,15 +788,22 @@
           <li class="quiz__item" data-objective="LO5">
             <p class="quiz__question">In the basic artificial neuron <math><mi>y</mi><mo>=</mo><mi>φ</mi><mo stretchy="false">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><msub><mi>x</mi><mi>i</mi></msub><mo>+</mo><mi>b</mi><mo stretchy="false">)</mo></math>, what is missing that a spiking model has?</p>
             <ol class="quiz__options" type="A">
-              <li data-why="The weights are the w terms; they're right there.">Synaptic weights</li>
-              <li data-why="The offset is b.">An offset</li>
-              <li data-correct data-why="Right: the output is a number, not a timed spike event.">An explicit spike time</li>
-              <li data-why="The inputs are the x terms.">Inputs</li>
+              <li>Synaptic weights</li>
+              <li>An offset</li>
+              <li data-correct>An explicit spike time</li>
+              <li>Inputs</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: C</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>The weights are the w terms; they're right there.</li>
+                  <li>The offset is b.</li>
+                  <li>Right: the output is a number, not a timed spike event.</li>
+                  <li>The inputs are the x terms.</li>
+                </ol>
                 <div class="quiz__explanation"><p>Nothing in the feed-forward equation says when a spike happened, so spike timing and phase aren't represented. A leaky integrate-and-fire model outputs a discrete spike at a specific time. (Other artificial networks can process time-dependent inputs.)</p></div>
               </div>
             </details>
@@ -714,15 +812,22 @@
           <li class="quiz__item" data-objective="LO5">
             <p class="quiz__question">Under a common STDP rule, neuron A fires a few milliseconds before neuron B, which it connects to. What happens to the A-to-B connection?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Right: presynaptic just before postsynaptic strengthens.">It strengthens</li>
-              <li data-why="Weakening is for the reverse order: A firing just after B.">It weakens</li>
-              <li data-why="STDP is about timing, not rate; the order and interval are what count.">It stays the same, because only firing rate matters</li>
-              <li data-why="The change gets smaller as the interval gets longer, not bigger.">It strengthens more the longer A waits before B fires</li>
+              <li data-correct>It strengthens</li>
+              <li>It weakens</li>
+              <li>It stays the same, because only firing rate matters</li>
+              <li>It strengthens more the longer A waits before B fires</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Right: presynaptic just before postsynaptic strengthens.</li>
+                  <li>Weakening is for the reverse order: A firing just after B.</li>
+                  <li>STDP is about timing, not rate; the order and interval are what count.</li>
+                  <li>The change gets smaller as the interval gets longer, not bigger.</li>
+                </ol>
                 <div class="quiz__explanation"><p>The weight change depends on Δt = t<sub>post</sub> − t<sub>pre</sub> and its sign. Pre just before post strengthens; pre just after post weakens; longer intervals mean smaller changes. Actual plasticity depends on the circuit and conditions.</p></div>
               </div>
             </details>

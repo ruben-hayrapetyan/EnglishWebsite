@@ -279,13 +279,18 @@
           <li class="quiz__item" data-objective="LO1">
             <p class="quiz__question">A question that tests understanding, not wording?</p>
             <ol class="quiz__options" type="A">
-              <li data-correct data-why="Why this is right.">The right option</li>
-              <li data-why="Why this is wrong.">A plausible wrong option</li>
+              <li data-correct>The right option</li>
+              <li>A plausible wrong option</li>
             </ol>
             <details class="reveal">
               <summary class="reveal__summary">Show the answer</summary>
               <div class="reveal__body">
                 <p class="quiz__key">Answer: A</p>
+                <p>Why each option is right or wrong:</p>
+                <ol class="quiz__whys" type="A">
+                  <li>Why this is right.</li>
+                  <li>Why this is wrong.</li>
+                </ol>
                 <div class="quiz__explanation"><p>The explanation, tied back to the chapter.</p></div>
               </div>
             </details>

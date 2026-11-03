@@ -362,10 +362,13 @@ const CONFIDENCE = [
 
 function readQuestions(quiz) {
   return [...quiz.querySelectorAll(".quiz__item")].map((item, index) => {
-    const options = [...item.querySelectorAll(".quiz__options > li")].map((option) => ({
+    // Why each option is right or wrong: the nth reason in .quiz__whys belongs
+    // to the nth option. (Older kits used a data-why attribute on the option.)
+    const whys = [...item.querySelectorAll(".quiz__whys > li")];
+    const options = [...item.querySelectorAll(".quiz__options > li")].map((option, n) => ({
       html: option.innerHTML.trim(),
       correct: option.hasAttribute("data-correct"),
-      why: option.dataset.why || "",
+      why: whys[n] ? whys[n].innerHTML.trim() : option.dataset.why || "",
     }));
     const explanation = item.querySelector(".quiz__explanation");
     return {

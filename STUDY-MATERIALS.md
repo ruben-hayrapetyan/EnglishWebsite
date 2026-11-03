@@ -24,13 +24,13 @@ You write plain HTML. `assets/js/study.js` finds the slides, flashcards and quiz
 | **Objectives** | Your chapter's learning objectives, word for word, each with `data-objective="LO1"` and so on | All of them |
 | **Slides** | One idea per slide, in chapter order, with your figures | 10–20 slides |
 | **Key terms** | Your chapter's glossary | Every term |
-| **Quiz** | Questions with a `data-why` on every option and an explanation | 10–20, at least two per objective |
+| **Quiz** | Questions with a reason for every option (`.quiz__whys`) and an explanation | 10–20, at least two per objective |
 | **Explain it back** | One open prompt per objective, with a model answer | One per objective |
 
 ### Writing good questions
 
 - **Test understanding, not wording.** Ask readers to apply an idea to a new case ("a rat is sniffing and you record 8 Hz...") rather than to recognize a sentence from the chapter.
-- **Make wrong options plausible.** Each should be a real misconception, and its `data-why` should name it ("That's repolarization, which comes after the peak").
+- **Make wrong options plausible.** Each should be a real misconception, and its reason in `.quiz__whys` should name it ("That's repolarization, which comes after the peak").
 - **One clearly right answer.** Avoid "all of the above" and "none of the above".
 - **Tag every question with an objective.** The results screen scores readers by objective, so untagged questions fall into "Other".
 - **Number questions** take `data-answer`, `data-tolerance` (how far off still counts) and `data-unit`, and no options list.
