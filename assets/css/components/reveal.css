@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Reveal: a disclosure box for content the reader opens on purpose, such as
+   a model answer, a quiz answer key or a long list. Built on <details>, so it
+   works with JavaScript off.
+   <details class="reveal">
+     <summary class="reveal__summary">Show the model answer</summary>
+     <div class="reveal__body">
+       <p>Hidden until opened.</p>
+     </div>
+   </details>
+   ========================================================================== */
+
+.reveal {
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.reveal__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  min-height: 2.75rem;
+  padding: var(--space-2xs) var(--space-m);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  list-style: none;
+  cursor: pointer;
+}
+
+.reveal__summary::-webkit-details-marker {
+  display: none;
+}
+
+/* A plus that turns into a minus when open. */
+.reveal__summary::after {
+  content: "+";
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  line-height: 1;
+  color: var(--color-accent);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.reveal[open] > .reveal__summary::after {
+  content: "\2212";
+  transform: rotate(180deg);
+}
+
+.reveal__summary:hover {
+  color: var(--color-accent-strong);
+}
+
+.reveal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: 0 var(--space-m) var(--space-m);
+}

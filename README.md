@@ -1,6 +1,6 @@
 # EnglishWebsite
 
-A static website built with plain HTML, CSS and a little JavaScript. There's no framework, no build step and no dependencies. It is set up so that several people or agents can work on separate pages in separate branches and still produce one consistent site.
+A static website built with plain HTML, CSS and a little JavaScript. The site has no framework, no build step and no dependencies. Development tools (the tests and the textbook converter) are Python and live in `tools/` and `tests/`, outside anything a page loads. It is set up so that several people or agents can work on separate pages in separate branches and still produce one consistent site.
 
 > **Working on this repo as an agent?** Read [`AGENTS.md`](AGENTS.md) first. It holds the rules. This README explains the design.
 
@@ -14,6 +14,30 @@ python3 -m http.server 8000
 ```
 
 Open `styleguide.html` to see every token and component rendered live. Add `?theme=dark` or `?theme=light` to any page URL to force a theme.
+
+## Run the tests
+
+You need Python 3.12 or newer. Install the development tools once, in a virtual environment:
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/python -m playwright install chromium
+```
+
+Then run everything:
+
+```sh
+.venv/bin/python -m pytest              # all tests
+.venv/bin/python -m pytest -m "not e2e" # skip the browser tests (fast)
+```
+
+| Suite | What it checks |
+|---|---|
+| `tests/site/` | The AGENTS.md rules on every page and stylesheet: one `h1`, headings in order, `alt` text, labels, the page skeleton and AI credit, links that resolve, tokens-only CSS, breakpoints, component docs. |
+| `tests/e2e/` | Every page in Chromium. Both themes, 390px and 1440px without sideways scrolling, a focus ring on every Tab stop, the skip link, the menu, no console errors, readable with JavaScript off, and an axe accessibility scan. |
+
+New pages and stylesheets are picked up automatically. CI runs the same command on every pull request (`.github/workflows/test.yml`).
 
 ## Project structure
 
@@ -37,9 +61,15 @@ EnglishWebsite/
 │   │   ├── notes.js        Highlights and notes (loaded by a11y.js)
 │   │   ├── site.js         Renders the shared header and footer; holds the nav list
 │   │   ├── settings.js     Binds the settings form to a11y.js
+│   │   ├── study.js        Shared engine for study kits: slides, flashcards, quizzes
 │   │   └── styleguide.js   Prints live token values on the style guide
 │   ├── fonts/              Self-hosted OpenDyslexic (SIL Open Font License)
 │   └── img/                Images and the favicon
+├── tools/                  Development tools (Python); never loaded by pages
+├── tests/                  Rule checks, unit tests and browser tests (pytest)
+├── requirements-dev.txt    Pinned development tools
+├── pyproject.toml          Test configuration
+├── .github/workflows/      CI: runs the tests on every pull request
 ├── README.md               This file: the design system
 ├── AGENTS.md               Rules for anyone (human or agent) changing the site
 └── ACCESSIBILITY.md        How to keep a page working with the reader settings
@@ -171,10 +201,15 @@ All of these are shown live in `styleguide.html`.
 | Button | `.button`, `--secondary`, `--quiet`, `--small` | `components/button.css` |
 | Card | `.card`, `__title`, `__body`, `__meta`, `__footer` | `components/card.css` |
 | Callout | `.callout`, `--accent`, `--mark`, `--danger`, `__title` | `components/callout.css` |
+| Chapter nav | `.chapter-nav`, `--pager`, `__title`, `__list`, `__link`, `__step`, `__step--next`, `__label`, `__name` | `components/chapter-nav.css` |
 | Tag | `.tag`, `--accent` | `components/tag.css` |
 | Form field | `.field`, `__label`, `__hint`, `__error`, `.input`, `.checkbox` | `components/form.css` |
 | Prose | `.prose` (styles plain HTML inside it) | `components/prose.css` |
 | Highlight | `mark`, `.highlight`, `.highlight--draw` | `components/highlight.css` |
+| Reveal | `.reveal`, `__summary`, `__body` (on `<details>`) | `components/reveal.css` |
+| Deck | `.deck`, `__stage`, `__slide`, `__content`, `__kicker`, `__title`, `__points`, `__figure` (made interactive by `study.js`) | `components/deck.css` |
+| Flashcards | `.flashcards`, `__list`, `__item`, `__term`, `__definition` (made interactive by `study.js`) | `components/flashcards.css` |
+| Quiz | `.quiz`, `__item`, `__question`, `__options`, `__key`, `__whys`, `__explanation` (made interactive by `study.js`) | `components/quiz.css` |
 | AI credit | `.ai-credit` (required on every page, above the footer) | `components/ai-credit.css` |
 | Reader bar | `.reader-bar`, `__group`, `[data-read-aloud-current]` (added by `a11y.js`) | `components/reader-bar.css` |
 | Notes | `.notes-highlight`, `--active`, `.notes-menu`, `.notes-panel` and its elements (added by `notes.js`) | `components/notes.css` |

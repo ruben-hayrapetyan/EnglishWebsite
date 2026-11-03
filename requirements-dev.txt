@@ -1,0 +1,24 @@
+# Development tools only. Nothing here is loaded by the website itself:
+# the site stays plain HTML, CSS and JS with no build step (see AGENTS.md).
+# Install into a virtual environment:
+#   python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+#   .venv/bin/python -m playwright install chromium
+# Pin exact versions so every contributor and CI run the same tools.
+
+# Test runner and coverage
+pytest==9.2.0
+pytest-cov==7.1.0
+
+# HTML parsing for the site rule checks
+lxml==6.1.3
+
+# Browser end-to-end tests and accessibility scans
+playwright==1.64.1
+axe-playwright-python==0.1.8
+
+# Textbook converter (tools/textbook) and its test fixtures
+pymupdf==1.28.2        # PDF reading. AGPL-3.0: fine for a local dev tool that is not distributed
+python-docx==1.2.0     # Word .docx reading; tests also use it to write sample .docx files
+markdown-it-py==4.2.0  # Markdown reading
+fpdf2==2.9.0           # tests only: writes sample PDFs
+pillow==13.0.0         # tests only: draws sample images

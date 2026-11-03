@@ -8,7 +8,10 @@ const SITE = {
   name: "English Website",
   nav: [
     { label: "Home", href: "index.html" },
+    { label: "Textbook", href: "textbook.html" },
     { label: "About", href: "about.html" },
+    { label: "Our team", href: "teams.html" },
+    { label: "Study", href: "study.html" },
     { label: "Settings", href: "settings.html" },
   ],
   footerLinks: [
