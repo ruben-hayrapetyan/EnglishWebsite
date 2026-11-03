@@ -437,3 +437,25 @@ def real_world_pdf(path: Path) -> Path:
     text(left, 100, "The end.")
     pdf.output(str(path))
     return path
+
+
+def grid_paper_pdf(path: Path) -> Path:
+    """Notes written on graph paper (like iPad handwriting exports): hundreds
+    of ruling lines that are a background, not a table."""
+    from fpdf import FPDF
+
+    pdf = FPDF(format="A4", unit="mm")
+    pdf.add_page()
+    pdf.set_draw_color(200, 220, 240)
+    pdf.set_line_width(0.1)
+    for x in range(0, 211):  # 1mm squares: about 500 ruling lines, like a real export
+        pdf.line(x, 0, x, 297)
+    for y in range(0, 298):
+        pdf.line(0, y, 210, y)
+    pdf.set_font("helvetica", "B", 16)
+    pdf.text(20, 30, "Lecture notes")
+    pdf.set_font("helvetica", "", 11)
+    pdf.text(20, 45, "Check the syllabus and the grading policy.")
+    pdf.text(20, 60, "Homework is due every Friday.")
+    pdf.output(str(path))
+    return path
