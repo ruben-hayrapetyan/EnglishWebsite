@@ -22,6 +22,7 @@ Regions (name and argument):
     study-cards <unit id>            study-kit cards for a unit's chapters
     author-chapters <author slug>    an author's chapter cards, with section
                                      outlines and links once chapters exist
+    chapter-options                  <option>s for every chapter (upload page)
 """
 
 from __future__ import annotations
@@ -191,8 +192,15 @@ def outline_list(nodes: Outline, indent: str) -> list[str]:
     return lines + [f"{indent}</ul>"]
 
 
+def _chapter_options(book: Book, arg: str | None) -> list[str]:
+    """<option>s for every chapter, for the upload page's chapter picker."""
+    return [f'<option value="{c.id}">Chapter {c.number}: {esc(c.title)}'
+            f'{" (on the site)" if c.id in book.available else ""}</option>' for c in book.manifest.chapters]
+
+
 RENDERERS = {
     "count": _count,
     "study-cards": _study_cards,
     "author-chapters": _author_chapters,
+    "chapter-options": _chapter_options,
 }

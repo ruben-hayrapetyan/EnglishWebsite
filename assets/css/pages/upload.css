@@ -1,0 +1,31 @@
+/* ==========================================================================
+   Upload page (upload.html): the chapter upload form.
+   ========================================================================== */
+
+.upload {
+  max-width: var(--measure);
+  padding: var(--space-l) var(--space-m);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+/* A group of radio buttons; the fieldset's default frame isn't wanted here. */
+.upload__choice {
+  padding: 0;
+  border: 0;
+}
+
+.upload__status:empty {
+  display: none;
+}
+
+.upload__status--error {
+  font-weight: var(--weight-semibold);
+  color: var(--color-danger);
+}
+
+/* .field sets display, which would otherwise beat the hidden attribute. */
+.upload [hidden] {
+  display: none;
+}
