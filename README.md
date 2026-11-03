@@ -37,7 +37,7 @@ Then run everything:
 | `tests/site/` | The AGENTS.md rules on every page and stylesheet: one `h1`, headings in order, `alt` text, labels, the page skeleton and AI credit, links that resolve, tokens-only CSS, breakpoints, component docs. |
 | `tests/e2e/` | Every page in Chromium. Both themes, 390px and 1440px without sideways scrolling, a focus ring on every Tab stop, the skip link, the menu, no console errors, readable with JavaScript off, and an axe accessibility scan. |
 
-New pages and stylesheets are picked up automatically. CI runs the same command on every pull request (`.github/workflows/test.yml`).
+New pages and stylesheets are picked up automatically. Parts of pages that describe the book (chapter lists, outlines, counts) are generated from `textbook/textbook.json`; see `tools/textbook/README.md`, "Pages that describe the book". CI runs the same command on every pull request (`.github/workflows/test.yml`).
 
 ## Project structure
 
