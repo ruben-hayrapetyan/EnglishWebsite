@@ -1,6 +1,6 @@
 # EnglishWebsite
 
-A static website built with plain HTML, CSS and a little JavaScript. There's no framework, no build step and no dependencies. It is set up so that several people or agents can work on separate pages in separate branches and still produce one consistent site.
+A static website built with plain HTML, CSS and a little JavaScript. The site has no framework, no build step and no dependencies. Development tools (the tests and the textbook converter) are Python and live in `tools/` and `tests/`, outside anything a page loads. It is set up so that several people or agents can work on separate pages in separate branches and still produce one consistent site.
 
 > **Working on this repo as an agent?** Read [`AGENTS.md`](AGENTS.md) first. It holds the rules. This README explains the design.
 
@@ -14,6 +14,30 @@ python3 -m http.server 8000
 ```
 
 Open `styleguide.html` to see every token and component rendered live. Add `?theme=dark` or `?theme=light` to any page URL to force a theme.
+
+## Run the tests
+
+You need Python 3.12 or newer. Install the development tools once, in a virtual environment:
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/python -m playwright install chromium
+```
+
+Then run everything:
+
+```sh
+.venv/bin/python -m pytest              # all tests
+.venv/bin/python -m pytest -m "not e2e" # skip the browser tests (fast)
+```
+
+| Suite | What it checks |
+|---|---|
+| `tests/site/` | The AGENTS.md rules on every page and stylesheet: one `h1`, headings in order, `alt` text, labels, the page skeleton and AI credit, links that resolve, tokens-only CSS, breakpoints, component docs. |
+| `tests/e2e/` | Every page in Chromium. Both themes, 390px and 1440px without sideways scrolling, a focus ring on every Tab stop, the skip link, the menu, no console errors, readable with JavaScript off, and an axe accessibility scan. |
+
+New pages and stylesheets are picked up automatically. CI runs the same command on every pull request (`.github/workflows/test.yml`).
 
 ## Project structure
 
@@ -35,6 +59,11 @@ EnglishWebsite/
 │   │   ├── site.js         Renders the shared header and footer; holds the nav list
 │   │   └── styleguide.js   Prints live token values on the style guide
 │   └── img/                Images and the favicon
+├── tools/                  Development tools (Python); never loaded by pages
+├── tests/                  Rule checks, unit tests and browser tests (pytest)
+├── requirements-dev.txt    Pinned development tools
+├── pyproject.toml          Test configuration
+├── .github/workflows/      CI: runs the tests on every pull request
 ├── README.md               This file: the design system
 └── AGENTS.md               Rules for anyone (human or agent) changing the site
 ```

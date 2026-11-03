@@ -1,0 +1,17 @@
+# Development tools only. Nothing here is loaded by the website itself:
+# the site stays plain HTML, CSS and JS with no build step (see AGENTS.md).
+# Install into a virtual environment:
+#   python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+#   .venv/bin/python -m playwright install chromium
+# Pin exact versions so every contributor and CI run the same tools.
+
+# Test runner and coverage
+pytest==9.2.0
+pytest-cov==7.1.0
+
+# HTML parsing for the site rule checks
+lxml==6.1.3
+
+# Browser end-to-end tests and accessibility scans
+playwright==1.64.1
+axe-playwright-python==0.1.8
