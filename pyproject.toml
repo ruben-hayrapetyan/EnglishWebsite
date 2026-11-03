@@ -1,0 +1,17 @@
+# Configuration for the development tools only (tests, coverage).
+# The website itself has no build step; see AGENTS.md "Tooling and tests".
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "e2e: drives a real browser against a local server (slower; needs Playwright's Chromium)",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["tools"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
